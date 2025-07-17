@@ -4,6 +4,8 @@
 
 > SCVdb tutorial: https://scvdb-tutorial.readthedocs.io/en/latest/index.html
 
+> SCVdb front-end: https://github.com/YuZhengM/scvdb_web
+
 A comprehensive platform for human **integrating** `single-cell chromatin accessibility data` with `causal variant effects`.
 
 ![overview.png](src/main/resources/storage/img/overview.png)
