@@ -8,4 +8,7 @@ public interface FileService {
     String uploadFile(MultipartFile file) throws IOException;
 
     void deleteFile(String fileId);
+
+    boolean existFile(String filepath);
+
 }

@@ -80,4 +80,10 @@ public class FileServiceImpl implements FileService {
         // Delete the file from the server
         FileUtil.delete(userPath + fileId);
     }
+
+    @Override
+    public boolean existFile(String filepath) {
+        String workPath = path.getWorkPath();
+        return FileUtil.isExist(workPath + "/" + filepath);
+    }
 }

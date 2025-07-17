@@ -68,4 +68,10 @@ public class FileController {
         return ResultUtil.success("File deleted successfully", gfsId);
     }
 
+    @GetMapping("/exist")
+    public Result<Boolean> existFile(@RequestParam String filepath) {
+        boolean isExist = fileService.existFile(filepath);
+        return ResultUtil.success("[existFile]: File Check if the file exists", isExist);
+    }
+
 }
