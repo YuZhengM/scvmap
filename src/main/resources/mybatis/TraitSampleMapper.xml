@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.TraitSampleMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.TraitSample">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_sample_id" jdbcType="VARCHAR" property="sampleId"/>
+        <result column="f_trait_code" jdbcType="VARCHAR" property="traitCode"/>
+        <result column="f_trait_abbr" jdbcType="VARCHAR" property="traitAbbr"/>
+        <result column="f_trait" jdbcType="VARCHAR" property="trait"/>
+        <result column="f_source_name" jdbcType="VARCHAR" property="sourceName"/>
+        <result column="f_tissue_type" jdbcType="VARCHAR" property="tissueType"/>
+        <result column="f_label" jdbcType="VARCHAR" property="label"/>
+        <result column="f_trait_index" jdbcType="INTEGER" property="traitIndex"/>
+        <result column="f_sample_index" jdbcType="INTEGER" property="sampleIndex"/>
+    </resultMap>
+    <select id="selectBySampleIdAndMethod" resultMap="BaseResultMap">
+        select f_trait_id, f_trait_abbr, f_trait, f_source_name, f_label, f_trait_code
+        from t_trait_sample_${method} WHERE f_sample_id = #{sampleId} ORDER BY f_trait_index
+    </select>
+    <select id="selectByTraitIdAndMethod" resultMap="BaseResultMap">
+        select f_sample_id, f_tissue_type, f_label, f_trait_code
+        from t_trait_sample_${method} WHERE f_trait_id = #{traitId} ORDER BY f_sample_index
+    </select>
+    <select id="selectByTraitIdListAndMethod" resultMap="BaseResultMap">
+        select f_trait_id, f_trait_abbr, f_trait, f_source_name, f_trait_code
+        from t_trait_sample_${method}  WHERE f_sample_id = #{sampleId} AND f_trait_id IN
+        <foreach collection="traitIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> ORDER BY f_trait_index
+    </select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.SampleEnrichSampleIdMapper">
+  <resultMap id="BaseResultMap" type="com.spring.boot.pojo.SampleEnrichSampleId">
+    <result column="f_trait_id" jdbcType="VARCHAR" property="traitId" />
+    <result column="f_trait_code" jdbcType="VARCHAR" property="traitCode" />
+    <result column="f_trait_abbr" jdbcType="VARCHAR" property="traitAbbr" />
+    <result column="f_trait" jdbcType="VARCHAR" property="trait" />
+    <result column="f_source_name" jdbcType="VARCHAR" property="sourceName" />
+    <result column="f_trait_index" jdbcType="INTEGER" property="traitIndex" />
+  </resultMap>
+    <select id="selectBySampleIdAndMethod" resultMap="BaseResultMap">
+      select f_trait_id, f_trait_code, f_trait_abbr, f_trait, f_source_name, f_trait_index
+      from t_sample_enrich_${method}_${sampleId}
+      ORDER BY f_trait_index
+    </select>
+</mapper>

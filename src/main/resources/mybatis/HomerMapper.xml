@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.HomerMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.Homer">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_motif_name" jdbcType="VARCHAR" property="motifName"/>
+        <result column="f_tf" jdbcType="VARCHAR" property="tf"/>
+        <result column="f_consensus" jdbcType="VARCHAR" property="consensus"/>
+        <result column="f_p_value" jdbcType="VARCHAR" property="pValue"/>
+        <result column="f_q_value" jdbcType="VARCHAR" property="qValue"/>
+    </resultMap>
+    <select id="selectByTraitIdList" resultMap="BaseResultMap">
+        <foreach collection="traitIdDTOList" item="traitIdDTO" open="" separator=" UNION " close="">
+            select f_trait_id, f_motif_name, f_tf, f_consensus, f_p_value, f_q_value from t_homer_${genome}_${traitIdDTO.id}
+            WHERE 1 = 1
+            <if test="pValue != null and pValue != 0">
+                AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+            </if>
+            <if test="qValue != null and qValue != 0">
+                AND f_q_value * 1.0 <![CDATA[ <= ]]> #{qValue}
+            </if>
+            <if test="traitIdDTO.traitIdList != null and traitIdDTO.traitIdList.size > 0">
+                AND f_trait_id IN
+                <foreach collection="traitIdDTO.traitIdList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="tfList != null and tfList.size > 0">
+                AND f_tf IN
+                <foreach collection="tfList" item="tf" open="(" separator="," close=")">
+                    #{tf}
+                </foreach>
+            </if>
+        </foreach>
+    </select>
+    <select id="selectByTraitIdAndTfList" resultMap="BaseResultMap">
+        select f_trait_id, f_motif_name, f_tf, f_consensus, f_p_value, f_q_value from t_homer_${genome}_${signalId}
+        WHERE
+        f_trait_id = #{traitId}
+        <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+        </if>
+        <if test="qValue != null and qValue != 0">
+            AND f_q_value * 1.0 <![CDATA[ <= ]]> #{qValue}
+        </if>
+        <if test="tfList != null and tfList.size > 0">
+            AND f_tf IN
+            <foreach collection="tfList" item="tf" open="(" separator="," close=")">
+                #{tf}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectByTraitId" resultMap="BaseResultMap">
+        select f_trait_id, f_motif_name, f_tf, f_consensus, f_p_value, f_q_value from t_homer_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId}
+    </select>
+    <select id="selectByTraitIdAndGene" resultMap="BaseResultMap">
+        select f_trait_id, f_motif_name, f_tf, f_consensus, f_p_value, f_q_value from t_homer_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId} AND f_tf = #{tf}
+    </select>
+</mapper>

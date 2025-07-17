@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.DifferenceTfChunkMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.DifferenceTfChunk">
+        <result column="f_sample_id" jdbcType="VARCHAR" property="sampleId"/>
+        <result column="f_cell_type" jdbcType="VARCHAR" property="cellType"/>
+        <result column="f_tf" jdbcType="VARCHAR" property="tf"/>
+        <result column="f_tf_id" jdbcType="VARCHAR" property="tfId"/>
+        <result column="f_p_value" jdbcType="DOUBLE" property="pValue"/>
+        <result column="f_adjusted_p_value" jdbcType="VARCHAR" property="adjustedPValue"/>
+        <result column="f_log2_fold_change" jdbcType="DOUBLE" property="log2FoldChange"/>
+    </resultMap>
+    <select id="selectBySampleIdList" resultMap="BaseResultMap">
+        <foreach collection="sampleIdList" open="" separator=" UNION " close="" item="sampleId">
+            select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change from
+            t_difference_tf_${sampleId}
+            WHERE 1 = 1
+            <if test="log2FoldChange != null and log2FoldChange != 0">
+                AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+                OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+            </if>
+            <if test="adjustedPValue != null and adjustedPValue != 0">
+                AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}
+            </if>
+            <if test="pValue != null and pValue != 0">
+                AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+            </if>
+            AND f_tf IN
+            <foreach collection="tfList" open="(" separator="," close=")" item="tf">
+                #{tf}
+            </foreach>
+        </foreach>
+    </select>
+    <select id="selectBySampleIdAndTfList" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change
+        from t_difference_tf_${sampleId}
+        WHERE
+        <if test="cellType != 'All' and cellType != ''">
+            f_cell_type = #{cellType} AND
+        </if>
+        f_tf IN
+        <foreach collection="tfList" item="tf" open="(" separator="," close=")">
+            #{tf}
+        </foreach>
+        ORDER BY f_p_value * 1.0
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectBySampleIdAndCellTypeAndTfList" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change
+        from t_difference_tf_${sampleId}
+        WHERE 1 = 1
+        <if test="cellType != 'All' and cellType != ''">
+            AND f_cell_type = #{cellType}
+        </if>
+        <if test="log2FoldChange != null and log2FoldChange != 0">
+            AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+            OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+        </if>
+        <if test="adjustedPValue != null and adjustedPValue != 0">
+            AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}
+        </if>
+        <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+        </if>
+        <if test="tfList != null and tfList.size > 0">
+            AND f_tf IN
+            <foreach collection="tfList" item="tf" open="(" separator="," close=")">
+                #{tf}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectBySampleIdAndCellType" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change
+        from t_difference_tf_${sampleId}
+        <if test="cellType != 'All' and cellType != ''">
+            WHERE
+            f_cell_type = #{cellType}
+        </if>
+    </select>
+    <select id="selectBySampleIdAndCellTypeWithTop" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change
+        from t_difference_tf_${sampleId}
+        WHERE 1 = 1
+        <if test="cellType != 'All' and cellType != ''">
+            AND
+            f_cell_type = #{cellType}
+        </if>
+        <if test="log2FoldChange != null and log2FoldChange != 0">
+            AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+            OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+        </if>
+        <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+        </if>
+        ORDER BY f_p_value * 1.0
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectGeneBySampleIdWithTop" resultType="java.lang.String">
+        select f_tf
+        from t_difference_tf_${sampleId}
+        WHERE 1 = 1
+        <if test="log2FoldChange != null and log2FoldChange != 0">
+            AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+            OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+        </if>
+        <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+        </if>
+        GROUP BY f_tf ORDER BY (MAX(f_p_value) - MIN(f_p_value)) DESC
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.TraitVariantMapMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.TraitVariantMap">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+        <result column="f_pp" jdbcType="DOUBLE" property="pp"/>
+    </resultMap>
+    <select id="selectTraitIdByRsIdAndGenome" resultType="java.lang.String">
+        SELECT DISTINCT f_trait_id FROM t_variant_trait_map_${genome}_${signalId} WHERE f_rs_id = #{rsId}
+    </select>
+    <select id="selectByRsIdAndGenome" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_rs_id, f_pp FROM t_variant_trait_map_${genome}_${signalId} WHERE f_rs_id = #{rsId}
+    </select>
+</mapper>

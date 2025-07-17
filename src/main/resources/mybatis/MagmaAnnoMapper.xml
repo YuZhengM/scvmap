@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.MagmaAnnoMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.MagmaAnno">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_gene_id" jdbcType="VARCHAR" property="geneId"/>
+        <result column="f_gene" jdbcType="VARCHAR" property="gene"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+    </resultMap>
+    <select id="selectByTraitIdAndGene" resultMap="BaseResultMap">
+        select f_trait_id, f_gene_id, f_gene, f_rs_id
+        from t_magma_anno_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId} AND f_gene = #{gene}
+    </select>
+    <select id="selectByTraitIdAndGeneList" resultMap="BaseResultMap">
+        select f_trait_id, f_gene_id, f_gene, f_rs_id
+        from t_magma_anno_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId}
+        <if test="geneList != null and geneList.size > 0">
+            AND f_gene IN
+            <foreach collection="geneList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectByTraitIdListAndRsId" resultMap="BaseResultMap">
+        <foreach collection="signalIdTraitListMap" index="key" item="values" separator=" UNION ">
+            SELECT f_trait_id, f_gene_id, f_gene, f_rs_id FROM t_magma_anno_${genome}_${key}
+            WHERE f_rs_id = #{rsId} AND f_trait_id IN
+            <foreach collection="values" open="(" separator="," close=")" item="value">
+                #{value}
+            </foreach>
+        </foreach>
+    </select>
+</mapper>

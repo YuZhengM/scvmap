@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.GeneEnrichmentMapper">
+  <resultMap id="BaseResultMap" type="com.spring.boot.pojo.GeneEnrichment">
+    <result column="f_sample_id" jdbcType="VARCHAR" property="sampleId" />
+    <result column="f_gene_set" jdbcType="VARCHAR" property="geneSet" />
+    <result column="f_term" jdbcType="VARCHAR" property="term" />
+    <result column="f_overlap" jdbcType="DOUBLE" property="overlap" />
+    <result column="f_p_value" jdbcType="VARCHAR" property="pValue" />
+    <result column="f_adjusted_p_value" jdbcType="VARCHAR" property="adjustedPValue" />
+    <result column="f_combined_score" jdbcType="VARCHAR" property="combinedScore" />
+    <result column="f_odds_ratio" jdbcType="DOUBLE" property="oddsRatio" />
+    <result column="f_gene" jdbcType="VARCHAR" property="gene" />
+    <result column="f_count" jdbcType="INTEGER" property="fCount" />
+    <result column="f_cell_type" jdbcType="VARCHAR" property="cellType" />
+  </resultMap>
+  <select id="selectBySampleIdAndCellType" resultMap="BaseResultMap">
+    select #{sampleId} as f_sample_id,
+           f_gene_set,
+           f_term,
+           f_overlap,
+           f_p_value,
+           f_adjusted_p_value,
+           f_combined_score,
+           f_odds_ratio,
+           f_gene,
+           f_count,
+           f_cell_type
+    from t_gene_enrichment_${sampleId}
+    WHERE f_gene_set = #{geneSet} AND f_cell_type = #{cellType}
+      <if test="value != null and value != 0">
+          AND f_p_value * 1.0 <![CDATA[ <= ]]> #{value}
+      </if>
+    ORDER BY f_combined_score
+  </select>
+</mapper>

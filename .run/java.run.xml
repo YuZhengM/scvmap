@@ -1,0 +1,33 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="java" type="docker-deploy" factoryName="dockerfile" server-name="Java_tencent">
+    <deployment type="dockerfile">
+      <settings>
+        <option name="imageTag" value="scvdb" />
+        <option name="containerName" value="scvdb" />
+        <option name="portBindings">
+          <list>
+            <DockerPortBindingImpl>
+              <option name="containerPort" value="${container_port}" />
+              <option name="hostPort" value="${host_port}" />
+            </DockerPortBindingImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value=" --privileged" />
+        <option name="sourceFilePath" value="Dockerfile" />
+        <option name="volumeBindings">
+          <list>
+            <DockerVolumeBindingImpl>
+              <option name="containerPath" value="${project_path}/data/data" />
+              <option name="hostPath" value="${project_path}/data/data" />
+            </DockerVolumeBindingImpl>
+            <DockerVolumeBindingImpl>
+              <option name="containerPath" value="/home/tomcat/tomcat/webapps" />
+              <option name="hostPath" value="${project_path}/data/code/service" />
+            </DockerVolumeBindingImpl>
+          </list>
+        </option>
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.EnhancerSedbMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.EnhancerSedb">
+        <result column="f_chr" jdbcType="INTEGER" property="chr"/>
+        <result column="f_start" jdbcType="INTEGER" property="start"/>
+        <result column="f_end" jdbcType="INTEGER" property="end"/>
+        <result column="f_sample_id" jdbcType="VARCHAR" property="sampleId"/>
+        <result column="f_se_id" jdbcType="VARCHAR" property="seId"/>
+        <result column="f_cell_source" jdbcType="VARCHAR" property="cellSource"/>
+        <result column="f_cell_type" jdbcType="VARCHAR" property="cellType"/>
+        <result column="f_tissue_type" jdbcType="VARCHAR" property="tissueType"/>
+        <result column="f_cell_state" jdbcType="VARCHAR" property="cellState"/>
+    </resultMap>
+    <select id="selectByRegionAndGenome" resultMap="BaseResultMap">
+        select #{chr} as f_chr,
+               f_start,
+               f_end,
+               f_sample_id,
+               f_se_id,
+               f_cell_source,
+               f_cell_type,
+               f_tissue_type,
+               f_cell_state
+        from t_enhancer_sedb_${genome}_${chr}
+        WHERE #{start} BETWEEN f_start AND f_end
+           OR #{end} BETWEEN f_start AND f_end
+           OR f_start BETWEEN #{start} AND #{end}
+           OR f_end BETWEEN #{start} AND #{end}
+    </select>
+</mapper>

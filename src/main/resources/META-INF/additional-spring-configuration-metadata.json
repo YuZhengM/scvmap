@@ -1,0 +1,36 @@
+{
+  "properties": [
+    {
+      "name": "com.linux.host",
+      "type": "java.lang.String",
+      "description": "Description for com.linux.host."
+    },
+    {
+      "name": "com.linux.port",
+      "type": "java.lang.Integer",
+      "defaultValue": 22,
+      "description": "Description for com.linux.port."
+    },
+    {
+      "name": "com.linux.username",
+      "type": "java.lang.String",
+      "defaultValue": "root",
+      "description": "Description for com.linux.username."
+    },
+    {
+      "name": "com.linux.password",
+      "type": "java.lang.String",
+      "description": "Description for com.linux.password."
+    },
+    {
+      "name": "com.path.workPath",
+      "type": "java.lang.String",
+      "description": "Description for com.path.workPath."
+    },
+    {
+      "name": "logging.level.com.spring.boot",
+      "type": "java.lang.String",
+      "description": "Description for logging.level.com.spring.boot."
+    }
+  ]
+}

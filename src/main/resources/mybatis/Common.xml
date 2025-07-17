@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot">
+    <sql id="order_sql">
+        <if test="page != null and page != ''">
+            <if test="page.order != 0">
+                ORDER BY ${page.field}
+                <if test="page.order == -1">
+                    DESC
+                </if>
+            </if>
+        </if>
+    </sql>
+    <sql id="order_sql_where">
+        <if test="page != null and page != ''">
+            <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
+                WHERE
+                <if test="page.type == 1">
+                    ${page.searchField} = #{page.content}
+                </if>
+                <if test="page.type == 2">
+                    ${page.searchField} = ${page.content}
+                </if>
+            </if>
+            <include refid="com.spring.boot.order_sql"/>
+        </if>
+    </sql>
+    <sql id="order_sql_and">
+        <if test="page != null and page != ''">
+            <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
+                AND
+                <if test="page.type == 1">
+                    ${page.searchField} = #{page.content}
+                </if>
+                <if test="page.type == 2">
+                    ${page.searchField} * -1.0 = ${page.content}
+                </if>
+            </if>
+            <include refid="com.spring.boot.order_sql"/>
+        </if>
+    </sql>
+</mapper>

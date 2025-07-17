@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.DifferenceGeneChunkMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.DifferenceGeneChunk">
+        <result column="f_sample_id" jdbcType="VARCHAR" property="sampleId" />
+        <result column="f_cell_type" jdbcType="VARCHAR" property="cellType" />
+        <result column="f_gene" jdbcType="VARCHAR" property="gene" />
+        <result column="f_score" jdbcType="DOUBLE" property="score" />
+        <result column="f_adjusted_p_value" jdbcType="VARCHAR" property="adjustedPValue" />
+        <result column="f_log2_fold_change" jdbcType="DOUBLE" property="log2FoldChange" />
+        <result column="f_p_value" jdbcType="VARCHAR" property="pValue" />
+    </resultMap>
+    <select id="selectBySampleIdList" resultMap="BaseResultMap">
+        <foreach collection="sampleIdList" open="" separator=" UNION " close="" item="sampleId">
+            select #{sampleId} as f_sample_id, f_cell_type, f_gene, f_score, f_adjusted_p_value, f_log2_fold_change, f_p_value from
+            t_difference_gene_${sampleId}
+            WHERE 1 = 1
+            <if test="log2FoldChange != null and log2FoldChange != 0">
+                AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+                OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+            </if>
+            <if test="adjustedPValue != null and adjustedPValue != 0">
+                AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}
+            </if>
+            <if test="pValue != null and pValue != 0">
+                AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+            </if>
+            AND f_gene IN
+            <foreach collection="geneList" open="(" separator="," close=")" item="gene">
+                #{gene}
+            </foreach>
+        </foreach>
+    </select>
+    <select id="selectBySampleIdAndGeneList" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_gene, f_score, f_adjusted_p_value, f_log2_fold_change, f_p_value
+        from t_difference_gene_${sampleId}
+        WHERE
+        <if test="cellType != 'All' and cellType != ''">
+            f_cell_type = #{cellType} AND
+        </if>
+        f_gene IN
+        <foreach collection="geneList" item="gene" open="(" separator="," close=")">
+            #{gene}
+        </foreach>
+        ORDER BY f_p_value * 1.0, f_score DESC
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectBySampleIdAndCellTypeAndGeneListWithTop" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_gene, f_score, f_adjusted_p_value, f_log2_fold_change, f_p_value
+        from t_difference_gene_${sampleId}
+        WHERE 1 = 1
+        <if test="cellType != 'All' and cellType != ''">
+            AND f_cell_type = #{cellType}
+        </if>
+        <if test="log2FoldChange != null and log2FoldChange != 0">
+            AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
+            OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+        </if>
+        <if test="adjustedPValue != null and adjustedPValue != 0">
+            AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}
+        </if>
+        <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+        </if>
+        <if test="geneList != null and geneList.size > 0">
+            AND f_gene IN
+            <foreach collection="geneList" item="gene" open="(" separator="," close=")">
+                #{gene}
+            </foreach>
+        </if>
+        ORDER BY f_p_value * 1.0, f_score DESC
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectBySampleIdAndCellType" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_gene, f_score, f_adjusted_p_value, f_log2_fold_change, f_p_value
+        from t_difference_gene_${sampleId}
+        WHERE 1 = 1
+        <if test="cellType != 'All' and cellType != ''">
+            AND f_cell_type = #{cellType}
+        </if>
+        <include refid="com.spring.boot.order_sql_and"/>
+    </select>
+    <select id="selectBySampleIdAndCellTypeWithTop" resultMap="BaseResultMap">
+        select #{sampleId} as f_sample_id, f_cell_type, f_gene, f_score, f_adjusted_p_value, f_log2_fold_change, f_p_value
+        from t_difference_gene_${sampleId}
+        <if test="cellType != 'All' and cellType != ''">
+            WHERE
+            f_cell_type = #{cellType}
+        </if>
+        ORDER BY f_p_value * 1.0, f_score DESC
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectGeneBySampleIdWithTop" resultType="java.lang.String">
+        select f_gene from t_difference_gene_${sampleId}
+        WHERE f_gene IN (
+            SELECT f_gene as gene
+            FROM (
+                select f_gene, MAX(f_log2_fold_change) as score
+                from t_difference_gene_${sampleId}
+                GROUP BY f_gene
+            ) as t
+            WHERE score <![CDATA[ >= ]]> #{log2FoldChange}
+        )
+        GROUP BY f_gene ORDER BY SUM(ABS(f_score)) DESC
+        <if test="count != 0">
+            limit #{count}
+        </if>
+    </select>
+    <select id="selectGeneBySampleIdWithTopNoExpression" resultType="java.lang.String">
+        select DISTINCT f_gene
+        from t_difference_gene_${sampleId}
+        WHERE f_cell_type = #{cellType}
+        <if test="log2FoldChange != null and log2FoldChange != 0">
+            AND f_log2_fold_change <![CDATA[ > ]]> #{log2FoldChange} * -1.0
+            AND f_log2_fold_change <![CDATA[ < ]]> #{log2FoldChange}
+        </if>
+    </select>
+</mapper>
