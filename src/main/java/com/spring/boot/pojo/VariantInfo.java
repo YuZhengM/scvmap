@@ -31,25 +31,25 @@ public class VariantInfo implements Serializable {
 
     private String allele2;
 
-    private Double af;
+    private String af;
 
-    private Double maf;
+    private String maf;
 
-    private Double beta;
+    private String beta;
 
-    private Double se;
+    private String se;
 
-    private Double pValue;
+    private String pValue;
 
-    private Double chisq;
+    private String chisq;
 
-    private Double zScore;
+    private String zScore;
 
     private Double pp;
 
-    private Double betaPosterior;
+    private String betaPosterior;
 
-    private Double sdPosterior;
+    private String sdPosterior;
 
     @Serial
     private static final long serialVersionUID = 1L;
