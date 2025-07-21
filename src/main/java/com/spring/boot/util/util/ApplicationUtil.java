@@ -31,7 +31,7 @@ public class ApplicationUtil {
 
     public static EchartsPieData<String, String> getCellTypeCountEchartsData(List<SampleCellType> sampleCellTypeList) {
         if (ListUtil.isEmpty(sampleCellTypeList)) {
-            log.warn("[getCellTypeCountEchartsData] clusterCellTypeCountList 数据为空");
+            log.warn("[getCellTypeCountEchartsData] clusterCellTypeCountList: Data is empty.");
             return EchartsPieData.<String, String>builder().build();
         }
         int size = sampleCellTypeList.size();
@@ -51,7 +51,7 @@ public class ApplicationUtil {
 
     public static EchartsPieData<String, String> getChrCountEchartsData(List<FieldNumber> fieldNumberList) {
         if (ListUtil.isEmpty(fieldNumberList)) {
-            log.warn("[getChrCountEchartsData] fieldNumberList 数据为空");
+            log.warn("[getChrCountEchartsData] fieldNumberList: Data is empty.");
             return EchartsPieData.<String, String>builder().build();
         }
         int size = fieldNumberList.size();

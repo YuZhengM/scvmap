@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.spring.boot.util.constant.ApplicationConstant.ALL_DATA_SYMBOL;
 import static com.spring.boot.util.util.ApplicationUtil.*;
 
 /**
@@ -488,7 +489,7 @@ public class DetailServiceImpl implements DetailService {
             cellValueList.add(new ArrayList<>(Collections.nCopies(geneList.size(), 0.0)));
         }
 
-        List<DifferenceGeneChunk> differenceGeneChunkList = differenceGeneChunkMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(sampleId, "All",
+        List<DifferenceGeneChunk> differenceGeneChunkList = differenceGeneChunkMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(sampleId, ALL_DATA_SYMBOL,
                 geneList, 0D, 0D, 0D, 0);
 
         for (DifferenceGene differenceGene : differenceGeneChunkList) {
@@ -545,7 +546,7 @@ public class DetailServiceImpl implements DetailService {
             cellValueList.add(new ArrayList<>(Collections.nCopies(tfList.size(), 0.0)));
         }
 
-        List<DifferenceTfChunk> differenceTfChunkList = differenceTfChunkMapper.selectBySampleIdAndCellTypeAndTfList(sampleId, "All",
+        List<DifferenceTfChunk> differenceTfChunkList = differenceTfChunkMapper.selectBySampleIdAndCellTypeAndTfList(sampleId, ALL_DATA_SYMBOL,
                 tfList, log2FoldChange, 0D, 0D);
 
         for (DifferenceTf differenceTf : differenceTfChunkList) {

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.spring.boot.util.constant.ApplicationConstant.ALL_DATA_SYMBOL;
 import static com.spring.boot.util.util.ApplicationUtil.checkSourceId;
 
 /**
@@ -79,7 +80,7 @@ public class SearchServiceImpl implements SearchService {
     public List<Trait> listTraitBySourceId(String sourceId) {
         // get traits
         LambdaQueryWrapper<Trait> queryWrapper = new LambdaQueryWrapper<>();
-        if (StringUtil.isNotEqual(sourceId, "All") && StringUtil.isNotEmpty(sourceId)) {
+        if (StringUtil.isNotEqual(sourceId, ALL_DATA_SYMBOL) && StringUtil.isNotEmpty(sourceId)) {
             queryWrapper.eq(Trait::getSourceId, sourceId);
         }
         return traitMapper.selectList(queryWrapper);
@@ -165,15 +166,15 @@ public class SearchServiceImpl implements SearchService {
         String sourceId = traitSearchVO.getSourceId();
         Page page = traitSearchVO.getPage();
 
-        if (StringUtil.isNotEmpty(category) && StringUtil.isNotEqual(category.toLowerCase(), "all")) {
+        if (StringUtil.isNotEmpty(category) && StringUtil.isNotEqual(category.toLowerCase(), ALL_DATA_SYMBOL.toLowerCase())) {
             queryWrapper.eq("f_category", category);
         }
 
-        if (StringUtil.isNotEmpty(subcategory) && StringUtil.isNotEqual(subcategory.toLowerCase(), "all")) {
+        if (StringUtil.isNotEmpty(subcategory) && StringUtil.isNotEqual(subcategory.toLowerCase(), ALL_DATA_SYMBOL.toLowerCase())) {
             queryWrapper.eq("f_subcategory", subcategory);
         }
 
-        if (StringUtil.isNotEmpty(sourceId) && StringUtil.isNotEqual(sourceId.toLowerCase(), "all")) {
+        if (StringUtil.isNotEmpty(sourceId) && StringUtil.isNotEqual(sourceId.toLowerCase(), ALL_DATA_SYMBOL.toLowerCase())) {
             checkSourceId(sourceId);
             queryWrapper.eq("f_source_id", sourceId);
         }
@@ -193,11 +194,11 @@ public class SearchServiceImpl implements SearchService {
         String cellType = sampleSearchVO.getCellType();
         Page page = sampleSearchVO.getPage();
 
-        if (StringUtil.isNotEmpty(tissueType) && StringUtil.isNotEqual(tissueType.toLowerCase(), "all")) {
+        if (StringUtil.isNotEmpty(tissueType) && StringUtil.isNotEqual(tissueType.toLowerCase(), ALL_DATA_SYMBOL.toLowerCase())) {
             queryWrapper.like("f_tissue_type", tissueType);
         }
 
-        if (StringUtil.isNotEmpty(cellType) && StringUtil.isNotEqual(cellType.toLowerCase(), "all")) {
+        if (StringUtil.isNotEmpty(cellType) && StringUtil.isNotEqual(cellType.toLowerCase(), ALL_DATA_SYMBOL.toLowerCase())) {
             QueryWrapper<SampleCellType> sampleCellTypeQueryWrapper = new QueryWrapper<>();
             sampleCellTypeQueryWrapper.select("DISTINCT f_sample_id as sampleId");
             sampleCellTypeQueryWrapper.like("f_cell_type", cellType);
@@ -235,7 +236,7 @@ public class SearchServiceImpl implements SearchService {
         queryWrapper.orderByDesc(BaseTraitCount::getCount);
         List<TfTraitCount> tfTraitCountList = tfTraitCountMapper.selectList(queryWrapper);
         List<String> tfList = tfTraitCountList.stream().map(TfTraitCount::getTf).distinct().toList();
-        
+
         LambdaQueryWrapper<Tf> tfLambdaQueryWrapper = new LambdaQueryWrapper<>();
         tfLambdaQueryWrapper.select(Tf::getTfName);
         tfLambdaQueryWrapper.in(Tf::getTfName, tfList);

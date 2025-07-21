@@ -13,22 +13,22 @@ public enum SystemException {
     /**
      * 异常信息
      */
-    INVALID_RESOURCE(90001, "无效资源"),
-    INVALID_OPERATION(90002, "无效操作"),
-    ILLEGAL_PARAMETER(90003, "非法参数"),
-    PARSING_ERROR(90004, "解析错误"),
-    UPLOAD_ERROR(90005, "上传错误"),
-    TIMEOUT_ERROR(90006, "超时错误"),
-    NULL_POINTER_ERROR(90007, "空指针错误"),
-    OBVIOUS_BUG_ERROR(90008, "明显 BUG 错误"),
-    SERVICE_DISCONNECT(90009, "服务断开"),
-    AUTHENTICATION_ERROR(90010, "认证错误"),
-    THREAD_TIMEOUT_ERROR(90011, "线程超时"),
-    BEAN_MISSING_ERROR(90011, "Bean 缺失"),
+    INVALID_RESOURCE(90001, "Invalid resource"),
+    INVALID_OPERATION(90002, "Invalid operation"),
+    ILLEGAL_PARAMETER(90003, "Illegal parameter"),
+    PARSING_ERROR(90004, "Parse error"),
+    UPLOAD_ERROR(90005, "Upload error"),
+    TIMEOUT_ERROR(90006, "Timeout error"),
+    NULL_POINTER_ERROR(90007, "Null pointer"),
+    OBVIOUS_BUG_ERROR(90008, "Obvious BUG error"),
+    SERVICE_DISCONNECT(90009, "Service disconnection"),
+    AUTHENTICATION_ERROR(90010, "Authentication error"),
+    THREAD_TIMEOUT_ERROR(90011, "Thread timeout"),
+    BEAN_MISSING_ERROR(90011, "Bean missing"),
     /**
      * 代表疑似被攻击: 内容填写疑似被攻击会返回给前端页面
      */
-    SUSPECTED_ATTACKED(90099, "不可能出现");
+    SUSPECTED_ATTACKED(90099, "It's impossible to occur");
 
     /**
      * 代码

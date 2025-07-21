@@ -17,4 +17,6 @@ public class ApplicationConstant {
 
     public static final String MYSQL_FIELD_PREFIX = "f_";
 
+    public static final String DEFAULT_METHOD = "SCAVENGE";
+
 }

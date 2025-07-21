@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import static com.spring.boot.util.constant.ApplicationConstant.DEFAULT_METHOD;
 import static com.spring.boot.util.util.ApplicationUtil.*;
 import static com.spring.boot.util.util.number.MathUtil.generateRandomCoordinates;
 
@@ -264,10 +265,8 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Cacheable
     @Override
     public List<TraitSample> listTraitBySampleId(String sampleId) {
-        // Define the method to be used in the query
-        String method = "scavenge";
         // Fetch and return the list of TraitSample objects based on the sample ID and method
-        return traitSampleMapper.selectBySampleIdAndMethod(sampleId, method);
+        return traitSampleMapper.selectBySampleIdAndMethod(sampleId, DEFAULT_METHOD.toLowerCase());
     }
 
     /**
@@ -281,10 +280,8 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Cacheable
     @Override
     public List<TraitSample> listTraitBySampleIdAndTraitIdList(String sampleId, List<String> traitIdList) {
-        // Define the method to be used in the query
-        String method = "scavenge";
         // Fetch and return the list of TraitSample objects based on the sample ID, method, and trait ID list
-        return traitSampleMapper.selectByTraitIdListAndMethod(sampleId, method, traitIdList);
+        return traitSampleMapper.selectByTraitIdListAndMethod(sampleId, DEFAULT_METHOD.toLowerCase(), traitIdList);
     }
 
     /**
