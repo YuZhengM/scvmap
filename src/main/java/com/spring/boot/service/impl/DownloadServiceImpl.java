@@ -64,12 +64,12 @@ public class DownloadServiceImpl implements DownloadService {
         // Specify the fields to select: traitId, traitCode, traitAbbr, trait, and type
         queryWrapper.select("f_trait_id as traitId", "f_trait_code as traitCode",
                 "f_trait_abbr as traitAbbr", "f_trait as trait", "f_type as type");
-        queryWrapper.orderByAsc("f_trait_index");
 
         if (StringUtil.isNotEmpty(page.getSearchField()) && !Objects.isNull(page.getContent()) && !page.getContent().isEmpty()) {
             queryWrapper.eq(page.getSearchField(), page.getContent());
         }
 
+        queryWrapper.orderByAsc("f_trait_index");
         return PageResultUtil.format(page, () -> traitMapper.selectList(queryWrapper));
     }
 

@@ -46,7 +46,7 @@ public class DownloadController {
      * @return a Result object containing a list of Trait objects
      */
     @PostMapping("/trait")
-    public Result<PageResult<Trait>> listTrait(Page page) {
+    public Result<PageResult<Trait>> listTrait(@RequestBody Page page) {
         PageResult<Trait> traitList = downloadService.listTrait(page);
         return ResultUtil.success("Traits retrieved successfully", traitList);
     }
