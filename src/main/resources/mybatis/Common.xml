@@ -11,16 +11,57 @@
             </if>
         </if>
     </sql>
+    <sql id="type_symbol_sql">
+        <if test="page.type == 1">
+            <choose>
+                <when test="page.symbol == 1">
+                    ${page.searchField} = #{page.content}
+                </when>
+                <when test="page.symbol == 2">
+                    ${page.searchField} != #{page.content}
+                </when>
+                <when test="page.symbol == 7">
+                    ${page.searchField} LIKE CONCAT('%', #{page.content}, '%')
+                </when>
+                <when test="page.symbol == 8">
+                    ${page.searchField} NOT LIKE CONCAT('%', #{page.content}, '%')
+                </when>
+                <when test="page.symbol == 9">
+                    ${page.searchField} LIKE CONCAT(#{page.content}, '%')
+                </when>
+                <when test="page.symbol == 10">
+                    ${page.searchField} LIKE CONCAT('%', #{page.content})
+                </when>
+            </choose>
+        </if>
+        <if test="page.type == 2">
+            <choose>
+                <when test="page.symbol == 1">
+                    ${page.searchField} = #{page.content}
+                </when>
+                <when test="page.symbol == 2">
+                    ${page.searchField} != #{page.content}
+                </when>
+                <when test="page.symbol == 3">
+                    ${page.searchField} * 1.0 > #{page.content}
+                </when>
+                <when test="page.symbol == 4">
+                    ${page.searchField} * 1.0 >= #{page.content}
+                </when>
+                <when test="page.symbol == 5">
+                    ${page.searchField} * 1.0 <![CDATA[ < ]]> #{page.content}
+                </when>
+                <when test="page.symbol == 6">
+                    ${page.searchField} * 1.0 <![CDATA[ <= ]]> #{page.content}
+                </when>
+            </choose>
+        </if>
+    </sql>
     <sql id="order_sql_where">
         <if test="page != null and page != ''">
             <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
                 WHERE
-                <if test="page.type == 1">
-                    ${page.searchField} = #{page.content}
-                </if>
-                <if test="page.type == 2">
-                    ${page.searchField} = ${page.content}
-                </if>
+               <include refid="com.spring.boot.type_symbol_sql" />
             </if>
             <include refid="com.spring.boot.order_sql"/>
         </if>
@@ -29,12 +70,7 @@
         <if test="page != null and page != ''">
             <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
                 AND
-                <if test="page.type == 1">
-                    ${page.searchField} = #{page.content}
-                </if>
-                <if test="page.type == 2">
-                    ${page.searchField} * -1.0 = ${page.content}
-                </if>
+                <include refid="com.spring.boot.type_symbol_sql" />
             </if>
             <include refid="com.spring.boot.order_sql"/>
         </if>

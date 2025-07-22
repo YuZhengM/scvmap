@@ -10,5 +10,4 @@ public interface FileService {
     void deleteFile(String fileId);
 
     boolean existFile(String filepath);
-
 }

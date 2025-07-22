@@ -38,11 +38,6 @@ public class FileUtil {
         return false;
     }
 
-    public static boolean isExist(String path) {
-        File inputPath = new File(path);
-        return inputPath.exists();
-    }
-
     /**
      * 形成文件的过程
      *
@@ -56,6 +51,11 @@ public class FileUtil {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static boolean isExist(String path) {
+        File inputPath = new File(path);
+        return inputPath.exists();
     }
 
     /**

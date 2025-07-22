@@ -57,6 +57,10 @@ public class Page implements Serializable {
      * 1: 字符类型
      * 2: 数字类型
      */
+    @Builder.Default
     private int type = 1;
+
+    @Builder.Default
+    private int symbol = 1;
 
 }

@@ -151,4 +151,5 @@ public class ApplicationUtil {
     public static int getElementSignalId(String geneName) {
         return StringUtil.wordToNumberByAscii(geneName) % 100;
     }
+
 }

@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.spring.boot.util.util.result.PageUtil.setQueryWrapperByApply;
+
 /**
  * Service implementation for browsing data related to samples and traits.
  * This class uses caching to improve performance for data retrieval operations.
@@ -157,41 +159,37 @@ public class DataBrowseServiceImpl implements DataBrowseService {
 
         // Add category condition if not empty
         if (StringUtil.isNotEmpty(category)) {
-            queryWrapper.eq("f_category", category);
+            queryWrapper.lambda().eq(Trait::getCategory, category);
         }
 
         // Add type condition if not empty
         if (StringUtil.isNotEmpty(type)) {
-            queryWrapper.eq("f_type", type);
+            queryWrapper.lambda().eq(Trait::getType, type);
         }
 
         // Add subcategory condition if not empty
         if (StringUtil.isNotEmpty(subcategory)) {
-            queryWrapper.eq("f_subcategory", subcategory);
+            queryWrapper.lambda().eq(Trait::getSubcategory, subcategory);
         }
 
         // Add cohort condition if not empty
         if (StringUtil.isNotEmpty(cohort)) {
-            queryWrapper.eq("f_cohort", cohort);
+            queryWrapper.lambda().eq(Trait::getCohort, cohort);
         }
 
         // Clone the query wrapper for subsequent queries
         QueryWrapper<Trait> queryWrapperTmpPage = queryWrapper.clone();
 
+        setQueryWrapperByApply(page, queryWrapperTmpPage);
         // Order by trait index and retrieve the list of traits
-        queryWrapperTmpPage.orderByAsc("f_trait_index");
-
-        if (StringUtil.isNotEmpty(page.getSearchField()) && !Objects.isNull(page.getContent()) && !page.getContent().isEmpty()) {
-            queryWrapperTmpPage.eq(page.getSearchField(), page.getContent());
-        }
-
+        queryWrapperTmpPage.lambda().orderByAsc(Trait::getTraitIndex);
         PageResult<Trait> traitList = PageResultUtil.format(page, () -> traitMapper.selectList(queryWrapperTmpPage));
 
         // Clone the original query wrapper for the next query
         QueryWrapper<Trait> queryWrapperTmp = queryWrapper.clone();
 
         // Select and group by type to get the count of each type
-        queryWrapperTmp.select("f_type as type", "count(0) as count").groupBy("f_type");
+        queryWrapperTmp.lambda().select(Trait::getType, Trait::getCount).groupBy(Trait::getType);
         List<FieldNumber> typeList = traitMapper.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
                         .field(String.valueOf(stringObjectMap.get("type")))
@@ -202,7 +200,7 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         queryWrapperTmp = queryWrapper.clone();
 
         // Select and group by category to get the count of each category
-        queryWrapperTmp.select("f_category as category", "count(0) as count").groupBy("f_category");
+        queryWrapperTmp.lambda().select(Trait::getCategory, Trait::getCount).groupBy(Trait::getCategory);
         List<FieldNumber> categoryList = traitMapper.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
                         .field(String.valueOf(stringObjectMap.get("category")))
@@ -212,7 +210,7 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         // Clone the original query wrapper for the next query
         queryWrapperTmp = queryWrapper.clone();
         // Set the select clause to retrieve subcategory and count, and group the results by subcategory
-        queryWrapperTmp.select("f_subcategory as subcategory", "count(0) as count").groupBy("f_subcategory");
+        queryWrapperTmp.lambda().select(Trait::getSubcategory, Trait::getCount).groupBy(Trait::getSubcategory);
         // Execute the query and map the results to a list of FieldNumber objects for subcategories
         List<FieldNumber> subCategoryList = traitMapper.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
@@ -224,7 +222,7 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         // Clone the original query wrapper for the cohort query
         queryWrapperTmp = queryWrapper.clone();
         // Set the select clause to retrieve cohort and count, and group the results by cohort
-        queryWrapperTmp.select("f_cohort as cohort", "count(0) as count").groupBy("f_cohort");
+        queryWrapperTmp.lambda().select(Trait::getCohort, Trait::getCount).groupBy(Trait::getCohort);
         // Execute the query and map the results to a list of FieldNumber objects for cohorts
         List<FieldNumber> cohortList = traitMapper.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()

@@ -1,5 +1,6 @@
 package com.spring.boot.util.constant;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -17,6 +18,21 @@ public class ApplicationConstant {
 
     public static final String MYSQL_FIELD_PREFIX = "f_";
 
+    public static final String MYSQL_WILDCARD = "%";
+
     public static final String DEFAULT_METHOD = "SCAVENGE";
+
+    public static final Map<Integer, String> MYSQL_SYMBOL_KEYWORD_MAP = Map.of(
+            1, "=",
+            2, "!=",
+            3, ">",
+            4, ">=",
+            5, "<",
+            6, "<=",
+            7, "LIKE",
+            8, "NOT LIKE",
+            9, "LIKE",
+            10, "LIKE"
+    );
 
 }

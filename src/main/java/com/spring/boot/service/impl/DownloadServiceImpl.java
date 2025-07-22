@@ -8,7 +8,6 @@ import com.spring.boot.pojo.Sample;
 import com.spring.boot.pojo.Trait;
 import com.spring.boot.service.DownloadService;
 import com.spring.boot.util.model.PageResult;
-import com.spring.boot.util.util.StringUtil;
 import com.spring.boot.util.util.result.Page;
 import com.spring.boot.util.util.result.PageResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+
+import static com.spring.boot.util.util.result.PageUtil.setQueryWrapperByApply;
 
 /**
  * Service implementation for downloading data.
@@ -62,14 +62,11 @@ public class DownloadServiceImpl implements DownloadService {
         // Create a new LambdaQueryWrapper for Trait
         QueryWrapper<Trait> queryWrapper = new QueryWrapper<>();
         // Specify the fields to select: traitId, traitCode, traitAbbr, trait, and type
-        queryWrapper.select("f_trait_id as traitId", "f_trait_code as traitCode",
-                "f_trait_abbr as traitAbbr", "f_trait as trait", "f_type as type");
+        queryWrapper.lambda().select(Trait::getTraitId, Trait::getTraitCode, Trait::getTraitAbbr, Trait::getTrait, Trait::getType);
 
-        if (StringUtil.isNotEmpty(page.getSearchField()) && !Objects.isNull(page.getContent()) && !page.getContent().isEmpty()) {
-            queryWrapper.eq(page.getSearchField(), page.getContent());
-        }
+        setQueryWrapperByApply(page, queryWrapper);
 
-        queryWrapper.orderByAsc("f_trait_index");
+        queryWrapper.lambda().orderByAsc(Trait::getTraitIndex);
         return PageResultUtil.format(page, () -> traitMapper.selectList(queryWrapper));
     }
 
