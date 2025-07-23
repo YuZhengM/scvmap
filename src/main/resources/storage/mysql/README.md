@@ -1,6 +1,6 @@
 # Docker builds MySQL container
 
-> 拉镜像
+> Pull MySQL image
 
 ```shell
 docker pull mysql:8.0.32
