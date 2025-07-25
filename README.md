@@ -22,6 +22,6 @@ A comprehensive platform for human **integrating** `single-cell chromatin access
 
 > Deploy: Docker (19.03.5)
 
-## 部署
+## Deploy
 
 [README.md](src/main/resources/storage/deploy/README.md)
