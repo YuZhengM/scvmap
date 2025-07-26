@@ -9,6 +9,7 @@ import com.spring.boot.mapper.*;
 import com.spring.boot.pojo.*;
 import com.spring.boot.pojo.vo.*;
 import com.spring.boot.service.AnalysisService;
+import com.spring.boot.util.constant.SystemException;
 import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.factory.LogFactory;
 import com.spring.boot.util.factory.log.Log;
@@ -392,9 +393,8 @@ public class AnalysisServiceImpl implements AnalysisService {
         if (ListUtil.isEmpty(sampleIdList)) {
             try {
                 return clazz.getConstructor(List.class, List.class).newInstance(List.of(), List.of());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RunException(SystemException.PARSING_ERROR);
             }
         }
 
@@ -414,9 +414,8 @@ public class AnalysisServiceImpl implements AnalysisService {
         if (ListUtil.isEmpty(traitIdList)) {
             try {
                 return clazz.getConstructor(List.class, List.class).newInstance(sampleList, List.of());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RunException(SystemException.PARSING_ERROR);
             }
         }
 
@@ -427,9 +426,8 @@ public class AnalysisServiceImpl implements AnalysisService {
 
         try {
             return clazz.getConstructor(List.class, List.class).newInstance(sampleList, traitList);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RunException(SystemException.PARSING_ERROR);
         }
     }
 
