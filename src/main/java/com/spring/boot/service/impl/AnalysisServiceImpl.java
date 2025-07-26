@@ -128,19 +128,19 @@ public class AnalysisServiceImpl implements AnalysisService {
     private static List<String> getElement(Integer analysisIsFile, String content, String userPath, String fileId) {
         // Determine if the input is a file
         boolean isFile = analysisIsFile == 1;
-
         // Initialize the list to hold the elements
-        List<String> tfList;
+        List<String> elementList;
+
         // Check if the input is a file
         if (isFile) {
             // Read the elements from the file
-            tfList = FileUtil.read(userPath + fileId);
+            elementList = FileUtil.read(userPath + fileId);
         } else {
             // Split the content string into a list of elements
-            tfList = Arrays.stream(content.split("(\r\n|\n)")).toList();
+            elementList = Arrays.stream(content.split("(\r\n|\n)")).toList();
         }
-        // Return the list of elements
-        return tfList;
+
+        return elementList;
     }
 
     /**
