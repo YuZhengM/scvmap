@@ -3,6 +3,7 @@ package com.spring.boot.controller;
 import com.spring.boot.pojo.vo.HomeResultVO;
 import com.spring.boot.service.HomeService;
 import com.spring.boot.util.model.Result;
+import com.spring.boot.util.util.result.Page;
 import com.spring.boot.util.util.result.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,9 +44,9 @@ public class HomeController {
      * @param content The content to search for.
      * @return Result containing the home-related data (HomeResultVO) if found.
      */
-    @GetMapping("/search/{label}/{content}")
-    private Result<HomeResultVO> getIdByContent(@PathVariable String label, @PathVariable String content) {
-        HomeResultVO homeResultVO = homeService.getIdByContent(label, content);
+    @PostMapping("/search/{label}/{content}")
+    private Result<HomeResultVO> getIdByContent(@PathVariable String label, @PathVariable String content, @RequestBody Page page) {
+        HomeResultVO homeResultVO = homeService.getIdByContent(label, content, page);
         return ResultUtil.success("getIdByContent", homeResultVO);
     }
 

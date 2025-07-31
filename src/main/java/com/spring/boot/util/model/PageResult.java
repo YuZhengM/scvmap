@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 分页数据返回结果信息
+ * Paged data return result information
  *
  * @author Zhengmin Yu
  */
@@ -17,35 +17,35 @@ import java.util.List;
 public class PageResult<T> implements Serializable {
 
     /**
-     * 当前分页的数据
+     * Data of the current page
      */
     private List<T> data;
     /**
-     * 总数量
+     * Total quantity
      */
     private long total;
     /**
-     * 当前页的页数
+     * Page number of the current page
      */
     private int pageNum;
     /**
-     * 当前页的数量
+     * Number of items per page
      */
     private int pageSize;
     /**
-     * 当前页的行数
+     * Number of rows on the current page
      */
     private int size;
     /**
-     * 当前页的开始的行数
+     * Starting row number of the current page
      */
     private long startRow;
     /**
-     * 当前页的结束的行数
+     * Ending row number of the current page
      */
     private long endRow;
     /**
-     * 总页数
+     * Total number of pages
      */
     private int pages;
 

@@ -136,11 +136,11 @@ public class GeneTfDetailServiceImpl implements GeneTfDetailService {
      * @param k        the type of the gene annotation objects
      * @return a list of gene annotation objects
      */
+    @SuppressWarnings("unchecked")
     private <K extends BasePosition, T extends BaseMapper<K>> List<K> getGeneAnnotationBasePosition(T t, Gene geneInfo, K k) {
         // Create a query wrapper for gene annotations
         LambdaQueryWrapper<K> queryWrapper = new LambdaQueryWrapper<>();
         // Set the entity class for the query wrapper
-        //noinspection unchecked
         queryWrapper.setEntityClass((Class<K>) k.getClass());
         // Filter by chromosome and position
         queryWrapper.between(K::getPosition, geneInfo.getStart(), geneInfo.getEnd());
@@ -148,16 +148,38 @@ public class GeneTfDetailServiceImpl implements GeneTfDetailService {
         return t.selectList(queryWrapper);
     }
 
+    /**
+     * Retrieves a list of eligible gene annotation regions from the specified regulatory annotations based on the given gene information.
+     * This method creates a query condition to filter records that overlap with the given gene on the chromosome.
+     * <strong>BEDTools software process.</strong>
+     *
+     * @param <K>      The type of gene annotation region objects, which must extend BaseRegion.
+     * @param <T>      The type of regulatory annotation that operates on gene annotation region objects, which must extend BaseMapper<K>.
+     * @param t        The regulatory annotation mapper used to execute database queries.
+     * @param geneInfo The gene information object containing chromosome, start, and end position information.
+     * @param k        An instance of the gene annotation region object, used to determine the type of query results.
+     * @return A list of eligible gene annotation region objects, or an empty list if none are found.
+     */
+    @SuppressWarnings("unchecked")
     private <K extends BaseRegion, T extends BaseMapper<K>> List<K> getGeneAnnotationBaseRegion(T t, Gene geneInfo, K k) {
         // Create a query wrapper for gene annotations
         LambdaQueryWrapper<K> queryWrapper = new LambdaQueryWrapper<>();
         // Set the entity class for the query wrapper
-        //noinspection unchecked
         queryWrapper.setEntityClass((Class<K>) k.getClass());
         // Filter by chromosome and region
-        //noinspection DuplicatedCode
         queryWrapper.eq(K::getChr, geneInfo.getChr());
-        queryWrapper.and(qw -> qw.between(K::getStart, geneInfo.getStart(), geneInfo.getEnd()).or().between(K::getEnd, geneInfo.getStart(), geneInfo.getEnd()).or(qw1 -> qw1.le(K::getStart, geneInfo.getStart()).ge(K::getEnd, geneInfo.getStart())).or(qw2 -> qw2.le(K::getStart, geneInfo.getEnd()).ge(K::getEnd, geneInfo.getEnd())));
+        queryWrapper.and(
+                qw -> {
+                    // Case 1: The annotation region is completely within the gene region
+                    qw.ge(K::getStart, geneInfo.getStart()).le(K::getEnd, geneInfo.getEnd());
+                    // Case 2: The annotation region completely contains the gene region
+                    qw.or(q -> q.le(K::getStart, geneInfo.getStart()).ge(K::getEnd, geneInfo.getEnd()));
+                    // Case 3: The start position of the annotation region is within the gene region, and the end position is outside the gene region
+                    qw.or(q -> q.gt(K::getStart, geneInfo.getStart()).lt(K::getStart, geneInfo.getEnd()).gt(K::getEnd, geneInfo.getEnd()));
+                    // Case 4: The start position of the annotation region is outside the gene region, and the end position is within the gene region
+                    qw.or(q -> q.lt(K::getStart, geneInfo.getStart()).gt(K::getEnd, geneInfo.getStart()).lt(K::getEnd, geneInfo.getEnd()));
+                }
+        );
         // Execute the query and return the result
         return t.selectList(queryWrapper);
     }

@@ -74,9 +74,9 @@ public class DataBrowseServiceImpl implements DataBrowseService {
      * @param k               The entity class representing the sample data.
      * @return A list of FieldNumber objects with tissue type and corresponding count.
      */
+    @SuppressWarnings("unchecked")
     private <T extends BaseMapper<K>, K extends BaseSample> List<FieldNumber> getTissueTypeList(LambdaQueryWrapper<K> queryWrapperTmp, T t, K k) {
         // Set the entity class for the query wrapper to the class of the provided entity object
-        //noinspection unchecked
         queryWrapperTmp.setEntityClass((Class<K>) k.getClass());
 
         // Select the tissueType and count fields from the database and group the results by tissueType

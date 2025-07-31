@@ -47,7 +47,7 @@ public class ReflectUtil {
      */
     public static Object getStaticFiledValue(Class<?> clazz, String field) {
         Field[] fields = clazz.getDeclaredFields();
-        List<Field> collect = Arrays.stream(fields).filter(item -> StringUtil.isEqual(item.getName(), field)).collect(Collectors.toList());
+        List<Field> collect = Arrays.stream(fields).filter(item -> StringUtil.isEqual(item.getName(), field)).toList();
         if (NumberUtil.isEqualOne(collect.size())) {
             Field newField = collect.get(0);
             // 对 private 的属性解锁

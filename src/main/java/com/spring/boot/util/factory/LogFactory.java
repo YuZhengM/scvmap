@@ -6,16 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * log 日志相关的公共类
+ * A common class related to log functionality.
  * <pre>
- *     1. log 日志级别: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL
- *        例如: 日志级别定义为 INFO 其中比 INFO 级别大 (WARN, ERROR) 的方可打印出来, 级别小 (DEBUG, TRACE) 的不支持打印.
- *     2. 开发环境-dev: DEBUG 级别
- *        测试环境-test: INFO 级别
- *        生产黄健-prod: INFO 级别
- *     3. 其中 primary_common 类中日志级别全用 DEBUG, 公共类只支持开发查看 (只有本类除外)
- *     4. 该类中当本级别类型不支持时候, 自动打印高一个级别, 进行循环.
- *        其中注意: 打印高一个级别的时候只支持打印 message 中 format 格式的本身, 不会将 content 中的实质内容打印出来.
+ *     1. Log levels: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL
+ *        For example, if the log level is set to INFO, only levels higher than INFO (WARN, ERROR) will be printed,
+ *        while lower levels (DEBUG, TRACE) will not be printed.
+ *     2. Development environment - dev: DEBUG level
+ *        Test environment - test: INFO level
+ *        Production environment - prod: INFO level
+ *     3. In the primary_common class, all log levels are set to DEBUG. Common classes are only visible during development (this class is an exception).
+ *     4. If the current log level does not support printing, it will automatically print at the next higher level in a loop.
+ *        Note: When printing at a higher level, only the format of the message will be printed, and the actual content in the 'content' will not be printed.
  * </pre>
  *
  * @author Zhengmin Yu
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 public class LogFactory {
 
     /**
-     * 自定义的 LOG, 再 logger 上的扩展
+     * Custom LOG, an extension of the logger.
      */
     private static Log log;
     private static Logger logger;
@@ -34,39 +35,38 @@ public class LogFactory {
     /**
      * Return a logger named corresponding to the class passed as parameter
      *
-     * @param clazz 类
+     * @param clazz The class
      */
     public static Log getLog(Class<?> clazz) {
-        // 嵌入 slf4j 的 Logger
+        // Embed the slf4j Logger
         logger = LoggerFactory.getLogger(clazz);
         return getLogContent();
     }
 
     /**
-     * 核心操作
+     * Core operations
      * <pre>
-     *     0. 嵌入 slf4j 的 Logger
-     *     1. 初始化日志工厂
-     *     2. 初始化自定义的 Log 类 (对嵌入 slf4j 的 Logger 进行加载)
-     *     3. 自定义的 Log 所加载到的日志添加到工厂中
-     *     4. 返回自定义的 Log 实现响应的接口操作
+     *     0. Embed the slf4j Logger
+     *     1. Initialize the log factory
+     *     2. Initialize the custom Log class (load the embedded slf4j Logger)
+     *     3. Add the logs loaded by the custom Log to the factory
+     *     4. Return the custom Log that implements the corresponding interface operations
      * </pre>
      *
-     * @return Log
+     * @return Log instance
      */
     private static Log getLogContent() {
-        // 初始化自定义的 Log 类
+        // Initialize the custom Log class
         initLog();
-        // 返回自定义的 Log 实现响应的接口操作
+        // Return the custom Log that implements the corresponding interface operations
         return log;
     }
 
     /**
-     * 初始化日志 Log
+     * Initialize the log.
      */
     private static void initLog() {
         log = new LogContent(logger);
     }
-
 
 }

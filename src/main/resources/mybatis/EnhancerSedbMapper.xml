@@ -23,9 +23,14 @@
                f_tissue_type,
                f_cell_state
         from t_enhancer_sedb_${genome}_${chr}
-        WHERE #{start} BETWEEN f_start AND f_end
-           OR #{end} BETWEEN f_start AND f_end
-           OR f_start BETWEEN #{start} AND #{end}
-           OR f_end BETWEEN #{start} AND #{end}
+        WHERE
+           -- Case 1: The annotation region is completely within the gene region
+            (f_start >= #{start} AND f_end <![CDATA[ <= ]]> #{end})
+           -- Case 2: The annotation region completely contains the gene region
+           OR (f_start <![CDATA[ <= ]]> #{start} AND f_end >= #{end})
+           -- Case 3: The start position of the annotation region is within the gene region, and the end position is outside
+           OR (f_start > #{start} AND f_start <![CDATA[ < ]]> #{end} AND f_end > #{end})
+           -- Case 4: The start position of the annotation region is outside the gene region, and the end position is within the gene region
+           OR (f_start <![CDATA[ < ]]> #{start} AND f_end > #{start} AND f_end <![CDATA[ < ]]> #{end})
     </select>
 </mapper>

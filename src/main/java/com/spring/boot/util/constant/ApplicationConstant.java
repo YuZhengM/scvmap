@@ -22,6 +22,10 @@ public class ApplicationConstant {
 
     public static final String DEFAULT_METHOD = "SCAVENGE";
 
+    public static final String HOME_DEFAULT_TRAIT = "Trait or disease ==> All data";
+
+    public static final String HOME_DEFAULT_SAMPLE = "scATAC-seq sample ==> All data";
+
     public static final Map<Integer, String> MYSQL_SYMBOL_KEYWORD_MAP = Map.of(
             1, "=",
             2, "!=",

@@ -5,7 +5,7 @@ import com.spring.boot.util.constant.ResultCode;
 import lombok.*;
 
 /**
- * 数据 Service 层向前端响应的数据类型形式
+ * The data type format that the data Service layer responds to the front-end.
  *
  * @author Zhengmin Yu
  */
@@ -17,7 +17,7 @@ import lombok.*;
 public class Response {
 
     /**
-     * 响应返回状态
+     * Response return status
      *
      * @see ResultCode
      */
@@ -25,7 +25,7 @@ public class Response {
     private int code = ResultCode.SUCCESS;
 
     /**
-     * 响应返回状态
+     * Response return status
      *
      * @see CommonCode
      */
@@ -33,9 +33,8 @@ public class Response {
     private boolean status = CommonCode.TRUE;
 
     /**
-     * 响应返回情况介绍
+     * Introduction to the response return situation
      */
     private String message;
-
 
 }

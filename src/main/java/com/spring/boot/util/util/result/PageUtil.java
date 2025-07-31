@@ -79,8 +79,6 @@ public class PageUtil {
 
             String keyword = MYSQL_SYMBOL_KEYWORD_MAP.get(symbol);
 
-            System.out.println(page);
-
             if (symbol < 7) {
                 if (type == 1) {
                     queryWrapper.apply(field + " " + keyword + " {0}", content);

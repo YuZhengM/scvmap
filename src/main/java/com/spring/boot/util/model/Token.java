@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 存放 Token 信息
+ * Stores Token information
  *
  * @author Zhengmin Yu
  */
@@ -20,22 +20,22 @@ import java.util.Map;
 public class Token implements Serializable {
 
     /**
-     * 用户 ID
+     * User ID
      */
     private String userId;
 
     /**
-     * 用户角色 ID 集合
+     * Collection of user role IDs
      */
     private List<String> roleIdList;
 
     /**
-     * 其他信息
+     * Other information
      */
     private Map<String, Object> content;
 
     /**
-     * 用户登录时间
+     * User login time
      */
     private Date loginTime;
 

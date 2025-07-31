@@ -8,7 +8,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
- * 获取 Bean 的操作
+ * Bean retrieval utility class
+ * Provides static methods to access Spring managed beans
  *
  * @author Zhengmin Yu
  */
@@ -26,42 +27,42 @@ public class BeanUtil implements ApplicationContextAware {
     }
 
     /**
-     * 获取 applicationContext
+     * Get application context
      *
-     * @return ApplicationContext
+     * @return ApplicationContext instance
      */
     private static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
     /**
-     * 通过 name 获取 Bean.
+     * Get Bean by name
      *
-     * @param name name
-     * @return Object
+     * @param name Bean name
+     * @return Bean instance
      */
     public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }
 
     /**
-     * 通过 class 获取 Bean.
+     * Get Bean by class type
      *
-     * @param clazz class
-     * @param <T>   T
-     * @return T
+     * @param clazz Bean class type
+     * @param <T> Generic type
+     * @return Typed Bean instance
      */
     public static <T> T getBean(Class<T> clazz) {
         return getApplicationContext().getBean(clazz);
     }
 
     /**
-     * 通过 name, 以及 Class 返回指定的 Bean
+     * Get specified Bean by name and class type
      *
-     * @param name  name
-     * @param clazz Class
-     * @param <T>   T
-     * @return T
+     * @param name Bean name
+     * @param clazz Bean class type
+     * @param <T> Generic type
+     * @return Typed Bean instance
      */
     public static <T> T getBean(String name, Class<T> clazz) {
         return getApplicationContext().getBean(name, clazz);

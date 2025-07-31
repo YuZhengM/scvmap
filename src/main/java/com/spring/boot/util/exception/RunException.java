@@ -3,16 +3,16 @@ package com.spring.boot.util.exception;
 import com.spring.boot.util.constant.SystemException;
 
 /**
- * 异常处理
+ * Exception handling
  *
  * @author Zhengmin Yu
  */
 public class RunException extends RuntimeException {
 
     /**
-     * 异常信息
+     * Exception information
      *
-     * @param systemException 自定义异常
+     * @param systemException Custom exception
      */
     public RunException(SystemException systemException) {
         super(systemException.getException());

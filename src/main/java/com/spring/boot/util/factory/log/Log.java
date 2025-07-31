@@ -1,61 +1,59 @@
 package com.spring.boot.util.factory.log;
 
 /**
- * description
+ * This interface is used to define log-related methods.
  *
  * @author Zhengmin Yu
  */
 public interface Log {
 
-
     /**
-     * log trace 级别打印
+     * Print log at trace level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param content Parameters in the format pattern.
      */
     void trace(String message, Object... content);
 
     /**
-     * log debug 级别打印
+     * Print log at debug level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param content Parameters in the format pattern.
      */
     void debug(String message, Object... content);
 
     /**
-     * log info 级别打印
+     * Print log at info level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param content Parameters in the format pattern.
      */
     void info(String message, Object... content);
 
     /**
-     * log warn 级别打印
+     * Print log at warn level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param content Parameters in the format pattern.
      */
     void warn(String message, Object... content);
 
     /**
-     * log error 级别打印
+     * Print log at error level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param content Parameters in the format pattern.
      */
     void error(String message, Object... content);
 
     /**
-     * log error 级别打印
+     * Print log at error level.
      *
-     * @param message 内容说明, 支持带有 format 格式
-     * @param e       异常信息
-     * @param content format 格式中的参数
+     * @param message Content description, supporting format patterns.
+     * @param e       Exception information.
+     * @param content Parameters in the format pattern.
      */
     void error(String message, Exception e, Object... content);
-
 
 }

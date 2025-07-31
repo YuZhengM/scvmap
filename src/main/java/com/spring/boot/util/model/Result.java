@@ -8,7 +8,7 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * 数据 Controller 层向前端响应的数据类型形式
+ * The data type format for the data Controller layer to respond to the frontend.
  *
  * @author Zhengmin Yu
  */
@@ -20,7 +20,7 @@ import java.io.Serializable;
 public class Result<T> implements Serializable {
 
     /**
-     * 响应返回状态
+     * Response return status.
      *
      * @see ResultCode
      */
@@ -28,7 +28,7 @@ public class Result<T> implements Serializable {
     private int code = ResultCode.SUCCESS;
 
     /**
-     * 响应返回状态
+     * Response return status.
      *
      * @see CommonCode
      */
@@ -36,46 +36,46 @@ public class Result<T> implements Serializable {
     private boolean status = CommonCode.TRUE;
 
     /**
-     * 响应返回情况介绍
+     * Introduction to the response return situation.
      */
     private String message;
 
     /**
-     * 响应返回数据
+     * Response return data.
      */
     @Builder.Default
     private T data = NullUtil.tNull();
 
     /**
-     * 构造内容 Response 设置
+     * Construct the content Response settings.
      *
      * @param <T>
      */
     public static class Response<T> {
 
         /**
-         * 响应返回状态
+         * Response return status.
          *
          * @see ResultCode
          */
         private final int code;
 
         /**
-         * 响应返回状态
+         * Response return status.
          *
          * @see CommonCode
          */
         private final boolean status;
 
         /**
-         * 响应返回情况介绍
+         * Introduction to the response return situation.
          */
         private final String message;
 
         /**
-         * 构造函数赋值数据
+         * Constructor to assign data.
          *
-         * @param response 响应信息
+         * @param response Response information
          */
         public Response(com.spring.boot.util.model.Response response) {
             this.code = response.getCode();
@@ -89,9 +89,9 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 外部类的构造函数
+     * Constructor of the outer class.
      *
-     * @param response 内容响应设置
+     * @param response Content response settings
      */
     private Result(Response<T> response) {
         this.code = response.code;
@@ -100,21 +100,21 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 设置静态访问内设 Response
+     * Set static access to the internal Response.
      *
-     * @param response Service 返回的 Response
-     * @param <T>      泛型
-     * @return 自身
+     * @param response Response returned by the Service
+     * @param <T>      Generic type
+     * @return Itself
      */
     public static <T> Result<T> response(com.spring.boot.util.model.Response response) {
         return new Response<T>(response).response();
     }
 
     /**
-     * 成员方法返回其自身, 可以链式调用
+     * Member method to return itself, enabling chained calls.
      *
-     * @param val 值
-     * @return 本类
+     * @param val Value
+     * @return This class
      */
     public Result<T> data(T val) {
         this.data = val;
