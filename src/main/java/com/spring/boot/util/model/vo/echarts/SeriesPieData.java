@@ -1,5 +1,6 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
@@ -14,16 +15,19 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @Data
+@Schema(description = "Echarts Pie Series Data")
 public class SeriesPieData implements Serializable {
 
     /**
-     * 标签内容
+     * Label content
      */
+    @Schema(description = "Label content")
     private String name;
 
     /**
-     * 标签数量
+     * Label quantity
      */
+    @Schema(description = "Label quantity")
     private Integer value;
 
 }

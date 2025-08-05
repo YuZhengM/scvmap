@@ -1,12 +1,13 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * echarts 的 x, y 数据
+ * echarts'x and y data
  *
  * @author Zhengmin Yu
  */
@@ -15,16 +16,19 @@ import java.util.List;
 @Builder
 @ToString
 @Data
+@Schema(description = "Data model for ECharts, containing x-axis and y-axis data.")
 public class EchartsData<X, Y> implements Serializable {
 
     /**
-     * x 轴数据 (String 类型)
+     * Data on the x-axis
      */
+    @Schema(description = "Data on the x-axis")
     private List<X> xData;
 
     /**
-     * x 轴数据 (Integer 类型)
+     * Data on the y-axis
      */
+    @Schema(description = "Data on the y-axis")
     private List<Y> yData;
 
 }

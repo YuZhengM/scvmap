@@ -1,5 +1,6 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -7,71 +8,83 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
+ * Line style
+ * 
  * @author Zhengmin Yu
  */
 @Builder
 @ToString
 @Data
+@Schema(description = "Line style configuration")
 public class EchartsLineStyle implements Serializable {
 
     /**
-     * 线的颜色
+     * Line color
      */
     @Builder.Default
+    @Schema(description = "Line color, default is 'source'", defaultValue = "source")
     private String color = "source";
 
     /**
-     * 线宽
+     * Line width
      */
     @Builder.Default
+    @Schema(description = "Line width, default is 1.0", defaultValue = "1.0")
     private Double width = 1D;
 
     /**
-     * 线的类型, 可选：solid, dashed, dotted
+     * Line type, optional: solid, dashed, dotted
      */
     @Builder.Default
+    @Schema(description = "Line type, optional values: solid, dashed, dotted. Default is 'solid'", defaultValue = "solid")
     private String type = "solid";
 
     /**
-     * 用于设置虚线的偏移量
+     * Used to set the offset of the dashed line
      */
     @Builder.Default
+    @Schema(description = "Used to set the offset of the dashed line, default is 0.1", defaultValue = "0.1")
     private Double dashOffset = 0.1D;
 
     /**
-     * 用于指定线段末端的绘制方式
-     * 'butt': 线段末端以方形结束
-     * 'round': 线段末端以圆形结束
-     * 'square': 线段末端以方形结束, 但是增加了一个宽度和线段相同, 高度是线段厚度一半的矩形区域
+     * Used to specify the drawing method for the end of the line segment
+     * 'butt': The line segment ends with a square.
+     * 'round': The line segment ends with a circle.
+     * 'square': The line segment ends with a square, but adds a rectangular area with the same width as the line segment and a height half of the line segment's thickness.
      */
     @Builder.Default
+    @Schema(description = "Used to specify the drawing method for the end of the line segment. 'butt': The line segment ends with a square. 'round': The line segment ends with a circle. 'square': The line segment ends with a square, but adds a rectangular area with the same width as the line segment and a height half of the line segment's thickness. Default is 'butt'", defaultValue = "butt")
     private String cap = "butt";
 
     /**
-     * 用于设置 2 个长度不为 0 的相连部分
-     * 'bevel': 在相连部分的末端填充一个额外的以三角形为底的区域, 每个部分都有各自独立的矩形拐角
-     * 'round': 通过填充一个额外的, 心在相连部分末端的扇形, 绘制拐角的形状.  圆角的半径是线段的宽度
-     * 'miter': 通过延伸相连部分的外边缘，使其相交于一点, 形成一个额外的菱形区域。这个设置可以通过 miterLimit 属性看到效果
+     * Used to set the connection of two non-zero length segments
+     * 'bevel': Fill an additional triangular-based area at the end of the connected part, and each part has its own independent rectangular corner.
+     * 'round': Draw the shape of the corner by filling an additional sector centered at the end of the connected part. The radius of the rounded corner is the width of the line segment.
+     * 'miter': Extend the outer edges of the connected parts until they intersect at a point, forming an additional diamond-shaped area. This setting can be observed through the miterLimit property.
      */
     @Builder.Default
+    @Schema(description = "Used to set the connection of two non-zero length segments. 'bevel': Fill an additional triangular-based area at the end of the connected part, and each part has its own independent rectangular corner. 'round': Draw the shape of the corner by filling an additional sector centered at the end of the connected part. The radius of the rounded corner is the width of the line segment. 'miter': Extend the outer edges of the connected parts until they intersect at a point, forming an additional diamond-shaped area. This setting can be observed through the miterLimit property. Default is 'bevel'", defaultValue = "bevel")
     private String join = "bevel";
 
     /**
-     * 用于设置斜接面限制比例
+     * Used to set the miter limit ratio
      */
     @Builder.Default
+    @Schema(description = "Used to set the miter limit ratio, default is 10.0", defaultValue = "10.0")
     private Double miterLimit = 10D;
 
     /**
-     * 图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形。
+     * Graph transparency. Supports numbers from 0 to 1. When set to 0, the graph is not drawn.
      */
     @Builder.Default
+    @Schema(description = "Graph transparency. Supports values from 0 to 1. When set to 0, the graph is not drawn. Default is 0.9", defaultValue = "0.9")
     private Double opacity = 0.9D;
 
     /**
-     * 边的曲度，支持从 0 到 1 的值，值越大曲度越大。
+     * Curvature of the edge. Supports values from 0 to 1. The larger the value, the greater the curvature.
      */
     @Builder.Default
+    @Schema(description = "Curvature of the edge. Supports values from 0 to 1. The larger the value, the greater the curvature. Default is 0.0", defaultValue = "0.0")
     private Double curveness = 0D;
 
 }

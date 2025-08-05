@@ -11,30 +11,6 @@
         <result column="f_z_value" jdbcType="DOUBLE" property="zValue"/>
         <result column="f_p_value" jdbcType="VARCHAR" property="pValue"/>
     </resultMap>
-    <select id="selectByTraitIdList" resultMap="BaseResultMap">
-        <foreach collection="traitIdDTOList" item="traitIdDTO" open="" separator=" UNION " close="">
-            select f_trait_id, f_gene, f_chr, f_start, f_end, f_n_snps, f_z_value, f_p_value from t_magma_${genome}_${traitIdDTO.id}
-            WHERE 1 = 1
-            <if test="min != null and min != 0">
-                AND f_n_snps <![CDATA[ >= ]]> #{min}
-            </if>
-            <if test="pValue != null and pValue != 0">
-                AND f_p_value <![CDATA[ <= ]]> #{pValue}
-            </if>
-            <if test="traitIdDTO.traitIdList != null and traitIdDTO.traitIdList.size > 0">
-                AND f_trait_id IN
-                <foreach collection="traitIdDTO.traitIdList" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="geneList != null and geneList.size > 0">
-                AND f_gene IN
-                <foreach collection="geneList" item="gene" open="(" separator="," close=")">
-                    #{gene}
-                </foreach>
-            </if>
-        </foreach>
-    </select>
     <select id="selectByTraitId" resultMap="BaseResultMap">
         select f_trait_id, f_gene, f_chr, f_start, f_end, f_n_snps, f_z_value, f_p_value
         from t_magma_${genome}_${signalId}

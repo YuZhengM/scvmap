@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * This class provides utility methods for file operations,
+ * including file creation, reading, writing, and deletion.
+ *
  * @author Ykenan
  */
 public class FileUtil {
@@ -22,11 +25,11 @@ public class FileUtil {
     private static final Log log = LogFactory.getLog(FileUtil.class);
 
     /**
-     * 形成文件夹和文件的过程
+     * Process of creating folders and files.
      *
-     * @param path      路径
-     * @param inputFile 文件
-     * @return 是否创建成功
+     * @param path      Path
+     * @param inputFile File
+     * @return Whether the creation is successful
      */
     private static boolean before(String path, File inputFile) {
         File inputPath = new File(path);
@@ -39,16 +42,16 @@ public class FileUtil {
     }
 
     /**
-     * 形成文件的过程
+     * Process of creating a file.
      *
-     * @param inputFile 文件
-     * @return 是否创建成功
+     * @param inputFile File
+     * @return Whether the creation is successful
      */
     private static boolean before(File inputFile) {
         try {
             return !inputFile.exists() && inputFile.createNewFile() || inputFile.exists();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[before]: Failed to form file or folder. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return false;
     }
@@ -59,10 +62,10 @@ public class FileUtil {
     }
 
     /**
-     * 形成文件夹
+     * Create a folder.
      *
-     * @param path 路径
-     * @return 是否创建成功
+     * @param path Path
+     * @return Whether the creation is successful
      */
     public static boolean formation(String path) {
         File inputPath = new File(path);
@@ -70,13 +73,13 @@ public class FileUtil {
     }
 
     /**
-     * 文件形成
+     * Create a file.
      *
-     * @param path     形成路径
-     * @param name     文件名称
-     * @param suffix   文件后缀名
-     * @param textarea 文件的内容
-     * @return 文件名称
+     * @param path     Creation path
+     * @param name     File name
+     * @param suffix   File suffix
+     * @param textarea File content
+     * @return File name
      */
     public static String formation(String path, String name, String suffix, String textarea) {
         String fileName = StringUtil.getUniqueId() + name + "." + suffix;
@@ -90,16 +93,16 @@ public class FileUtil {
                 fileOutputStream.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[formation]: Failed to create file. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return fileName;
     }
 
     /**
-     * 文件形成
+     * Create a file.
      *
-     * @param path     形成路径文件名
-     * @param textarea 文件的内容
+     * @param path     Creation path and file name
+     * @param textarea File content
      */
     public static void formation(String path, String textarea) {
         try {
@@ -112,15 +115,15 @@ public class FileUtil {
                 fileOutputStream.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[formation]: Failed to create file. {}, {}", e.getMessage(), e.getStackTrace());
         }
     }
 
     /**
-     * 文件形成
+     * Create a file.
      *
-     * @param path        形成路径文件名
-     * @param inputStream 文件的内容
+     * @param path        Creation path and file name
+     * @param inputStream File content
      */
     public static void formation(String path, @WillClose InputStream inputStream) {
         try {
@@ -133,14 +136,14 @@ public class FileUtil {
                 inputStream.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[formation]: Failed to create file. {}, {}", e.getMessage(), e.getStackTrace());
         }
     }
 
     /**
-     * 文件内容形成字节流
+     * Convert file content to a byte stream.
      *
-     * @param textarea 文件的内容
+     * @param textarea File content
      * @return InputStream
      */
     public static InputStream formationStream(String textarea) {
@@ -149,13 +152,13 @@ public class FileUtil {
     }
 
     /**
-     * 文件形成
+     * Create a file.
      *
-     * @param path     形成路径
-     * @param name     文件名称
-     * @param suffix   文件后缀名
-     * @param fileByte 文件的内容
-     * @return 文件名称
+     * @param path     Creation path
+     * @param name     File name
+     * @param suffix   File suffix
+     * @param fileByte File content in bytes
+     * @return File name
      */
     public static String formationByByte(String path, String name, String suffix, byte[] fileByte) {
         String fileName = name + "." + suffix;
@@ -168,17 +171,17 @@ public class FileUtil {
                 fileOutputStream.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[formationByByte]: Failed to create file. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return fileName;
     }
 
     /**
-     * 文件读取
+     * Read a file.
      *
-     * @param filePath 文件的绝对路径
-     * @param encoding 读取文件的编码
-     * @return 文件的内容
+     * @param filePath File absolute path
+     * @param encoding File encoding for reading
+     * @return File content
      */
     public static List<String> read(String filePath, String encoding) {
         List<String> result = Lists.newArrayListWithExpectedSize(128);
@@ -190,17 +193,17 @@ public class FileUtil {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[read]: Failed to read file. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return result;
     }
 
     /**
-     * 文件读取
+     * Read a file from an input stream.
      *
-     * @param inputStream 文件流
-     * @param encoding    读取文件的编码
-     * @return 文件的内容
+     * @param inputStream File input stream
+     * @param encoding    File encoding for reading
+     * @return File content
      */
     public static List<String> read(@WillClose InputStream inputStream, String encoding) {
         List<String> result = Lists.newArrayListWithExpectedSize(128);
@@ -214,7 +217,7 @@ public class FileUtil {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[read]: Failed to read file from input stream. {}, {}", e.getMessage(), e.getStackTrace());
         } finally {
             try {
                 if (inputStream != null) {
@@ -224,38 +227,38 @@ public class FileUtil {
                     inputStreamReader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("[read]: Failed to close stream. {}, {}", e.getMessage(), e.getStackTrace());
             }
         }
         return result;
     }
 
     /**
-     * 文件读取
+     * Read a file.
      *
-     * @param filePath 文件的绝对路径
-     * @return 文件的内容
+     * @param filePath File absolute path
+     * @return File content
      */
     public static List<String> read(String filePath) {
         return read(filePath, CommonCode.UTF_8);
     }
 
     /**
-     * 文件读取
+     * Read a file from an input stream.
      *
-     * @param inputStream 文件流
-     * @return 文件的内容
+     * @param inputStream File input stream
+     * @return File content
      */
     public static List<String> read(@WillClose InputStream inputStream) {
         return read(inputStream, CommonCode.UTF_8);
     }
 
     /**
-     * 文件读取
+     * Read a file and return its content as a string.
      *
-     * @param filePath 文件的绝对路径
-     * @param encoding 文件编码
-     * @return 文件的内容
+     * @param filePath File absolute path
+     * @param encoding File encoding
+     * @return File content
      */
     public static String readToString(String filePath, String encoding) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -271,7 +274,7 @@ public class FileUtil {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[readToString]: Failed to read file to string. {}, {}", e.getMessage(), e.getStackTrace());
         } finally {
             try {
                 if (inputStream != null) {
@@ -281,28 +284,28 @@ public class FileUtil {
                     inputStreamReader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("[readToString]: Failed to close stream. {}, {}", e.getMessage(), e.getStackTrace());
             }
         }
         return stringBuilder.toString();
     }
 
     /**
-     * 文件读取
+     * Read a file and return its content as a string.
      *
-     * @param filePath 文件的绝对路径
-     * @return 文件的内容
+     * @param filePath File absolute path
+     * @return File content
      */
     public static String readToString(String filePath) {
         return readToString(filePath, CommonCode.UTF_8);
     }
 
     /**
-     * 文件读取
+     * Read a file from an input stream and return its content as a string.
      *
-     * @param inputStream 文件流
-     * @param encoding    读取文件的编码
-     * @return 文件的内容
+     * @param inputStream File input stream
+     * @param encoding    File encoding for reading
+     * @return File content
      */
     public static String readToString(@WillClose InputStream inputStream, String encoding) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -316,7 +319,7 @@ public class FileUtil {
             }
             br.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[readToString]: Failed to read input stream to string. {}, {}", e.getMessage(), e.getStackTrace());
         } finally {
             try {
                 if (inputStream != null) {
@@ -326,36 +329,36 @@ public class FileUtil {
                     inputStreamReader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("[readToString]: Failed to close stream. {}, {}", e.getMessage(), e.getStackTrace());
             }
         }
         return stringBuilder.toString();
     }
 
     /**
-     * 文件读取
+     * Read a file from an input stream and return its content as a string.
      *
-     * @param inputStream 文件流
-     * @return 文件的内容
+     * @param inputStream File input stream
+     * @return File content
      */
     public static String readToString(@WillClose InputStream inputStream) {
         return readToString(inputStream, CommonCode.UTF_8);
     }
 
     /**
-     * 得到 BufferedReader
+     * Get a BufferedReader.
      *
-     * @param filePath 文件路径
-     * @param encoding 文件编码
+     * @param filePath File path
+     * @param encoding File encoding
      */
     private static BufferedReader getReader(String filePath, String encoding) {
         InputStreamReader inputStreamReader = null;
         try {
-            // 这个流此处不能关闭, BufferedReader 关闭时, 此处流便关闭
+            // This stream cannot be closed here. It will be closed when the BufferedReader is closed.
             FileInputStream fileInputStream = new FileInputStream(filePath);
             inputStreamReader = new InputStreamReader(fileInputStream, encoding);
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error("[getReader]: Failed to get BufferedReader. {}, {}", e.getMessage(), e.getStackTrace());
         }
         if (inputStreamReader == null) {
             throw new RunException(SystemException.INVALID_RESOURCE);
@@ -364,9 +367,9 @@ public class FileUtil {
     }
 
     /**
-     * 获取某个文件夹下的所有文件
+     * Get all files and directories under a folder.
      *
-     * @param path 文件夹的路径
+     * @param path Folder path
      * @return List<String>
      */
     public static List<String> listFileAndDirectory(String path) {
@@ -379,9 +382,9 @@ public class FileUtil {
     }
 
     /**
-     * 获取某个文件夹下的所有文件
+     * Get all files under a folder.
      *
-     * @param path 文件夹的路径
+     * @param path Folder path
      * @return List<String>
      */
     public static List<String> listFilename(String path) {
@@ -396,9 +399,9 @@ public class FileUtil {
     }
 
     /**
-     * 获取某个文件夹下的所有文件夹
+     * Get all directories under a folder.
      *
-     * @param path 文件夹的路径
+     * @param path Folder path
      * @return List<String>
      */
     public static List<String> listDirectory(String path) {
@@ -413,13 +416,13 @@ public class FileUtil {
     }
 
     /**
-     * 文件上传
+     * Upload a file.
      *
-     * @param path   path
-     * @param name   name
-     * @param suffix suffix
-     * @param file   file
-     * @return String
+     * @param path   Path
+     * @param name   File name
+     * @param suffix File suffix
+     * @param file   MultipartFile
+     * @return New file name
      */
     public static String upload(String path, String name, String suffix, MultipartFile file) {
         String newFileName = StringUtil.getUniqueId() + name + "." + suffix;
@@ -427,16 +430,16 @@ public class FileUtil {
             File uploadFile = new File(path, newFileName);
             file.transferTo(uploadFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[upload]: Failed to upload file. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return newFileName;
     }
 
     /**
-     * 得到文件大小
+     * Get the size of a file.
      *
-     * @param filePath 文件
-     * @return double
+     * @param filePath File path
+     * @return File size in double
      */
     public static double getSize(String filePath) {
         File file = new File(filePath);
@@ -446,10 +449,11 @@ public class FileUtil {
         return 0D;
     }
 
-    public static void delete(String filePath) {
+    public static boolean delete(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
-            file.delete();
+            return file.delete();
         }
+        return false;
     }
 }

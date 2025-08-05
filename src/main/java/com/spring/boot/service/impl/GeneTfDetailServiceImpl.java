@@ -23,7 +23,7 @@ import java.util.List;
 import static com.spring.boot.util.util.ApplicationUtil.getElementSignalId;
 
 /**
- * Element component result interface information    private TraitGeneHg19Mapper traitGeneHg19Mapper;
+ * Element component result interface information
  *
  * @author Zhengmin Yu
  */

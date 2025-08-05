@@ -1,5 +1,6 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -7,92 +8,109 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * ItemStyle 该节点的样式
+ * ItemStyle: The style of this node
  *
  * @author Zhengmin Yu
  */
 @Builder
 @ToString
 @Data
+@Schema(description = "The style of this node")
 public class EchartsItemStyle implements Serializable {
 
+    /**
+     * The color of this node
+     */
+    @Schema(description = "The color of this node")
     private String color;
 
     /**
-     * 图形的描边颜色
+     * The stroke color of the graphic
      */
+    @Schema(description = "The stroke color of the graphic", defaultValue = "#FFF")
     @Builder.Default
     private String borderColor = "#FFF";
 
     /**
-     * 描边线宽
+     * The width of the stroke
      */
+    @Schema(description = "The width of the stroke", defaultValue = "1")
     @Builder.Default
     private Integer borderWidth = 1;
 
     /**
-     * 描边类型, 可选: "solid", "dashed", "dotted"
+     * The type of the stroke, optional values: "solid", "dashed", "dotted"
      */
+    @Schema(description = "The type of the stroke, optional values: \"solid\", \"dashed\", \"dotted\"", defaultValue = "solid")
     @Builder.Default
     private String borderType = "solid";
 
     /**
-     * 用于设置虚线的偏移量
+     * Used to set the offset of the dashed line
      */
+    @Schema(description = "Used to set the offset of the dashed line", defaultValue = "0")
     @Builder.Default
     private Integer borderDashOffset = 0;
 
     /**
-     * 用于指定线段末端的绘制方式
-     * 'butt': 线段末端以方形结束
-     * 'round': 线段末端以圆形结束
-     * 'square': 线段末端以方形结束
+     * Used to specify the drawing method for the end of the line segment
+     * 'butt': The line segment ends with a square.
+     * 'round': The line segment ends with a circle.
+     * 'square': The line segment ends with a square.
      */
+    @Schema(description = "Used to specify the drawing method for the end of the line segment. 'butt': The line segment ends with a square. 'round': The line segment ends with a circle. 'square': The line segment ends with a square.", defaultValue = "butt")
     @Builder.Default
     private String borderCap = "butt";
 
     /**
-     * 用于设置 2 个长度不为 0 的相连部分
-     * 'bevel': 在相连部分的末端填充一个额外的以三角形为底的区域, 每个部分都有各自独立的矩形拐角
-     * 'round': 通过填充一个额外的, 圆心在相连部分末端的扇形，绘制拐角的形状. 圆角的半径是线段的宽度
-     * 'miter': 通过延伸相连部分的外边缘, 使其相交于一点, 形成一个额外的菱形区域. 这个设置可以通过 borderMiterLimit 属性看到效果
+     * Used to set the connection of two non-zero length segments
+     * 'bevel': Fill an additional triangular area at the end of the connected part, and each part has its own independent rectangular corner.
+     * 'round': Draw the shape of the corner by filling an additional sector with the center at the end of the connected part. The radius of the rounded corner is the width of the line segment.
+     * 'miter': Extend the outer edges of the connected parts to make them intersect at a point, forming an additional diamond-shaped area. This setting can be seen through the borderMiterLimit property.
      */
+    @Schema(description = "Used to set the connection of two non-zero length segments. 'bevel': Fill an additional triangular area at the end of the connected part, and each part has its own independent rectangular corner. 'round': Draw the shape of the corner by filling an additional sector with the center at the end of the connected part. The radius of the rounded corner is the width of the line segment. 'miter': Extend the outer edges of the connected parts to make them intersect at a point, forming an additional diamond-shaped area. This setting can be seen through the borderMiterLimit property.", defaultValue = "bevel")
     @Builder.Default
     private String borderJoin = "bevel";
 
     /**
-     * 用于设置斜接面限制比例
+     * Used to set the miter limit ratio
      */
+    @Schema(description = "Used to set the miter limit ratio", defaultValue = "10")
     @Builder.Default
     private Integer borderMiterLimit = 10;
 
     /**
-     * 图形阴影的模糊大小
+     * The blur size of the graphic shadow
      */
+    @Schema(description = "The blur size of the graphic shadow", defaultValue = "10")
     @Builder.Default
     private Integer shadowBlur = 10;
 
     /**
-     * 图形阴影的颜色
+     * The color of the graphic shadow
      */
+    @Schema(description = "The color of the graphic shadow", defaultValue = "#FFFFFF")
     @Builder.Default
     private String shadowColor = "#FFFFFF";
 
     /**
-     * 阴影水平方向上的偏移距离
+     * The horizontal offset distance of the shadow
      */
+    @Schema(description = "The horizontal offset distance of the shadow", defaultValue = "0")
     @Builder.Default
     private Double shadowOffsetX = 0D;
 
     /**
-     * 阴影垂直方向上的偏移距离
+     * The vertical offset distance of the shadow
      */
+    @Schema(description = "The vertical offset distance of the shadow", defaultValue = "0")
     @Builder.Default
     private Double shadowOffsetY = 0D;
 
     /**
-     * 图形透明度
+     * The opacity of the graphic
      */
+    @Schema(description = "The opacity of the graphic", defaultValue = "1")
     @Builder.Default
     private Double opacity = 1D;
 }

@@ -448,7 +448,7 @@ public class DetailServiceImpl implements DetailService {
      * This method fetches differential gene data for a specific sample and cell type.
      *
      * @param sampleId the ID of the sample
-     * @param cellType the type of the cell
+     * @param cellType Cell type
      * @param page     page
      * @return a list of DifferenceGene objects
      */
@@ -507,7 +507,7 @@ public class DetailServiceImpl implements DetailService {
      * This method fetches differential transcription factor data for a specific sample and cell type.
      *
      * @param sampleId the ID of the sample
-     * @param cellType the type of the cell
+     * @param cellType Cell type
      * @return a list of DifferenceTf objects
      */
     @Cacheable

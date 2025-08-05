@@ -1,12 +1,13 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * Echarts 关系图数据
+ * Echarts graph relationship data
  *
  * @author Zhengmin Yu
  */
@@ -15,21 +16,25 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Data
+@Schema(description = "Echarts graph relationship data model")
 public class EchartsGraphData implements Serializable {
 
     /**
-     * 结点信息
+     * Node information
      */
+    @Schema(description = "List of node information")
     private List<EchartsNode> nodes;
 
     /**
-     * 边信息
+     * Edge information
      */
+    @Schema(description = "List of edge information")
     private List<EchartsLink> links;
 
     /**
-     * 类别信息
+     * Category information
      */
+    @Schema(description = "List of category information")
     private List<EchartsCategories> categories;
 
 }

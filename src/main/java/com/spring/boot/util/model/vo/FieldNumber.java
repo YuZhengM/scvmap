@@ -1,11 +1,12 @@
 package com.spring.boot.util.model.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
 
 /**
- * 字段内容数量信息
+ * Field content quantity information
  *
  * @author Zhengmin Yu
  */
@@ -14,16 +15,19 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @Data
+@Schema(name = "FieldNumber", description = "Field content quantity information")
 public class FieldNumber implements Serializable {
 
     /**
-     * 某个字段下的内容
+     * The content under a certain field
      */
+    @Schema(description = "The content under a certain field")
     private String field;
 
     /**
-     * 某个字段下的内容的数量
+     * The quantity of content under a certain field
      */
+    @Schema(description = "The quantity of content under a certain field")
     private Integer number;
 
 }

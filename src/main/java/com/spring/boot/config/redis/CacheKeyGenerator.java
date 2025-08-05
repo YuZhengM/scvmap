@@ -1,6 +1,5 @@
 package com.spring.boot.config.redis;
 
-import com.github.javaparser.utils.ClassUtils;
 import com.google.common.hash.Hashing;
 import com.spring.boot.util.constant.CommonCode;
 import com.spring.boot.util.factory.LogFactory;
@@ -10,6 +9,7 @@ import com.spring.boot.util.util.result.Page;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;

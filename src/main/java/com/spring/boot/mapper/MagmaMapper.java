@@ -2,7 +2,6 @@ package com.spring.boot.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.spring.boot.pojo.Magma;
-import com.spring.boot.pojo.dto.TraitIdDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -10,12 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MagmaMapper extends BaseMapper<Magma> {
-
-    List<Magma> selectByTraitIdList(@Param("traitIdDTOList") List<TraitIdDTO> traitIdDTOList,
-                                    @Param("geneList") List<String> geneList,
-                                    @Param("min") Integer min,
-                                    @Param("pValue") Double pValue,
-                                    @Param("genome") String genome);
 
     List<Magma> selectByTraitId(@Param("signalId") String signalId, @Param("traitId") String traitId, @Param("genome") String genome);
 

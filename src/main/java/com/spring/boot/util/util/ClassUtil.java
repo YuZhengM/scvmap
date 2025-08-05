@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Class 相关的公共类
+ * Common class related to Class operations.
  *
  * @author Zhengmin Yu
  */
@@ -18,10 +18,10 @@ public class ClassUtil {
 
 
     /**
-     * 判断一个类型是否为空
+     * Check if an object is empty.
      *
-     * @param obj obj
-     * @return 是空
+     * @param obj the object to check
+     * @return true if the object is empty, false otherwise
      */
     public static boolean isEmpty(Object obj) {
         if (obj == NullUtil.OBJECT_NULL) {
@@ -31,76 +31,76 @@ public class ClassUtil {
     }
 
     /**
-     * 判断一个类型是否为空
+     * Check if a class is empty.
      *
-     * @param clazz class
-     * @return 是空
+     * @param clazz the class to check
+     * @return true if the class is empty, false otherwise
      */
     public static boolean isEmpty(Class<?> clazz) {
         return clazz == NullUtil.CLASS_NULL;
     }
 
     /**
-     * 判断一个类是否为空
+     * Check if an object is not empty.
      *
-     * @param obj class
-     * @return 非空
+     * @param obj the object to check
+     * @return true if the object is not empty, false otherwise
      */
     public static boolean isNotEmpty(Object obj) {
         return !isEmpty(obj);
     }
 
     /**
-     * 判断一个类是否为空
+     * Check if a class is not empty.
      *
-     * @param clazz class
-     * @return 非空
+     * @param clazz the class to check
+     * @return true if the class is not empty, false otherwise
      */
     public static boolean isNotEmpty(Class<?> clazz) {
         return clazz != NullUtil.CLASS_NULL;
     }
 
     /**
-     * 判断两个类是否相等
+     * Check if two classes are equal.
      *
-     * @param clazz1 类
-     * @param clazz2 类
-     * @return 相等
+     * @param clazz1 the first class
+     * @param clazz2 the second class
+     * @return true if the two classes are equal, false otherwise
      */
     public static boolean isEqual(Class<?> clazz1, Class<?> clazz2) {
-        // 判断实体类型名称是否相同
+        // Check if the entity type names are the same
         if (StringUtil.isNotEqual(clazz1.getName(), clazz2.getName())) {
             return CommonCode.FALSE;
         }
-        // 判断两个类规范定义的格式是否相同
+        // Check if the canonical names of the two classes are the same
         if (StringUtil.isNotEqual(clazz1.getCanonicalName(), clazz2.getName())) {
             return CommonCode.FALSE;
         }
-        // 判断两个类源代码中返回实例的名称是否相同
+        // Check if the simple names returned in the source code of the two classes are the same
         if (StringUtil.isNotEqual(clazz1.getSimpleName(), clazz2.getSimpleName())) {
             return CommonCode.FALSE;
         }
-        // 判断两个类包名是否相同
+        // Check if the package names of the two classes are the same
         if (StringUtil.isNotEqual(clazz1.getPackageName(), clazz2.getPackageName())) {
             return CommonCode.FALSE;
         }
-        // 判断两个类类型的名称是否相同
+        // Check if the type names of the two classes are the same
         if (StringUtil.isNotEqual(clazz1.getTypeName(), clazz2.getTypeName())) {
             return CommonCode.FALSE;
         }
-        // 判断两个类的所有方法名是否相同
+        // Check if all method names of the two classes are the same
         String clazz1Methods = Arrays.stream(clazz1.getMethods()).map(Method::getName).collect(Collectors.joining("_"));
         String clazz2Methods = Arrays.stream(clazz2.getMethods()).map(Method::getName).collect(Collectors.joining("_"));
         if (StringUtil.isNotEqual(clazz1Methods, clazz2Methods)) {
             return CommonCode.FALSE;
         }
-        // 判断两个类的所有方法参数数量是否相同
+        // Check if the total number of method parameters of the two classes is the same
         int clazz1ParameterCount = Arrays.stream(clazz1.getMethods()).mapToInt(Method::getParameterCount).sum();
         int clazz2ParameterCount = Arrays.stream(clazz2.getMethods()).mapToInt(Method::getParameterCount).sum();
         if (NumberUtil.isNotEqual(clazz1ParameterCount, clazz2ParameterCount)) {
             return CommonCode.FALSE;
         }
-        // 判断两个类的所有方法参数类型情况是否相同
+        // Check if the parameter types of all methods of the two classes are the same
         String clazz1ParameterTypes = Arrays.stream(clazz1.getMethods()).map(
                 item -> Arrays.stream(item.getParameterTypes()).map(
                         clazz -> Arrays.stream(clazz.getDeclaredFields()).map(Field::getName).collect(Collectors.joining("_"))
@@ -115,107 +115,73 @@ public class ClassUtil {
     }
 
     /**
-     * 判断两个类是否相等
+     * Check if two classes are not equal.
      *
-     * @param clazz1 类
-     * @param clazz2 类
-     * @return 不相等
+     * @param clazz1 the first class
+     * @param clazz2 the second class
+     * @return true if the two classes are not equal, false otherwise
      */
     public static boolean isNotEqual(Class<?> clazz1, Class<?> clazz2) {
         return !isEqual(clazz1, clazz2);
     }
 
     /**
-     * 为一个 Class 创建唯一一个字符串
+     * Check if an object is an instance of Map.
      *
-     * @param clazz class
-     * @return 字符串
-     */
-    public static String toUniqueString(Class<?> clazz) {
-        StringBuilder stringBuilder = new StringBuilder();
-        // 实体类型名称
-        stringBuilder.append(clazz.getName());
-        // 规范定义的格式
-        stringBuilder.append(clazz.getCanonicalName());
-        // 代码中返回实例的名称
-        stringBuilder.append(clazz.getSimpleName());
-        // 类包名
-        stringBuilder.append(clazz.getPackageName());
-        // 类型的名称
-        stringBuilder.append(clazz.getTypeName());
-        // 所有方法名
-        String clazzMethods = Arrays.stream(clazz.getMethods()).map(Method::getName).collect(Collectors.joining("_"));
-        stringBuilder.append(clazzMethods);
-        // 所有方法参数数量
-        int clazzParameterCount = Arrays.stream(clazz.getMethods()).mapToInt(Method::getParameterCount).sum();
-        stringBuilder.append(clazzParameterCount);
-        // 的所有方法参数类型情况
-        String clazzParameterTypes = Arrays.stream(clazz.getMethods()).map(
-                item -> Arrays.stream(item.getParameterTypes()).map(
-                        elem -> Arrays.stream(elem.getDeclaredFields()).map(Field::getName).collect(Collectors.joining("_"))
-                ).collect(Collectors.joining("_"))
-        ).collect(Collectors.joining("_"));
-        stringBuilder.append(clazzParameterTypes);
-        return stringBuilder.toString();
-    }
-
-    /**
-     * 判断 Object 是否符合 class 类型
-     *
-     * @param obj object
-     * @return T
+     * @param obj the object to check
+     * @return true if the object is an instance of Map, false otherwise
      */
     public static boolean isMap(Object obj) {
         return obj instanceof Map;
     }
 
     /**
-     * 判断 Object 是否符合 class 类型
+     * Check if an object is an instance of String.
      *
-     * @param obj object
-     * @return T
+     * @param obj the object to check
+     * @return true if the object is an instance of String, false otherwise
      */
     public static boolean isString(Object obj) {
         return obj instanceof String;
     }
 
     /**
-     * 判断 Object 是否符合 class 类型
+     * Check if an object is an instance of Float.
      *
-     * @param obj object
-     * @return T
+     * @param obj the object to check
+     * @return true if the object is an instance of Float, false otherwise
      */
     public static boolean isFloat(Object obj) {
         return obj instanceof Float;
     }
 
     /**
-     * 判断 Object 是否符合 class 类型
+     * Check if an object is an instance of Double.
      *
-     * @param obj object
-     * @return T
+     * @param obj the object to check
+     * @return true if the object is an instance of Double, false otherwise
      */
     public static boolean isDouble(Object obj) {
         return obj instanceof Double;
     }
 
     /**
-     * 判断 Object 是否符合 class 类型
+     * Check if an object is an instance of Integer.
      *
-     * @param obj object
-     * @return T
+     * @param obj the object to check
+     * @return true if the object is an instance of Integer, false otherwise
      */
     public static boolean isInteger(Object obj) {
         return obj instanceof Integer;
     }
 
     /**
-     * Object 转换为 class 类型
+     * Convert an object to the specified class type.
      *
-     * @param o     object
-     * @param clazz class
-     * @param <T>   T
-     * @return T
+     * @param o     the object to convert
+     * @param clazz the target class
+     * @param <T>   the generic type
+     * @return the converted object, or the null value defined by NullUtil if conversion fails
      */
     public static <T> T objectToClazz(Object o, Class<T> clazz) {
         if (clazz.isInstance(o)) {
@@ -225,12 +191,12 @@ public class ClassUtil {
     }
 
     /**
-     * Object 转换为 Map 类型
+     * Convert an object to a Map type.
      *
-     * @param o   object
-     * @param <K> K
-     * @param <V> V
-     * @return Map
+     * @param o   the object to convert
+     * @param <K> the key type of the map
+     * @param <V> the value type of the map
+     * @return the converted map, or the null value defined by NullUtil if conversion fails
      */
     public static <K, V> Map<K, V> objectToMap(Object o) {
         if (isMap(o)) {

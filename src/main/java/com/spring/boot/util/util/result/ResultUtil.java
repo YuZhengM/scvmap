@@ -1,7 +1,6 @@
 package com.spring.boot.util.util.result;
 
 import com.spring.boot.util.constant.CommonCode;
-import com.spring.boot.util.model.Response;
 import com.spring.boot.util.model.Result;
 
 /**
@@ -26,27 +25,6 @@ public class ResultUtil {
      */
     public static <T> Result<T> success(String message, T data) {
         return Result.<T>builder().message(message + SUCCESS_SUFFIX).data(data).build();
-    }
-
-    /**
-     * 返回 T 类型的返回形式
-     *
-     * @param response 响应情况内容
-     * @param data     返回的数据
-     * @return 正确情况
-     */
-    public static <T> Result<T> response(Response response, T data) {
-        return Result.<T>response(response).data(data);
-    }
-
-    /**
-     * 返回 T 类型的返回形式
-     *
-     * @param response 响应情况内容
-     * @return 正确情况
-     */
-    public static Result<Boolean> response(Response response) {
-        return Result.<Boolean>response(response).data(response.isStatus());
     }
 
     /**

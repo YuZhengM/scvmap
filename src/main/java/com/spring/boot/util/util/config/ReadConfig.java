@@ -1,5 +1,7 @@
 package com.spring.boot.util.util.config;
 
+import com.spring.boot.util.factory.LogFactory;
+import com.spring.boot.util.factory.log.Log;
 import com.spring.boot.util.util.ClassUtil;
 
 import java.io.IOException;
@@ -7,14 +9,16 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * 读取 Config 文件信息
+ * Read Config file information
  *
  * @author Zhengmin Yu
  */
 public class ReadConfig {
 
+    private static final Log log = LogFactory.getLog(ReadConfig.class);
+
     /**
-     * resources 更路径符号
+     * Root path symbol of resources
      */
     private static final String FILE_PATH_PREFIX = "/";
 
@@ -22,10 +26,10 @@ public class ReadConfig {
     private final String filename;
 
     /**
-     * 初始化类和文件名
+     * Initialize the class and file name
      *
-     * @param clazz    类
-     * @param filename 配置文件名
+     * @param clazz    Class
+     * @param filename Configuration file name
      */
     public ReadConfig(Class<?> clazz, String filename) {
         this.clazz = clazz;
@@ -33,24 +37,27 @@ public class ReadConfig {
     }
 
     /**
-     * 读取配置文件中的参数
+     * Read parameters from the configuration file
      * <p>
-     * 这里的 contextConfig 文件流在 properties.load(contextConfig); 加载完之后已经被关闭了.
-     * 所以这就意味着每次读取配置文件的一个参数的时候, 都需要从新对文件进行 load, contextConfig 不能作为宏
+     * The contextConfig file stream is closed after properties.load(contextConfig); is executed.
+     * This means that every time a parameter is read from the configuration file,
+     * the file needs to be loaded again. contextConfig cannot be used as a macro.
      * </p>
      *
-     * @param props 参数
-     * @return 参数值
+     * @param props Parameter
+     * @return Parameter value
      */
     public String getConfiguration(String props) {
-        // 加载文件
+        // Load the file
         InputStream contextConfig = clazz.getResourceAsStream(FILE_PATH_PREFIX + filename);
-        // 初始化读取的配置文件
+        // Initialize the properties to read from the configuration file
         Properties properties = new Properties();
+
+        // Read the parameter from the configuration file
         try {
             properties.load(contextConfig);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[before]: Failed to form file or folder. {}, {}", e.getMessage(), e.getStackTrace());
         } finally {
             try {
                 if (ClassUtil.isNotEmpty(contextConfig)) {
@@ -58,11 +65,9 @@ public class ReadConfig {
                     contextConfig.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("[before]: Failed to form file or folder. {}, {}", e.getMessage(), e.getStackTrace());
             }
         }
         return properties.getProperty(props);
     }
-
-
 }

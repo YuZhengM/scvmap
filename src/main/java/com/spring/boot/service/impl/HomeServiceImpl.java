@@ -53,7 +53,7 @@ public class HomeServiceImpl implements HomeService {
      */
     @Cacheable
     @Override
-    public HomeResultVO getIdByContent(String label, String content, Page page) {
+    public HomeResultVO getSearchResultByContent(String label, String content, Page page) {
         String searchContent = content.replaceAll("( disease.*| Disease.*|'s|’s)", "");
 
         switch (label) {

@@ -11,12 +11,17 @@ import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.model.vo.plotly.PlotlyClusterData;
 import com.spring.boot.util.util.result.Page;
 import com.spring.boot.util.util.result.ResultUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
+import static com.spring.boot.util.constant.ApplicationConstant.*;
 import static com.spring.boot.util.util.ApplicationUtil.*;
 
 /**
@@ -27,6 +32,7 @@ import static com.spring.boot.util.util.ApplicationUtil.*;
 @RequestMapping("/detail")
 @CrossOrigin
 @RestController
+@Tag(name = "Detail-API", description = "Controller for handling detailed data requests")
 public class DetailController {
 
     private DetailService detailService;
@@ -53,6 +59,13 @@ public class DetailController {
      * @param sampleId the ID of the sample
      * @return Result containing the sample data
      */
+    @Operation(
+            summary = "Retrieve sample data by sample ID",
+            description = "Retrieves sample data based on the provided sample ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
+            }
+    )
     @GetMapping("/sample/{sample_id}")
     public Result<Sample> getSampleData(@PathVariable("sample_id") String sampleId) {
         checkSampleId(sampleId);
@@ -66,6 +79,13 @@ public class DetailController {
      * @param traitId the ID of the trait
      * @return Result containing the trait data
      */
+    @Operation(
+            summary = "Retrieve trait data by trait ID",
+            description = "Retrieves trait data based on the provided trait ID.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE)
+            }
+    )
     @GetMapping("/trait/{trait_id}")
     public Result<Trait> getTraitData(@PathVariable("trait_id") String traitId) {
         checkTraitId(traitId);
@@ -81,6 +101,17 @@ public class DetailController {
      * @param page    page
      * @return Result containing a list of VariantInfo
      */
+    @Operation(
+            summary = "List trait information data by trait ID and genome",
+            description = "Lists trait information data based on the provided trait ID, genome, and pagination information.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/trait_info/{trait_id}/{genome}")
     public Result<PageResult<VariantInfo>> listTraitInfoData(@PathVariable("trait_id") String traitId,
                                                              @PathVariable("genome") String genome,
@@ -97,6 +128,13 @@ public class DetailController {
      * @param sampleId the ID of the sample
      * @return Result containing a list of SampleCellType
      */
+    @Operation(
+            summary = "Retrieve sample cell type data by sample ID",
+            description = "Retrieves sample cell type data based on the provided sample ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
+            }
+    )
     @GetMapping("/sample_cell_type/{sample_id}")
     public Result<List<SampleCellType>> sampleCellTypeData(@PathVariable("sample_id") String sampleId) {
         checkSampleId(sampleId);
@@ -110,6 +148,13 @@ public class DetailController {
      * @param sampleId the ID of the sample
      * @return Result containing EchartsPieData for cell type count
      */
+    @Operation(
+            summary = "Retrieve the count of cell types by sample ID",
+            description = "Retrieves the count of cell types based on the provided sample ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
+            }
+    )
     @GetMapping("/cell_type/count/{sample_id}")
     public Result<EchartsPieData<String, String>> getCellTypeCount(@PathVariable("sample_id") String sampleId) {
         checkSampleId(sampleId);
@@ -123,6 +168,13 @@ public class DetailController {
      * @param sampleId the ID of the sample
      * @return Result containing a list of SampleCellType
      */
+    @Operation(
+            summary = "List sample cell type data by sample ID",
+            description = "Lists sample cell type data based on the provided sample ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
+            }
+    )
     @GetMapping("/cell_type/{sample_id}")
     public Result<List<SampleCellType>> listSampleCellType(@PathVariable("sample_id") String sampleId) {
         checkSampleId(sampleId);
@@ -137,6 +189,14 @@ public class DetailController {
      * @param genome  the genome identifier
      * @return Result containing EchartsPieData for trait chromosome count
      */
+    @Operation(
+            summary = "Retrieve trait chromosome count data by trait ID and genome",
+            description = "Retrieves trait chromosome count data based on the provided trait ID and genome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            }
+    )
     @GetMapping("/trait/chr/count/{trait_id}/{genome}")
     public Result<EchartsPieData<String, String>> getTraitChrCountData(@PathVariable("trait_id") String traitId, @PathVariable("genome") String genome) {
         checkTraitId(traitId);
@@ -152,6 +212,14 @@ public class DetailController {
      * @param method   the method used for querying
      * @return Result containing SampleTraitInfo
      */
+    @Operation(
+            summary = "List trait information by sample ID and method",
+            description = "Lists trait information based on the provided sample ID and query method.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "method", in = ParameterIn.PATH, description = "The method used for querying.", required = true, example = METHOD_EXAMPLE)
+            }
+    )
     @GetMapping("/trait/overlap/{sample_id}/{method}")
     public Result<SampleTraitInfo<SampleEnrichSampleId>> listTraitBySampleId(@PathVariable("sample_id") String sampleId, @PathVariable("method") String method) {
         checkSampleId(sampleId);
@@ -167,6 +235,14 @@ public class DetailController {
      * @param method  the method used for querying
      * @return Result containing SampleTraitInfo
      */
+    @Operation(
+            summary = "List sample information by trait ID and method",
+            description = "Lists sample information based on the provided trait ID and query method.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "method", in = ParameterIn.PATH, description = "The method used for querying.", required = true, example = METHOD_EXAMPLE)
+            }
+    )
     @GetMapping("/sample/overlap/{trait_id}/{method}")
     public Result<SampleTraitInfo<TraitEnrich>> listSampleInfoByTraitId(@PathVariable("trait_id") String traitId, @PathVariable("method") String method) {
         checkTraitId(traitId);
@@ -182,6 +258,14 @@ public class DetailController {
      * @param cellRate the cell rate for clustering
      * @return Result containing PlotlyClusterData for cluster coordinates
      */
+    @Operation(
+            summary = "List cluster coordinates by sample ID and cell rate",
+            description = "Lists cluster coordinates based on the provided sample ID and cell rate.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "cell_rate", in = ParameterIn.PATH, description = "The cell rate for clustering.", required = true, example = CELL_RATE_EXAMPLE)
+            }
+    )
     @GetMapping("/cluster_coordinate/{sample_id}/{cell_rate}")
     public Result<PlotlyClusterData<Double, Double>> listClusterCoordinate(@PathVariable("sample_id") String sampleId, @PathVariable("cell_rate") Double cellRate) {
         checkSampleId(sampleId);
@@ -199,6 +283,16 @@ public class DetailController {
      * @return Result containing PlotlyClusterData for trait cluster coordinates
      * @throws IOException if an I/O error occurs
      */
+    @Operation(
+            summary = "List trait cluster coordinates by sample ID, method, trait ID, and cell rate",
+            description = "Lists trait cluster coordinates based on the provided sample ID, method, trait ID, and cell rate.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "method", in = ParameterIn.PATH, description = "The method used for clustering.", required = true, example = METHOD_EXAMPLE),
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "cell_rate", in = ParameterIn.PATH, description = "The cell rate for clustering.", required = true, example = CELL_RATE_EXAMPLE)
+            }
+    )
     @GetMapping("/cluster_coordinate/{sample_id}/{method}/{trait_id}/{cell_rate}")
     public Result<PlotlyClusterData<Double, Double>> listTraitClusterCoordinate(@PathVariable("sample_id") String sampleId,
                                                                                 @PathVariable("method") String method,
@@ -215,9 +309,20 @@ public class DetailController {
      * Lists difference genes by sample ID and cell type.
      *
      * @param sampleId the ID of the sample
-     * @param cellType the type of the cell
+     * @param cellType Cell type
      * @return Result containing a list of DifferenceGene
      */
+    @Operation(
+            summary = "List difference genes by sample ID and cell type",
+            description = "Lists difference genes based on the provided sample ID and cell type with pagination information.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "cell_type", in = ParameterIn.PATH, description = "Cell type.", required = true, example = CELL_TYPE_EXAMPLE)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/difference_gene/{sample_id}/{cell_type}")
     public Result<PageResult<? extends DifferenceGene>> listDifferenceGeneBySampleId(@PathVariable("sample_id") String sampleId,
                                                                                      @PathVariable("cell_type") String cellType,
@@ -227,6 +332,13 @@ public class DetailController {
         return ResultUtil.success("[listDifferenceGeneBySampleId]: Query result", differenceGeneList);
     }
 
+    @Operation(
+            summary = "Get difference gene heatmap by sample ID",
+            description = "Retrieves the difference gene heatmap data based on the provided sample ID and other parameters.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "VO object containing sample ID and other parameters for heatmap data retrieval.", required = true
+            )
+    )
     @PostMapping("/difference_gene/heatmap")
     public Result<CanvasXpressHeatMapData<Double>> getDifferenceGeneHeatmapBySampleId(@RequestBody DifferenceElementHeatmapVO differenceElementHeatmapVO) {
         checkSampleId(differenceElementHeatmapVO.getSampleId());
@@ -238,9 +350,17 @@ public class DetailController {
      * Lists difference transcription factors by sample ID and cell type.
      *
      * @param sampleId the ID of the sample
-     * @param cellType the type of the cell
+     * @param cellType Cell type
      * @return Result containing a list of DifferenceTf
      */
+    @Operation(
+            summary = "List difference transcription factors by sample ID and cell type",
+            description = "Lists difference transcription factors based on the provided sample ID and cell type.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "cell_type", in = ParameterIn.PATH, description = "Cell type.", required = true, example = CELL_TYPE_EXAMPLE)
+            }
+    )
     @GetMapping("/difference_tf/{sample_id}/{cell_type}")
     public Result<List<? extends DifferenceTf>> listDifferenceTfBySampleId(@PathVariable("sample_id") String sampleId, @PathVariable("cell_type") String cellType) {
         checkSampleId(sampleId);
@@ -248,6 +368,13 @@ public class DetailController {
         return ResultUtil.success("[listDifferenceTfBySampleId]: Query result", differenceTfList);
     }
 
+    @Operation(
+            summary = "Get difference TF heatmap by sample ID",
+            description = "Retrieves the difference TF heatmap data based on the provided sample ID and other parameters.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "VO object containing sample ID and other parameters for heatmap data retrieval.", required = true
+            )
+    )
     @PostMapping("/difference_tf/heatmap")
     public Result<CanvasXpressHeatMapData<Double>> getDifferenceTfHeatmapBySampleId(@RequestBody DifferenceElementHeatmapVO differenceElementHeatmapVO) {
         checkSampleId(differenceElementHeatmapVO.getSampleId());
@@ -262,6 +389,14 @@ public class DetailController {
      * @param genome  The genome identifier.
      * @return A Result object containing a list of Magma genes.
      */
+    @Operation(
+            summary = "Retrieve a list of Magma genes by trait ID and genome",
+            description = "Retrieves a list of Magma genes based on the provided trait ID and genome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            }
+    )
     @GetMapping("/magma_gene/{trait_id}/{genome}")
     public Result<List<Magma>> listMagmaGeneByTraitId(@PathVariable("trait_id") String traitId, @PathVariable("genome") String genome) {
         checkTraitId(traitId);
@@ -277,6 +412,14 @@ public class DetailController {
      * @param genome  The genome identifier.
      * @return A Result object containing a list of Homer transcription factors.
      */
+    @Operation(
+            summary = "Retrieve a list of Homer transcription factors by trait ID and genome",
+            description = "Retrieves a list of Homer transcription factors based on the provided trait ID and genome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            }
+    )
     @GetMapping("/homer_tf/{trait_id}/{genome}")
     public Result<List<Homer>> listHomerTfByTraitId(@PathVariable("trait_id") String traitId, @PathVariable("genome") String genome) {
         checkTraitId(traitId);

@@ -39,4 +39,26 @@ public class ApplicationConstant {
             10, "LIKE"
     );
 
+    public static final String SAMPLE_EXAMPLE = "sample_id_1";
+
+    public static final String TRAIT_EXAMPLE = "trait_id_894";
+
+    public static final String CELL_TYPE_EXAMPLE = "Tumor 3";
+
+    public static final String METHOD_EXAMPLE = "scavenge";
+
+    public static final String STRATEGY_EXAMPLE = "mean";
+
+    public static final String GENE_EXAMPLE = "RCC2";
+
+    public static final String GENE_ID_EXAMPLE = "ENSG00000179051.14";
+
+    public static final String TF_EXAMPLE = "HIF1A";
+
+    public static final String CELL_RATE_EXAMPLE = "0.1";
+
+    public static final String VARIANT_EXAMPLE = "rs57142672";
+
+    public static final String GENOME_EXAMPLE = "hg19";
+
 }

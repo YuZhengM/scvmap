@@ -5,11 +5,16 @@ import com.spring.boot.service.GeneTfDetailService;
 import com.spring.boot.util.model.Result;
 import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.util.result.ResultUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.spring.boot.util.constant.ApplicationConstant.*;
 import static com.spring.boot.util.util.ApplicationUtil.*;
 
 /**
@@ -20,6 +25,7 @@ import static com.spring.boot.util.util.ApplicationUtil.*;
 @RequestMapping("/element/detail")
 @CrossOrigin
 @RestController
+@Tag(name = "Gene/TF-Detail-API", description = "Controller for handling requests related to gene and TF details.")
 public class GeneTfDetailController {
 
     private GeneTfDetailService geneTfDetailService;
@@ -47,6 +53,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the gene information.
      */
+    @Operation(
+        summary = "Retrieve gene information by gene name and genome",
+        description = "Retrieves gene information based on the provided gene name and genome.",
+        parameters = {
+            @Parameter(name = "gene", in = ParameterIn.PATH, description = "The name of the gene to search for.", required = true, example = GENE_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/{gene}/{genome}")
     public Result<List<Gene>> listGeneInfo(@PathVariable String gene, @PathVariable String genome) {
         checkGenome(genome);
@@ -54,6 +68,14 @@ public class GeneTfDetailController {
         return ResultUtil.success("[getGeneInfo]: success", geneList);
     }
 
+    @Operation(
+        summary = "Retrieve gene information by gene ID and genome",
+        description = "Retrieves gene information based on the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/id/{geneId}/{genome}")
     public Result<Gene> listGeneById(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -67,6 +89,13 @@ public class GeneTfDetailController {
      * @param tf The TF name.
      * @return Result containing the gene information.
      */
+    @Operation(
+        summary = "Retrieve TF information by TF name",
+        description = "Retrieves TF information based on the provided TF name.",
+        parameters = {
+            @Parameter(name = "tf", in = ParameterIn.PATH, description = "The name of the TF to search for.", required = true, example = TF_EXAMPLE)
+        }
+    )
     @GetMapping("/tf/{tf}")
     public Result<Tf> listTfInfo(@PathVariable String tf) {
         String tfName = getTfName(tf);
@@ -80,6 +109,13 @@ public class GeneTfDetailController {
      * @param gene The gene name.
      * @return Result containing the trait count data in ECharts pie chart format.
      */
+    @Operation(
+        summary = "Retrieve the count of traits associated with a gene",
+        description = "Retrieves the count of traits associated with the provided gene name in ECharts pie chart format.",
+        parameters = {
+            @Parameter(name = "gene", in = ParameterIn.PATH, description = "The name of the gene to get trait count for.", required = true, example = GENE_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/trait/count/{gene}")
     public Result<EchartsPieData<String, String>> getGeneTraitCount(@PathVariable String gene) {
         EchartsPieData<String, String> echartsPieData = geneTfDetailService.getGeneTraitCount(gene);
@@ -92,6 +128,13 @@ public class GeneTfDetailController {
      * @param tf The TF name.
      * @return Result containing the trait count data in ECharts pie chart format.
      */
+    @Operation(
+        summary = "Retrieve the count of traits associated with a TF",
+        description = "Retrieves the count of traits associated with the provided TF name in ECharts pie chart format.",
+        parameters = {
+            @Parameter(name = "tf", in = ParameterIn.PATH, description = "The name of the TF to get trait count for.", required = true, example = TF_EXAMPLE)
+        }
+    )
     @GetMapping("/tf/trait/count/{tf}")
     public Result<EchartsPieData<String, String>> getTfTraitCount(@PathVariable String tf) {
         String tfName = getTfName(tf);
@@ -106,6 +149,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of traits.
      */
+    @Operation(
+        summary = "Retrieve a list of traits associated with a gene and genome",
+        description = "Retrieves a list of traits associated with the provided gene name and genome.",
+        parameters = {
+            @Parameter(name = "gene", in = ParameterIn.PATH, description = "The name of the gene to search for traits.", required = true, example = GENE_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/trait/{gene}/{genome}")
     public Result<List<Trait>> listTraitByGeneGenome(@PathVariable String gene, @PathVariable String genome) {
         checkGenome(genome);
@@ -120,6 +171,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of traits.
      */
+    @Operation(
+        summary = "Retrieve a list of traits associated with a TF and genome",
+        description = "Retrieves a list of traits associated with the provided TF name and genome.",
+        parameters = {
+            @Parameter(name = "tf", in = ParameterIn.PATH, description = "The name of the TF to search for traits.", required = true, example = TF_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/tf/trait/{tf}/{genome}")
     public Result<List<Trait>> listTraitByTfGenome(@PathVariable String tf, @PathVariable String genome) {
         checkGenome(genome);
@@ -136,6 +195,15 @@ public class GeneTfDetailController {
      * @param genome   The genome.
      * @return Result containing the list of MAGMA data.
      */
+    @Operation(
+        summary = "Retrieve a list of MAGMA data associated with a trait ID, gene, and genome",
+        description = "Retrieves a list of MAGMA data associated with the provided trait ID, gene name, and genome.",
+        parameters = {
+            @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for MAGMA data.", required = true, example = TRAIT_EXAMPLE),
+            @Parameter(name = "gene", in = ParameterIn.PATH, description = "The name of the gene to search for MAGMA data.", required = true, example = GENE_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/trait/{trait_id}/{gene}/{genome}")
     public Result<List<Magma>> listMagmaInfoDataByTraitIdAndGene(@PathVariable("trait_id") String traitId, @PathVariable String gene, @PathVariable String genome) {
         checkTraitId(traitId);
@@ -152,6 +220,15 @@ public class GeneTfDetailController {
      * @param genome   The genome.
      * @return Result containing the list of HOMER data.
      */
+    @Operation(
+        summary = "Retrieve a list of HOMER data associated with a trait ID, TF, and genome",
+        description = "Retrieves a list of HOMER data associated with the provided trait ID, TF name, and genome.",
+        parameters = {
+            @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for HOMER data.", required = true, example = TRAIT_EXAMPLE),
+            @Parameter(name = "tf", in = ParameterIn.PATH, description = "The name of the TF to search for HOMER data.", required = true, example = TF_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/tf/trait/{trait_id}/{tf}/{genome}")
     public Result<List<Homer>> listHomerInfoDataByTraitIdAndTf(@PathVariable("trait_id") String traitId, @PathVariable String tf, @PathVariable String genome) {
         checkTraitId(traitId);
@@ -168,6 +245,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of common SNPs.
      */
+    @Operation(
+        summary = "Retrieve a list of common SNPs associated with a gene and genome",
+        description = "Retrieves a list of common SNPs associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for common SNPs.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/common_snp/{geneId}/{genome}")
     public Result<List<? extends CommonSnp>> listGeneInteractiveCommonSnp(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -182,6 +267,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of eQTLs.
      */
+    @Operation(
+        summary = "Retrieve a list of eQTLs associated with a gene and genome",
+        description = "Retrieves a list of eQTLs associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for eQTLs.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/eqtl/{geneId}/{genome}")
     public Result<List<? extends Eqtl>> listEqtlByGene(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -196,6 +289,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of risk SNPs.
      */
+    @Operation(
+        summary = "Retrieve a list of risk SNPs associated with a gene and genome",
+        description = "Retrieves a list of risk SNPs associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for risk SNPs.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/risk_snp/{geneId}/{genome}")
     public Result<List<? extends RiskSnp>> listGeneInteractiveRiskSnp(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -210,6 +311,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of CRISPR data.
      */
+    @Operation(
+        summary = "Retrieve a list of CRISPR data associated with a gene and genome",
+        description = "Retrieves a list of CRISPR data associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for CRISPR data.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/enhancer_sea/{geneId}/{genome}")
     public Result<List<? extends EnhancerSea>> listGeneInteractiveEnhancerSea(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -224,6 +333,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of enhancers.
      */
+    @Operation(
+        summary = "Retrieve a list of enhancers associated with a gene and genome",
+        description = "Retrieves a list of enhancers associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for enhancers.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/enhancer_se_db/{geneId}/{genome}")
     public Result<List<? extends EnhancerSedb>> listGeneInteractiveEnhancerSedb(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -238,6 +355,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of super enhancers from dbSUPER.
      */
+    @Operation(
+        summary = "Retrieve a list of super enhancers from dbSUPER associated with a gene and genome",
+        description = "Retrieves a list of super enhancers from dbSUPER associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for super enhancers from dbSUPER.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/super_enhancer_dbsuper/{geneId}/{genome}")
     public Result<List<? extends SuperEnhancerDbsuper>> listGeneInteractiveSuperEnhancerDbsuper(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -252,6 +377,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of super enhancers from SEAv3.
      */
+    @Operation(
+        summary = "Retrieve a list of super enhancers from SEAv3 associated with a gene and genome",
+        description = "Retrieves a list of super enhancers from SEAv3 associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for super enhancers from SEAv3.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/super_enhancer_sea/{geneId}/{genome}")
     public Result<List<? extends SuperEnhancerSea>> listGeneInteractiveSuperEnhancerSea(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);
@@ -266,6 +399,14 @@ public class GeneTfDetailController {
      * @param genome The genome.
      * @return Result containing the list of super enhancers from SEdbV2.
      */
+    @Operation(
+        summary = "Retrieve a list of super enhancers from SEdbV2 associated with a gene and genome",
+        description = "Retrieves a list of super enhancers from SEdbV2 associated with the provided gene ID and genome.",
+        parameters = {
+            @Parameter(name = "geneId", in = ParameterIn.PATH, description = "The ID of the gene to search for super enhancers from SEdbV2.", required = true, example = GENE_ID_EXAMPLE),
+            @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome to search within.", required = true, example = GENOME_EXAMPLE)
+        }
+    )
     @GetMapping("/gene/annotation/super_enhancer_se_db/{geneId}/{genome}")
     public Result<List<? extends SuperEnhancerSedb>> listGeneInteractiveSuperEnhancerSedb(@PathVariable String geneId, @PathVariable String genome) {
         checkGenome(genome);

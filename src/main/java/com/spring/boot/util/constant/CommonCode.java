@@ -4,7 +4,7 @@ import com.spring.boot.util.model.Result;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
- * 一些共同的标识符代码
+ * Some common identifier codes
  *
  * @author Zhengmin Yu
  * @see Result
@@ -12,51 +12,51 @@ import org.apache.commons.lang3.math.NumberUtils;
 public class CommonCode {
 
     /**
-     * 项目名称小写
+     * Project name in lowercase
      */
     public static final String PROJECT_EN_L_NAME = "scvdb";
     /**
-     * 项目名称
+     * Project name
      */
     public static final String PROJECT_EN_NAME = "SCVDB";
 
     /**
-     * 真状态码
+     * True status code
      */
     public static final boolean TRUE = true;
     /**
-     * 假状态码
+     * False status code
      */
     public static final boolean FALSE = false;
 
 
     /**
-     * 状态码-0
+     * Status code - 0
      * <p>
-     * 这里可以进行衍生之意，比如 0 代表失败，未，奇，阴，下，北，右，女，假，坏等一系统对应词汇中负向抱阴之意
+     * Derivative meanings can be made here. For example, 0 represents negative connotations such as failure, not done, odd, yin, down, north, right, female, false, bad, etc.
      * </p>
      */
     public static final int ZERO = NumberUtils.INTEGER_ZERO;
     public static final byte BYTE_ZERO = NumberUtils.BYTE_ZERO;
     /**
-     * 状态码-1
+     * Status code - 1
      * <p>
-     * 这里可以进行衍生之意，比如 1 代表成功，已，偶，阳，上，南，左，男，真，好等一系统对应词汇中正向抱阳之意
+     * Derivative meanings can be made here. For example, 1 represents positive connotations such as success, done, even, yang, up, south, left, male, true, good, etc.
      * </p>
      */
     public static final int ONE = NumberUtils.INTEGER_ONE;
     public static final byte BYTE_ONE = NumberUtils.BYTE_ONE;
 
     /**
-     * 状态码-999
+     * Status code - 999
      * <p>
-     * 这里代表一切未知或者未初始化属性
+     * This represents all unknown or uninitialized attributes.
      * </p>
      */
     public static final int UNKNOWN = 999;
 
     /**
-     * 统一编码 UTF-8
+     * Unified encoding UTF-8
      */
     public static final String UTF_8 = "UTF-8";
 }

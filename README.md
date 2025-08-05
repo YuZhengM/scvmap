@@ -6,7 +6,9 @@
 
 > SCVdb front-end: https://github.com/YuZhengM/scvdb_web
 
-A comprehensive platform for human **integrating** `single-cell chromatin accessibility data` with `causal variant effects`.
+> SCVdb API: https://bio.liclab.net/scvdb_service/swagger-ui/index.html
+
+A comprehensive platform for human **integrating** `single-cell chromatin accessibility data` with `causal variants`.
 
 ![overview.png](src/main/resources/storage/img/overview.png)
 

@@ -3,7 +3,7 @@ package com.spring.boot.util.constant;
 import lombok.Getter;
 
 /**
- * 异常集合
+ * Collection of exceptions
  *
  * @author Zhengmin Yu
  */
@@ -11,7 +11,7 @@ import lombok.Getter;
 public enum SystemException {
 
     /**
-     * 异常信息
+     * Exception information
      */
     INVALID_RESOURCE(90001, "Invalid resource"),
     INVALID_OPERATION(90002, "Invalid operation"),
@@ -26,16 +26,16 @@ public enum SystemException {
     THREAD_TIMEOUT_ERROR(90011, "Thread timeout"),
     BEAN_MISSING_ERROR(90011, "Bean missing"),
     /**
-     * 代表疑似被攻击: 内容填写疑似被攻击会返回给前端页面
+     * Indicates a suspected attack: The content indicating a suspected attack will be returned to the front-end page
      */
     SUSPECTED_ATTACKED(90099, "It's impossible to occur");
 
     /**
-     * 代码
+     * Code
      */
     private final int code;
     /**
-     * 服务名
+     * Exception message
      */
     private final String exception;
 

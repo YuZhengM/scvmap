@@ -3,6 +3,7 @@ package com.spring.boot.pojo;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @TableName("t_enhancer_sea_hg38")
 @Data
+@Schema(name = "EnhancerSeaHg38", description = "Table for enhancer information in hg38")
 public class EnhancerSeaHg38 extends EnhancerSea implements Serializable {
 
     @Serial

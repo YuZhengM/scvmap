@@ -10,6 +10,10 @@ import com.spring.boot.util.model.PageResult;
 import com.spring.boot.util.model.Result;
 import com.spring.boot.util.model.vo.FieldNumber;
 import com.spring.boot.util.util.result.ResultUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +28,7 @@ import java.util.List;
 @RequestMapping("/search")
 @CrossOrigin
 @RestController
+@Tag(name = "Search-API", description = "Controller for handling search-related requests")
 public class SearchController {
 
     private SearchService searchService;
@@ -49,6 +54,7 @@ public class SearchController {
      *
      * @return Result containing the list of sources.
      */
+    @Operation(summary = "List all sources", description = "Retrieves a list of all sources.")
     @GetMapping("/source/list")
     public Result<List<Source>> listSourceInfo() {
         List<Source> sourceList = searchService.listSourceInfo();
@@ -61,6 +67,14 @@ public class SearchController {
      * @param traitIdList List of trait IDs to filter sources.
      * @return Result containing the list of sources matching the provided trait IDs.
      */
+    @Operation(
+        summary = "List sources by trait ID list",
+        description = "Retrieves a list of sources based on a list of trait IDs.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "List of trait IDs to filter sources.",
+            required = true
+        )
+    )
     @PostMapping("/source/trait_id_list")
     public Result<List<Source>> listSourceInfoByTraitIdList(@RequestBody List<String> traitIdList) {
         List<Source> sourceList = searchService.listSourceInfoByTraitIdList(traitIdList);
@@ -72,6 +86,7 @@ public class SearchController {
      *
      * @return Result containing the list of trait categories and their counts.
      */
+    @Operation(summary = "List trait categories", description = "Retrieves a list of trait categories with their counts.")
     @GetMapping("/trait/category/list")
     public Result<List<FieldNumber>> listCategory() {
         List<FieldNumber> categoryList = searchService.listCategory();
@@ -84,6 +99,13 @@ public class SearchController {
      * @param category The category to filter subcategories.
      * @return Result containing the list of subcategories for the specified category.
      */
+    @Operation(
+        summary = "List subcategories by category",
+        description = "Retrieves a list of subcategories for a given trait category.",
+        parameters = {
+            @Parameter(name = "category", in = ParameterIn.PATH, description = "The category to filter subcategories.", required = true)
+        }
+    )
     @GetMapping("/trait/subcategory/list/{category}")
     public Result<List<FieldNumber>> listSubcategoryByCategory(@PathVariable String category) {
         List<FieldNumber> subcategoryList = searchService.listSubcategoryByCategory(category);
@@ -95,6 +117,7 @@ public class SearchController {
      *
      * @return Result containing the list of cell types and their counts.
      */
+    @Operation(summary = "List cell types", description = "Retrieves a list of cell types with their counts.")
     @GetMapping("/sample/cell_type/list")
     public Result<List<FieldNumber>> listCellType() {
         List<FieldNumber> cellTypeList = searchService.listCellType();
@@ -106,6 +129,7 @@ public class SearchController {
      *
      * @return Result containing the list of tissue types and their counts.
      */
+    @Operation(summary = "List tissue types", description = "Retrieves a list of tissue types with their counts.")
     @GetMapping("/sample/tissue_type/list")
     public Result<List<FieldNumber>> listTissueType() {
         List<FieldNumber> tissueTypeList = searchService.listTissueType();
@@ -118,6 +142,14 @@ public class SearchController {
      * @param traitSearchVO The search criteria for traits.
      * @return Result containing the paginated list of traits matching the search criteria.
      */
+    @Operation(
+        summary = "List traits by search criteria",
+        description = "Retrieves a paginated list of traits based on search criteria.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "The search criteria for traits.",
+            required = true
+        )
+    )
     @PostMapping("/result/trait")
     public Result<PageResult<Trait>> listTraitBySearchTrait(@RequestBody TraitSearchVO traitSearchVO) {
         PageResult<Trait> traitPageResult = searchService.listTraitByTraitInfo(traitSearchVO);
@@ -130,6 +162,14 @@ public class SearchController {
      * @param sampleSearchVO The search criteria for samples.
      * @return Result containing the paginated list of samples matching the search criteria.
      */
+    @Operation(
+        summary = "List samples by search criteria",
+        description = "Retrieves a paginated list of samples based on search criteria.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "The search criteria for samples.",
+            required = true
+        )
+    )
     @PostMapping("/result/sample")
     public Result<PageResult<Sample>> listSampleBySearchSample(@RequestBody SampleSearchVO sampleSearchVO) {
         PageResult<Sample> samplePageResult = searchService.listSampleBySearchSample(sampleSearchVO);
@@ -141,6 +181,7 @@ public class SearchController {
      *
      * @return Result containing the list of genes.
      */
+    @Operation(summary = "List all genes", description = "Retrieves a list of all genes.")
     @GetMapping("/gene/list")
     public Result<List<String>> listGene() {
         List<String> geneList = searchService.listGene();
@@ -152,6 +193,7 @@ public class SearchController {
      *
      * @return Result containing the list of TFs.
      */
+    @Operation(summary = "List all transcription factors", description = "Retrieves a list of all transcription factors (TFs).")
     @GetMapping("/tf/list")
     public Result<List<String>> listTf() {
         List<String> tfList = searchService.listTf();

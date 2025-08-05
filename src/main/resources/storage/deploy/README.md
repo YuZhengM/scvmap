@@ -57,8 +57,4 @@ location /scvdb_service/ {
     proxy_set_header Host $host:$server_port;
 }
 
-location /scvdb_api {
-    alias ${project_path}/data/API/V1.0.0;
-    autoindex on;
-}
 ```

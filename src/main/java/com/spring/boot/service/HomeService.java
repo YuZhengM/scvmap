@@ -5,6 +5,6 @@ import com.spring.boot.util.util.result.Page;
 
 public interface HomeService {
 
-    HomeResultVO getIdByContent(String label, String content, Page page);
+    HomeResultVO getSearchResultByContent(String label, String content, Page page);
 
 }

@@ -5,7 +5,6 @@ import com.spring.boot.util.util.number.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -502,36 +501,6 @@ public class NumberUtil extends MathUtil {
             return true;
         }
         return ObjectUtils.isEmpty(number);
-    }
-
-    /**
-     * 字符串转 Integer
-     *
-     * @param number 数
-     * @return Integer
-     */
-    public static Integer createInteger(String number) {
-        return MathUtil.createInteger(StringUtil.trim(number));
-    }
-
-    /**
-     * 字符串转 Double
-     *
-     * @param number 数
-     * @return Double
-     */
-    public static Double createDouble(String number) {
-        return MathUtil.createDouble(StringUtil.trim(number));
-    }
-
-    /**
-     * 字符串转 BigDecimal
-     *
-     * @param number 数
-     * @return BigDecimal
-     */
-    public static BigDecimal createBigDecimal(String number) {
-        return MathUtil.createBigDecimal(StringUtil.trim(number));
     }
 
     /**

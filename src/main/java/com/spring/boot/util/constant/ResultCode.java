@@ -3,13 +3,13 @@ package com.spring.boot.util.constant;
 import com.spring.boot.util.model.Result;
 
 /**
- * 数据 Controller 层向前端响应的数据类型中响应状态码
+ * Response status codes in the data type responded by the data Controller layer to the front-end
  * <pre>
- *     2 开头: 正常状态
- *     3000: 代表一切非正常状态
- *     3 开头: 非法状态
- *     4 开头: 权限限制等状态
- *     5 开头: 服务器问题等状态
+ *     Starting with 2: Normal status
+ *     3000: Represents all abnormal statuses
+ *     Starting with 3: Illegal status
+ *     Starting with 4: Permission-restricted statuses
+ *     Starting with 5: Server issues and other statuses
  * </pre>
  *
  * @author Zhengmin Yu
@@ -19,37 +19,40 @@ public class ResultCode {
 
 
     /**
-     * 成功状态码
+     * Success status code
      */
     public static final int SUCCESS = 20000;
     /**
-     * 转发状态码
+     * Forward status code
      */
     public static final int FORWARD = 20001;
+    /**
+     * Client disconnected status code
+     */
     public static final int CLIENT_DISCONNECTED = 21001;
     /**
-     * 失败状态码
+     * Failure status code
      */
     @Deprecated
     public static final int FAIL = 30000;
     /**
-     * 非法参数
+     * Illegal parameter
      */
     public static final int ILLEGAL_PARAMETER = 30001;
     /**
-     * 空参
+     * Null parameter
      */
     public static final int ILLEGAL_NULL = 30002;
     /**
-     * 无效操作
+     * Invalid operation
      */
     public static final int INVALID_OPERATION = 30003;
     /**
-     * 无权限访问
+     * No access permission
      */
     public static final int NO_ACCESS = 40000;
     /**
-     * 服务器问题
+     * Server problem
      */
     public static final int SERVER_PROBLEM = 50000;
 }

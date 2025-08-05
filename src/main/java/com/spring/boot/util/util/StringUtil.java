@@ -5,8 +5,6 @@ import com.spring.boot.util.constant.CommonCode;
 import com.spring.boot.util.factory.LogFactory;
 import com.spring.boot.util.factory.log.Log;
 import com.spring.boot.util.util.number.MathUtil;
-import com.spring.boot.util.util.string.ArrayUtil;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -18,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @author Zhengmin Yu
  */
-public class StringUtil extends ArrayUtil {
+public class StringUtil {
 
     private static final Log log = LogFactory.getLog(StringUtil.class);
 
@@ -60,7 +58,7 @@ public class StringUtil extends ArrayUtil {
         // 添加雪花算法的随机数
         stringBuffer.append(randomMax31);
         // 形成
-        String randomId = stringBuffer.toString().replaceAll("[-]", "");
+        String randomId = stringBuffer.toString().replaceAll("-", "");
         // 控制长度返回
         return StringUtil.appendBlankCut(randomId, 62);
     }
@@ -149,7 +147,7 @@ public class StringUtil extends ArrayUtil {
         if (NullUtil.STRING_NOTHING.equals(str1) && NullUtil.STRING_NOTHING.equals(str2)) {
             return true;
         }
-        return equals(str1, str2);
+        return Objects.equals(str1, str2);
     }
 
     /**
@@ -237,36 +235,6 @@ public class StringUtil extends ArrayUtil {
         Matcher matcher = regex.matcher(text);
         // 返回匹配结果
         return matcher.replaceAll(replaceString);
-    }
-
-    /**
-     * 随机生成字符串-字母
-     *
-     * @param count 个数
-     * @return 随机字符串
-     */
-    public static String randomAlphabetic(int count) {
-        return RandomStringUtils.randomAlphabetic(count);
-    }
-
-    /**
-     * 随机生成字符串-数字
-     *
-     * @param count 个数
-     * @return 随机字符串
-     */
-    public static String randomNumeric(int count) {
-        return RandomStringUtils.randomNumeric(count);
-    }
-
-    /**
-     * 随机生成指定字符
-     *
-     * @param count 个数
-     * @return 随机字符串
-     */
-    public static String random(int count, char... symbol) {
-        return RandomStringUtils.random(count, symbol);
     }
 
     /**

@@ -1,35 +1,43 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
 
 /**
+ * Echarts Link
+ * 
  * @author Zhengmin Yu
  */
 @ToString
 @Data
+@Schema(name = "EchartsLink", description = "Represents a link in Echarts, used to define the connection between nodes.")
 public class EchartsLink implements Serializable {
-
+ 
     /**
-     * 边的源节点名称的字符串
+     * String of the source node name of the edge
      */
+    @Schema(description = "Name of the source node of the edge.")
     private String source;
 
     /**
-     * 边的目标节点名称的字符串
+     * String of the target node name of the edge
      */
+    @Schema(description = "Name of the target node of the edge.")
     private String target;
 
     /**
-     * 边的数值，可以在力引导布局中用于映射到边的长度
+     * The value of the edge, which can be used to map to the edge length in the force-directed layout
      */
+    @Schema(description = "Value of the edge, which can be used to map to the edge length in the force-directed layout.")
     private Double value;
 
     /**
-     * 边的样式
+     * The style of the edge
      */
+    @Schema(description = "Style of the edge.")
     private EchartsLineStyle lineStyle;
 
 }

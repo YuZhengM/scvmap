@@ -2,6 +2,8 @@ package com.spring.boot.service.impl;
 
 import com.spring.boot.config.bean.Path;
 import com.spring.boot.service.FileService;
+import com.spring.boot.util.constant.SystemException;
+import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.factory.LogFactory;
 import com.spring.boot.util.factory.log.Log;
 import com.spring.boot.util.util.FileUtil;
@@ -71,6 +73,11 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public void deleteFile(String fileId) {
+
+        if (StringUtil.isEqual(fileId, "example_genes.txt") || StringUtil.isEqual(fileId, "example_tfs.txt")) {
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+
         // Retrieve the working path from the Path object
         String workPath = path.getWorkPath();
         // Construct the user-specific path for file storage
@@ -78,7 +85,13 @@ public class FileServiceImpl implements FileService {
         // Log the file deletion path and filename
         log.info("[deleteFile]: Delete file ==> path: {}, filename: {}", userPath, fileId);
         // Delete the file from the server
-        FileUtil.delete(userPath + fileId);
+        boolean isDelete = FileUtil.delete(userPath + fileId);
+
+        if (!isDelete) {
+            log.error("[deleteFile]: Delete file-error ==> path: {}, filename: {}", userPath, fileId);
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+
     }
 
     @Override

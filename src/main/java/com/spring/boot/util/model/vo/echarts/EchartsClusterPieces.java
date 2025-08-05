@@ -1,5 +1,6 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
@@ -7,6 +8,7 @@ import java.io.Serializable;
 /**
  * @author Zhengmin Yu
  */
+@Schema(description = "Data model for ECharts cluster pieces")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -15,19 +17,21 @@ import java.io.Serializable;
 public class EchartsClusterPieces implements Serializable {
 
     /**
-     * 值
+     * The value of the cluster piece
      */
+    @Schema(description = "The value of the cluster piece")
     private Integer value;
 
     /**
-     * 标签
+     * The label of the cluster piece
      */
+    @Schema(description = "The label of the cluster piece")
     private String label;
 
     /**
-     * 标签
+     * The color of the cluster piece
      */
+    @Schema(description = "The color of the cluster piece")
     private String color;
-
 
 }

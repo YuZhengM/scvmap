@@ -1,62 +1,79 @@
 package com.spring.boot.util.model.vo.echarts;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
 
 /**
+ * Echarts Node
+ * 
  * @author Zhengmin Yu
  */
 @ToString
 @Data
+@Schema(name = "EchartsNode", description = "Represents a node in Echarts visualization.")
 public class EchartsNode implements Serializable {
 
-    private String id;
-
     /**
-     * 数据项名称
+     * String of the id of the node
      */
+    @Schema(description = "ID string of the node")
+    private String id;
+ 
+    /**
+     * Name of the data item
+     */
+    @Schema(description = "Name of the data item")
     private String name;
 
     /**
-     * 节点的初始 x 值
+     * Initial x value of the node
      */
+    @Schema(description = "Initial x-coordinate value of the node")
     private Double x;
 
     /**
-     * 节点的初始 y 值
+     * Initial y value of the node
      */
+    @Schema(description = "Initial y-coordinate value of the node")
     private Double y;
 
     /**
-     * 数据项值
+     * Value of the data item
      */
+    @Schema(description = "Value of the data item")
     private String value;
 
     /**
-     * 球的大小
+     * Size of the ball
      */
+    @Schema(description = "Size of the ball representing the node")
     private Double symbolSize;
 
     /**
-     * 种类
+     * Category
      */
+    @Schema(description = "Category of the node")
     private String category;
 
     /**
-     * 该节点的样式
+     * Style of this node
      */
+    @Schema(description = "Style configuration of this node")
     private EchartsItemStyle itemStyle;
 
     /**
-     * 该节点标签的样式
+     * Style of this node's label
      */
+    @Schema(description = "Style configuration of this node's label")
     private EchartsLabel label;
 
     /**
-     * 该节点的高亮状态
+     * Highlight state of this node
      */
+    @Schema(description = "Highlight state configuration of this node")
     private EchartsEmphasis emphasis;
 
 }

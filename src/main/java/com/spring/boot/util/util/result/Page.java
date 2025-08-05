@@ -1,11 +1,12 @@
 package com.spring.boot.util.util.result;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
 
 /**
- * 分页的请求信息
+ * Pagination request information
  *
  * @author Zhengmin Yu
  */
@@ -14,52 +15,74 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString
 @Data
+@Schema(name = "Page", description = "Pagination request information")
 public class Page implements Serializable {
 
     /**
-     * 展示的页数
+     * Page number to display
      */
+    @Schema(description = "Page number to display", defaultValue = "1")
     @Builder.Default
     private int page = 1;
 
     /**
-     * 每页的行数
+     * Number of rows per page
      */
+    @Schema(description = "Number of rows per page", defaultValue = "10")
     @Builder.Default
     private int size = 10;
 
     /**
-     * 排序的字段
+     * Field for sorting
      */
+    @Schema(description = "Field for sorting", example = "")
     private String field;
 
     /**
-     * 排序字段的顺序类型
-     * 0: 不排序
-     * 1: 升序
-     * -1: 降序
+     * Sorting order type for the field.
+     * 0: No sorting
+     * 1: Ascending
+     * -1: Descending
      */
+    @Schema(description = "Sorting order type for the field. 0: No sorting, 1: Ascending, -1: Descending", defaultValue = "0")
     @Builder.Default
     private int order = 0;
 
     /**
-     * 搜索字段的字段名
+     * Field name for searching
      */
+    @Schema(description = "Field name for searching", example = "")
     private String searchField;
 
     /**
-     * 搜索字段的内容信息
+     * Content information of the search field
      */
+    @Schema(description = "Content information of the search field", example = "")
     private String content;
 
     /**
-     * 搜索字段的类型信息
-     * 1: 字符类型
-     * 2: 数字类型
+     * Type information of the search field.
+     * 1: String type
+     * 2: Number type
      */
+    @Schema(description = "Type information of the search field. 1: String type, 2: Number type", defaultValue = "1")
     @Builder.Default
     private int type = 1;
 
+    /**
+     * Symbol information representing operations.
+     * 1: =
+     * 2: !=
+     * 3: >
+     * 4: >=
+     * 5: <
+     * 6: <=
+     * 7: contain
+     * 8: not-contain
+     * 9: starts with
+     * 10: ends with
+     */
+    @Schema(description = "Symbol information representing operations. 1: =, 2: !=, 3: >, 4: >=, 5: <, 6: <=, 7: contain, 8: not-contain, 9: starts with, 10: ends with", defaultValue = "1")
     @Builder.Default
     private int symbol = 1;
 

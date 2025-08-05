@@ -24,11 +24,6 @@ public class ApplicationUtil {
 
     private static final Log log = LogFactory.getLog(ApplicationUtil.class);
 
-    private static final List<String> chrList = Arrays.asList(
-            "chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13",
-            "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chrX", "chrY"
-    );
-
     public static EchartsPieData<String, String> getCellTypeCountEchartsData(List<SampleCellType> sampleCellTypeList) {
         if (ListUtil.isEmpty(sampleCellTypeList)) {
             log.warn("[getCellTypeCountEchartsData] clusterCellTypeCountList: Data is empty.");
@@ -118,17 +113,6 @@ public class ApplicationUtil {
     }
 
     /**
-     * Convert the numeric result returned by Python into a list of integers.
-     *
-     * @param result The numeric result returned by Python
-     * @return The converted integer list
-     */
-    public static List<Integer> listIntegerByPythonResult(String result) {
-        List<String> strings = listNumberByPythonResult(result);
-        return strings.stream().map(Integer::parseInt).toList();
-    }
-
-    /**
      * Convert the numeric result returned by Python into a list of doubles.
      *
      * @param result The numeric result returned by Python
@@ -146,7 +130,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the sample ID is invalid
      */
     public static void checkSampleId(String sampleId) {
-        if (!sampleId.startsWith("sample_id")) {
+        if (StringUtil.isEmpty(sampleId) || !sampleId.startsWith("sample_id")) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
@@ -158,7 +142,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the source ID is invalid
      */
     public static void checkSourceId(String sourceId) {
-        if (!sourceId.startsWith("source_id")) {
+        if (StringUtil.isEmpty(sourceId) || !sourceId.startsWith("source_id")) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
@@ -170,7 +154,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the trait ID is invalid
      */
     public static void checkTraitId(String traitId) {
-        if (!traitId.startsWith("trait_id")) {
+        if (StringUtil.isEmpty(traitId) || !traitId.startsWith("trait_id")) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
@@ -182,7 +166,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the genome version is invalid
      */
     public static void checkGenome(String genome) {
-        if (StringUtil.isNotEqual(genome, "hg38") && StringUtil.isNotEqual(genome, "hg19")) {
+        if (StringUtil.isEmpty(genome) || (StringUtil.isNotEqual(genome, "hg38") && StringUtil.isNotEqual(genome, "hg19"))) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
@@ -194,7 +178,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the method name is invalid
      */
     public static void checkMethod(String method) {
-        if (StringUtil.isNotEqual(method, "gchromvar") && StringUtil.isNotEqual(method, "scavenge")) {
+        if (StringUtil.isEmpty(method) || (StringUtil.isNotEqual(method, "gchromvar") && StringUtil.isNotEqual(method, "scavenge"))) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
@@ -206,19 +190,7 @@ public class ApplicationUtil {
      * @throws RunException Thrown when the strategy name is invalid
      */
     public static void checkStrategy(String strategy) {
-        if (StringUtil.isNotEqual(strategy, "mean") && StringUtil.isNotEqual(strategy, "median") && StringUtil.isNotEqual(strategy, "sum")) {
-            throw new RunException(SystemException.ILLEGAL_PARAMETER);
-        }
-    }
-
-    /**
-     * Check if the chromosome name is valid.
-     *
-     * @param chr The chromosome name
-     * @throws RunException Thrown when the chromosome name is invalid
-     */
-    public static void checkChr(String chr) {
-        if (StringUtil.isNotContain(chr, chrList)) {
+        if (StringUtil.isEmpty(strategy) || (StringUtil.isNotEqual(strategy, "mean") && StringUtil.isNotEqual(strategy, "median") && StringUtil.isNotEqual(strategy, "sum"))) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }
