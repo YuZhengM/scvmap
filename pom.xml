@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.spring.boot</groupId>
-    <artifactId>SCVdb</artifactId>
+    <artifactId>scVMAP</artifactId>
     <version>1.0.0</version>
-    <name>SCVdb_service</name>
-    <description>SCVdb</description>
+    <name>scVMAP_service</name>
+    <description>scVMAP</description>
     <!-- 生成 war 包 -->
     <packaging>war</packaging>
     <properties>

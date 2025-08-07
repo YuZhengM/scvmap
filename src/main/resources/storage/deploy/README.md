@@ -31,8 +31,8 @@ redis-cli -n 4 -a ${redis_password} FLUSHDB
 ### The content added to the host `nginx.conf`
 
 ```shell
-location /scvdb {
-    proxy_pass http://localhost:${front_end_port}/scvdb;
+location /scvmap {
+    proxy_pass http://localhost:${web_port}/scvmap;
     index  index.html index.htm index.jsp;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header REMOTE-HOST $remote_addr;
@@ -40,16 +40,16 @@ location /scvdb {
     proxy_set_header Host $host:$server_port;
 }
 
-location /scvdb_static {
-    proxy_pass http://localhost:${front_end_port}/static;
+location /scvmap_static {
+    proxy_pass http://localhost:${web_port}/data;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header REMOTE-HOST $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $host:$server_port;
 }
 
-location /scvdb_service/ {
-    proxy_pass http://localhost:${back_end_port}/scvdb_service/;
+location /scvmap_service/ {
+    proxy_pass http://localhost:${service_port}/scvmap_service;
     index  index.html index.htm index.jsp;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header REMOTE-HOST $remote_addr;

@@ -1,12 +1,12 @@
-# Welcome to SCVdb Database Development Back-end!
+# Welcome to scVMAP Platform Development Back-end!
 
-> SCVdb: https://bio.liclab.net/scvdb/
+> scVMAP: https://bio.liclab.net/scvmap/
 
-> SCVdb tutorial: https://scvdb-tutorial.readthedocs.io/en/latest/index.html
+> scVMAP tutorial: https://scvmap.readthedocs.io/en/latest/
 
-> SCVdb front-end: https://github.com/YuZhengM/scvdb_web
+> scVMAP front-end: https://github.com/YuZhengM/scvmap_web
 
-> SCVdb API: https://bio.liclab.net/scvdb_service/swagger-ui/index.html
+> scVMAP API: https://bio.liclab.net/scvmap_service/swagger-ui/index.html
 
 A comprehensive platform for human **integrating** `single-cell chromatin accessibility data` with `causal variants`.
 
@@ -14,7 +14,7 @@ A comprehensive platform for human **integrating** `single-cell chromatin access
 
 ## Introduction
 
-> Bioinformatics website: SCVdb
+> Bioinformatics website: scVMAP
 
 > Framework: SpringBoot (3.0.5)
 
