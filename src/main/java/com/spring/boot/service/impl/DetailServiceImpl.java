@@ -16,7 +16,6 @@ import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.model.vo.echarts.SeriesPieData;
 import com.spring.boot.util.model.vo.plotly.PlotlyClusterData;
 import com.spring.boot.util.model.vo.plotly.PlotlyData;
-import com.spring.boot.util.util.NumberUtil;
 import com.spring.boot.util.util.StringUtil;
 import com.spring.boot.util.util.result.Page;
 import com.spring.boot.util.util.result.PageResultUtil;
