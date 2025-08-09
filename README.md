@@ -10,6 +10,10 @@
 
 A comprehensive platform for **integrating** `single-cell chromatin accessibility regions` with `causal variants`.
 
+![overview.png](src/main/resources/storage/img/overview.png)
+
+## Introduction
+
 scVMAP is a user-centric database that offers intuitive workflows, customizable parameters, and comprehensive data accessibility, featuring:
 
 1. Integrates causal variants and chromatin accessibility regions at single-cell resolution.
@@ -24,9 +28,7 @@ scVMAP is a user-centric database that offers intuitive workflows, customizable 
 10. Publishes full-stack development code.
 11. Provides API interfaces for data access.
 
-![overview.png](src/main/resources/storage/img/overview.png)
-
-## Introduction
+## Implementation
 
 > Bioinformatics website: scVMAP
 
