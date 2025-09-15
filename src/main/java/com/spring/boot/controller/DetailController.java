@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static com.spring.boot.util.constant.ApplicationConstant.*;
 import static com.spring.boot.util.util.ApplicationUtil.*;
@@ -368,6 +369,13 @@ public class DetailController {
         return ResultUtil.success("[listDifferenceTfBySampleId]: Query result", differenceTfList);
     }
 
+    @GetMapping("/chromvar_difference_tf/{sample_id}/{cell_type}")
+    public Result<List<ChromVarDifferenceTf>> listChromvarDifferenceTfBySampleId(@PathVariable("sample_id") String sampleId, @PathVariable("cell_type") String cellType) {
+        checkSampleId(sampleId);
+        List<ChromVarDifferenceTf> chromVarDifferenceTfList = detailService.listChromvarDifferenceTfBySampleId(sampleId, cellType);
+        return ResultUtil.success("[listChromvarDifferenceTfBySampleId]: Query result", chromVarDifferenceTfList);
+    }
+
     @Operation(
             summary = "Get difference TF heatmap by sample ID",
             description = "Retrieves the difference TF heatmap data based on the provided sample ID and other parameters.",
@@ -403,6 +411,25 @@ public class DetailController {
         checkGenome(genome);
         List<Magma> magmaList = detailService.listMagmaGeneByTraitId(traitId, genome);
         return ResultUtil.success("Magma genes retrieved successfully", magmaList);
+    }
+
+    @GetMapping("/cicero_trait_gene/{sample_id}/{trait_id}")
+    public Result<List<CiceroSampleTraitGene>> listCiceroTraitGeneBySampleIdAndTraitId(@PathVariable("sample_id") String sampleId, @PathVariable("trait_id") String traitId) {
+        checkSampleId(sampleId);
+        checkTraitId(traitId);
+        List<CiceroSampleTraitGene> ciceroSampleTraitGeneList = detailService.listCiceroTraitGeneBySampleIdAndTraitId(sampleId, traitId);
+        return ResultUtil.success("Cicero trait-gene pairs retrieved successfully", ciceroSampleTraitGeneList);
+    }
+
+    @GetMapping("/cicero_magma_gene/overlap/{sample_id}/{trait_id}/{genome}")
+    public Result<Map<String, Object>> getCiceroAndMagmaOverlapGene(@PathVariable("sample_id") String sampleId,
+                                                                    @PathVariable("trait_id") String traitId,
+                                                                    @PathVariable("genome") String genome) {
+        checkSampleId(sampleId);
+        checkTraitId(traitId);
+        checkGenome(genome);
+        Map<String, Object> overlapGeneList = detailService.getCiceroAndMagmaOverlapGene(sampleId, traitId, genome);
+        return ResultUtil.success("Cicero (ATAC-based) and MAGMA (LD) identify the overlap of trait-relevant genes", overlapGeneList);
     }
 
     /**

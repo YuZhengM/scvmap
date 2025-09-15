@@ -1,5 +1,8 @@
 package com.spring.boot.util.util;
 
+import ch.ethz.ssh2.Connection;
+import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.spring.boot.pojo.SampleCellType;
@@ -7,10 +10,17 @@ import com.spring.boot.util.constant.SystemException;
 import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.factory.LogFactory;
 import com.spring.boot.util.factory.log.Log;
+import com.spring.boot.util.model.LinuxResult;
 import com.spring.boot.util.model.vo.FieldNumber;
 import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.model.vo.echarts.SeriesPieData;
+import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +33,84 @@ import java.util.Map;
 public class ApplicationUtil {
 
     private static final Log log = LogFactory.getLog(ApplicationUtil.class);
+
+    public static LinuxResult execLinuxCommand(String host, int port, String username, String password, String keyFile, String command) throws IOException {
+        // Create a new SSH connection
+        Connection connection = new Connection(host, port);
+        // Create a list to hold the command execution results
+        List<String> result = new ArrayList<>();
+        boolean isSuccess = true;
+        // Connect to the host
+        connection.connect();
+        // Authenticate with password
+        boolean authenticated;
+        if (StringUtil.isEmpty(password)) {
+            authenticated = connection.authenticateWithPublicKey(username, new File(keyFile), password);
+        } else {
+            authenticated = connection.authenticateWithPassword(username, password);
+        }
+        if (!authenticated) {
+            throw new IOException("Authentication failed.");
+        } else {
+            // Open a session for command execution
+            Session session = connection.openSession();
+            // Execute the command with UTF-8 encoding
+            session.execCommand(command, "utf-8");
+            // StreamGobbler for stdout
+            StreamGobbler stdout = new StreamGobbler(session.getStdout());
+            // StreamGobbler for stderr
+            StreamGobbler stderr = new StreamGobbler(session.getStderr());
+            // BufferedReader for stdout
+            BufferedReader stdoutBuffer = new BufferedReader(new InputStreamReader(stdout));
+            // BufferedReader for stderr
+            BufferedReader stderrBuffer = new BufferedReader(new InputStreamReader(stderr));
+            log.info("[execLinuxCommand]: Executing Linux command >>>> {}", command);
+            // Read stdout line by line
+            for (String line = stdoutBuffer.readLine(); line != null; line = stdoutBuffer.readLine()) {
+                result.add(line + "\n");
+            }
+            // Read stderr line by line
+            for (String line = stderrBuffer.readLine(); line != null; line = stderrBuffer.readLine()) {
+                isSuccess = false;
+                log.error("[execLinuxCommand]: Linux error line >>>> {}", line);
+                result.add(line);
+            }
+            // Close the BufferedReader instances
+            stdoutBuffer.close();
+            stderrBuffer.close();
+            // Close the session
+            session.close();
+        }
+        // Close the connection
+        connection.close();
+        return LinuxResult.builder().resultList(result).status(isSuccess).build();
+    }
+
+    public static String getUserIp(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+
+        // 对于通过多个代理的情况，第一个IP才是客户端真实IP
+        if (ipAddress != null && ipAddress.contains(",")) {
+            ipAddress = ipAddress.split(",")[0].trim();
+        }
+        return ipAddress;
+    }
 
     public static EchartsPieData<String, String> getCellTypeCountEchartsData(List<SampleCellType> sampleCellTypeList) {
         if (ListUtil.isEmpty(sampleCellTypeList)) {
@@ -78,12 +166,21 @@ public class ApplicationUtil {
     /**
      * Extract the trait signal ID from the trait ID.
      *
-     * @param traitId The trait ID
+     * @param traitId    The trait ID
+     * @param groupCount The group count
      * @return The trait signal ID
      */
-    public static String getTraitSignalId(String traitId) {
+    public static String getTraitSignalId(String traitId, int groupCount) {
         int idValue = Integer.parseInt(traitId.split("_")[traitId.split("_").length - 1]);
-        return String.valueOf(idValue % 100);
+        return String.valueOf(idValue % groupCount);
+    }
+
+    public static String getTraitSignalId(String traitId) {
+        return getTraitSignalId(traitId, 100);
+    }
+
+    public static String getTrait20SignalId(String traitId) {
+        return getTraitSignalId(traitId, 20);
     }
 
     /**

@@ -30,7 +30,7 @@ import static com.spring.boot.util.util.number.MathUtil.generateCircleRandomCoor
 /**
  * @author Administrator
  */
-@CacheConfig(cacheNames = "search", keyGenerator = "cacheKeyGenerator")
+@CacheConfig(cacheNames = "variant_detail", keyGenerator = "cacheKeyGenerator")
 @Service
 public class VariantDetailServiceImpl implements VariantDetailService {
 

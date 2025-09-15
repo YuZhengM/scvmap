@@ -2,6 +2,7 @@ package com.spring.boot.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.spring.boot.config.bean.ExecLinux;
 import com.spring.boot.config.bean.Path;
 import com.spring.boot.mapper.*;
@@ -12,8 +13,7 @@ import com.spring.boot.service.DetailService;
 import com.spring.boot.util.model.PageResult;
 import com.spring.boot.util.model.vo.FieldNumber;
 import com.spring.boot.util.model.vo.canvasXpress.CanvasXpressHeatMapData;
-import com.spring.boot.util.model.vo.echarts.EchartsPieData;
-import com.spring.boot.util.model.vo.echarts.SeriesPieData;
+import com.spring.boot.util.model.vo.echarts.*;
 import com.spring.boot.util.model.vo.plotly.PlotlyClusterData;
 import com.spring.boot.util.model.vo.plotly.PlotlyData;
 import com.spring.boot.util.util.StringUtil;
@@ -57,6 +57,9 @@ public class DetailServiceImpl implements DetailService {
     private TraitEnrichMapper traitEnrichMapper;
     private DifferenceGeneChunkMapper differenceGeneChunkMapper;
     private DifferenceTfChunkMapper differenceTfChunkMapper;
+    private CiceroSampleTraitGeneMapper ciceroSampleTraitGeneMapper;
+    private MagmaAnnoMapper magmaAnnoMapper;
+    private ChromVarDifferenceTfMapper chromVarDifferenceTfMapper;
 
     /**
      * Default constructor for DetailServiceImpl.
@@ -92,7 +95,7 @@ public class DetailServiceImpl implements DetailService {
                              ExecLinux execLinux,
                              Path path,
                              SampleEnrichSampleIdMapper sampleEnrichSampleIdMapper,
-                             TraitEnrichMapper traitEnrichMapper, DifferenceGeneChunkMapper differenceGeneChunkMapper, DifferenceTfChunkMapper differenceTfChunkMapper) {
+                             TraitEnrichMapper traitEnrichMapper, DifferenceGeneChunkMapper differenceGeneChunkMapper, DifferenceTfChunkMapper differenceTfChunkMapper, CiceroSampleTraitGeneMapper ciceroSampleTraitGeneMapper, MagmaAnnoMapper magmaAnnoMapper, ChromVarDifferenceTfMapper chromVarDifferenceTfMapper) {
         this.sourceMapper = sourceMapper;
         this.traitMapper = traitMapper;
         this.sampleMapper = sampleMapper;
@@ -108,6 +111,9 @@ public class DetailServiceImpl implements DetailService {
         this.traitEnrichMapper = traitEnrichMapper;
         this.differenceGeneChunkMapper = differenceGeneChunkMapper;
         this.differenceTfChunkMapper = differenceTfChunkMapper;
+        this.ciceroSampleTraitGeneMapper = ciceroSampleTraitGeneMapper;
+        this.magmaAnnoMapper = magmaAnnoMapper;
+        this.chromVarDifferenceTfMapper = chromVarDifferenceTfMapper;
     }
 
     /**
@@ -396,7 +402,7 @@ public class DetailServiceImpl implements DetailService {
         // Construct the command to execute the Python script
         String exec = "python3 " + python_file + " " + trs_file + " " + traitId + " " + cellRate;
         // Execute the Python command and retrieve the results
-        List<String> results = execLinux.execCommand(exec);
+        List<String> results = execLinux.execCommand(exec).getResultList();
         // Process the Python results to extract barcodes, cell types, UMAP coordinates, and values
         List<String> barcodesList = listStringByPythonResult(results.get(0));
         List<String> cellTypeList = listStringByPythonResult(results.get(1));
@@ -574,6 +580,162 @@ public class DetailServiceImpl implements DetailService {
         return magmaMapper.selectByTraitId(signalId, traitId, genome);
     }
 
+    @Cacheable
+    @Override
+    public List<CiceroSampleTraitGene> listCiceroTraitGeneBySampleIdAndTraitId(String sampleId, String traitId) {
+        String signalId = getTrait20SignalId(traitId);
+        return ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitId(sampleId, signalId, traitId);
+    }
+
+    private void addNode(String id,
+                         String category,
+                         double size,
+                         List<EchartsNode> echartsNodeList,
+                         boolean isShow,
+                         double fontSize) {
+        // Create a new Echarts node
+        EchartsNode echartsNode = new EchartsNode();
+        // Set the id of the node
+        echartsNode.setId(id);
+        // Set the name of the node
+        echartsNode.setName(id);
+        // Set the category of the node
+        echartsNode.setCategory(category);
+        // Set the item style of the node
+        echartsNode.setItemStyle(EchartsItemStyle.builder().build());
+
+        String color = "#000000";
+
+        echartsNode.setLabel(EchartsLabel.builder().show(isShow).fontSize(fontSize).color(color).build());
+
+        echartsNode.setEmphasis(EchartsEmphasis.builder().label(EchartsLabel.builder()
+                .show(true).fontSize(17D).position("top").color("#000000").build()).build());
+
+        // Set the symbol size of the node
+        echartsNode.setSymbolSize(size);
+        // Add the node to the list
+        echartsNodeList.add(echartsNode);
+    }
+
+    private void addLink(String source, String target, Double width, List<EchartsLink> echartsLinkList) {
+        // Create a new Echarts link
+        EchartsLink echartsLink = new EchartsLink();
+        // Set the source of the link
+        echartsLink.setSource(source);
+        // Set the target of the link
+        echartsLink.setTarget(target);
+        // Set the value of the link
+        echartsLink.setValue(width);
+        // Set the line style of the link
+        echartsLink.setLineStyle(EchartsLineStyle.builder().color("source").width(width).build());
+        // Add the link to the list
+        echartsLinkList.add(echartsLink);
+    }
+
+    @Cacheable
+    @Override
+    public Map<String, Object> getCiceroAndMagmaOverlapGene(String sampleId, String traitId, String genome) {
+        String signalId = getTraitSignalId(traitId);
+        List<Magma> magmaList = magmaMapper.selectByTraitId(signalId, traitId, genome);
+        List<String> magmaGeneList = magmaList.stream().map(Magma::getGene).distinct().toList();
+
+        String signalId20 = getTrait20SignalId(traitId);
+        List<CiceroSampleTraitGene> ciceroSampleTraitGeneList = ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitId(sampleId, signalId20, traitId);
+        List<String> ciceroGeneList = ciceroSampleTraitGeneList.stream().map(BaseSnpGene::getGene).distinct().toList();
+
+        List<String> overlapGeneList = magmaGeneList.stream().filter(ciceroGeneList::contains).toList();
+        Integer intersectionSize = overlapGeneList.size();
+        Integer magmaMinusCiceroSize = Math.toIntExact(magmaGeneList.stream().filter(e -> !ciceroGeneList.contains(e)).count());
+        Integer ciceroMinusMagmaSize = Math.toIntExact(ciceroGeneList.stream().filter(e -> !magmaGeneList.contains(e)).count());
+
+        List<MagmaAnno> magmaAnnoList = magmaAnnoMapper.selectByTraitIdAndGeneList(signalId, traitId, genome, overlapGeneList);
+
+        // Initialize network visualization elements with expected capacity
+        List<EchartsLink> linkList = Lists.newArrayListWithExpectedSize(16);
+        List<EchartsNode> nodeList = Lists.newArrayListWithExpectedSize(16);
+
+        // Configure chart category taxonomy with 7 predefined types:ml-citation{ref="3" data="citationList"}
+        List<EchartsCategories> categoriesList = Lists.newArrayListWithCapacity(4);
+        categoriesList.add(EchartsCategories.builder().name("Gene").symbolSize(15D).itemStyle(EchartsItemStyle.builder().color("#e16563").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("SNP (Cicero)").symbolSize(10D).itemStyle(EchartsItemStyle.builder().color("#8cc372").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("SNP (MAGMA)").symbolSize(10D).itemStyle(EchartsItemStyle.builder().color("#f0bf57").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("SNP (Both)").symbolSize(15D).itemStyle(EchartsItemStyle.builder().color("#506bb2").build()).build());
+
+        for (String overlapGene : overlapGeneList) {
+            addNode(overlapGene, "Gene", 15D, nodeList, true, 10);
+        }
+
+        List<Integer> vennData = Arrays.asList(ciceroMinusMagmaSize, intersectionSize, magmaMinusCiceroSize);
+
+        List<String> magmaRsIdList = magmaAnnoList.stream().map(BaseSnpGene::getRsId).distinct().toList();
+
+        ciceroSampleTraitGeneList = ciceroSampleTraitGeneList.stream().filter(e -> overlapGeneList.contains(e.getGene())).toList();
+        List<String> ciceroRsIdList = ciceroSampleTraitGeneList.stream().map(BaseSnpGene::getRsId).distinct().toList();
+
+        for (String magmaRsId : magmaRsIdList) {
+            if (ciceroRsIdList.contains(magmaRsId)) {
+                addNode(magmaRsId, "SNP (Both)", 15D, nodeList, true, 10);
+            } else {
+                addNode(magmaRsId, "SNP (MAGMA)", 10D, nodeList, false, 8);
+            }
+        }
+
+        for (String ciceroRsId : ciceroRsIdList) {
+            if (!magmaRsIdList.contains(ciceroRsId)) {
+                addNode(ciceroRsId, "SNP (Cicero)", 10D, nodeList, false, 8);
+            }
+        }
+
+        List<BaseSnpGene> combinedList = new ArrayList<>();
+        combinedList.addAll(magmaAnnoList);
+        combinedList.addAll(ciceroSampleTraitGeneList.stream().filter(e -> overlapGeneList.contains(e.getGene())).toList());
+
+        combinedList = combinedList.stream()
+                .collect(Collectors.toMap(
+                        gene -> gene.getGene() + "|" + gene.getRsId(),
+                        gene -> gene,
+                        (existing, replacement) -> existing
+                )).values().stream().toList();
+
+        List<String> overlapSnpList = Lists.newArrayListWithCapacity(4);
+
+        for (BaseSnpGene baseSnpGene : combinedList) {
+            if (ciceroRsIdList.contains(baseSnpGene.getRsId()) && magmaRsIdList.contains(baseSnpGene.getRsId())) {
+                overlapSnpList.add(baseSnpGene.getRsId());
+                addLink(baseSnpGene.getRsId(), baseSnpGene.getGene(), 5D, linkList);
+            } else {
+                addLink(baseSnpGene.getRsId(), baseSnpGene.getGene(), 1D, linkList);
+            }
+        }
+
+        Map<String, Long> rsIdCountMap = combinedList.stream()
+                .collect(Collectors.groupingBy(
+                        BaseSnpGene::getRsId,
+                        Collectors.counting()
+                ));
+
+        Map<String, Long> filteredRsIdCountMap = rsIdCountMap.entrySet().stream()
+                .filter(entry -> overlapSnpList.contains(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        // 根据数量从高到低排序
+        List<Map.Entry<String, Long>> sortedEntries = filteredRsIdCountMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed()).toList();
+
+        // 提取排序后的 rsId 和 count 到两个独立的列表
+        List<String> rsIdList = sortedEntries.stream()
+                .map(Map.Entry::getKey).toList();
+
+        List<Long> countList = sortedEntries.stream()
+                .map(Map.Entry::getValue).toList();
+
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(2);
+        map.put("venn", vennData);
+        map.put("graph", EchartsGraphData.builder().nodes(nodeList).links(linkList).categories(categoriesList).build());
+        map.put("snpCount", EchartsData.<String, Long>builder().xData(rsIdList).yData(countList).build());
+        return map;
+    }
+
     /**
      * Retrieves and caches a list of Homer objects based on trait ID and genome.
      * This method fetches Homer transcription factor data associated with a specific trait and genome.
@@ -607,5 +769,13 @@ public class DetailServiceImpl implements DetailService {
         queryWrapper.eq(SampleCellType::getSampleId, sampleId);
         // Execute the select query and return the list of SampleCellType objects
         return sampleCellTypeMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<ChromVarDifferenceTf> listChromvarDifferenceTfBySampleId(String sampleId, String cellType) {
+        LambdaQueryWrapper<ChromVarDifferenceTf> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ChromVarDifferenceTf::getSampleId, sampleId);
+        queryWrapper.eq(ChromVarDifferenceTf::getCellType, cellType);
+        return chromVarDifferenceTfMapper.selectList(queryWrapper);
     }
 }

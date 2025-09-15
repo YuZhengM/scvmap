@@ -63,6 +63,11 @@ public class StringUtil {
         return StringUtil.appendBlankCut(randomId, 62);
     }
 
+    public static String getUniqueId10() {
+        String uniqueId = UUID.randomUUID().toString().replaceAll("-", "");
+        return StringUtil.appendBlankCut(uniqueId, 10);
+    }
+
     /**
      * 正方向进行补位
      * <p>

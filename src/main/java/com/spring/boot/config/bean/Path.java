@@ -23,4 +23,6 @@ public class Path {
      */
     private String workPath;
 
+    private String execFilePath;
+
 }

@@ -27,5 +27,7 @@ public class AnalysisTfVO extends AnalysisElementVO implements Serializable {
     
     @Schema(description = "P-value related to the trait.", example = "0.05")
     private Double pvalueTrait;
+    private Double mean;
+    private String strategy;
 
 }

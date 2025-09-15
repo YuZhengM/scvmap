@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.CiceroSampleTraitGeneMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.CiceroSampleTraitGene">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_trait_peak" jdbcType="VARCHAR" property="traitPeak"/>
+        <result column="f_gene_peak" jdbcType="VARCHAR" property="genePeak"/>
+        <result column="f_score" jdbcType="DOUBLE" property="score"/>
+        <result column="f_position" jdbcType="INTEGER" property="position"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+        <result column="f_pp" jdbcType="DOUBLE" property="pp"/>
+        <result column="f_trait_abbr" jdbcType="VARCHAR" property="traitAbbr"/>
+        <result column="f_gene" jdbcType="VARCHAR" property="gene"/>
+        <result column="f_weight" jdbcType="DOUBLE" property="weight"/>
+    </resultMap>
+    <select id="selectBySampleIdAndTraitId" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_trait_peak, f_gene_peak, f_score, f_position, f_rs_id, f_pp, f_trait_abbr, f_gene, f_weight
+        FROM t_cicero_trait_gene_${sampleId}_${signalId}
+        WHERE f_trait_id = #{traitId}
+    </select>
+    <select id="selectBySampleIdAndTraitIdAndScore" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_trait_peak, f_gene_peak, f_score, f_position, f_rs_id, f_pp, f_trait_abbr, f_gene, f_weight
+        FROM t_cicero_trait_gene_${sampleId}_${signalId}
+        WHERE f_trait_id = #{traitId} AND f_score >= #{score}
+    </select>
+</mapper>

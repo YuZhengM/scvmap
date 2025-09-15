@@ -1,6 +1,7 @@
 package com.spring.boot.config;
 
 import com.spring.boot.config.bean.ExecLinux;
+import com.spring.boot.config.bean.ExecLinux2;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,12 @@ public class CoreProperties {
     public ExecLinux execLinux() {
         // Create and return a new ExecLinux instance
         return new ExecLinux();
+    }
+
+    @Bean
+    public ExecLinux2 execLinux2() {
+        // Create and return a new ExecLinux instance
+        return new ExecLinux2();
     }
 
 }

@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
         // Construct the user-specific path for file storage
         String userPath = workPath + "/user/";
         // Generate a unique filename for the uploaded file
-        String filename = StringUtil.getUniqueId() + "_" + file.getOriginalFilename();
+        String filename = StringUtil.getUniqueId10() + "_" + file.getOriginalFilename();
         // Log the file upload path and filename
         log.info("[uploadFile]: User upload file path: {}, filename: {}", userPath, filename);
         // Form the file on the server using the provided input stream

@@ -61,4 +61,12 @@ public class ApplicationConstant {
 
     public static final String GENOME_EXAMPLE = "hg19";
 
+    public static final String EMAIL_ID_REPLACE_CODE = "0000000000";
+
+    public static final String EMAIL_URL_REPLACE_CODE = "1111111111";
+
+    public static final String FROM_EMAIL = "yuzhengmin.yzm@qq.com";
+
+    public static final String CHECK_EMAIL = "yuzmbio@163.com";
+
 }

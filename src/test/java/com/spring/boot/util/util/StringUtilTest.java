@@ -8,6 +8,6 @@ class StringUtilTest {
 
     @Test
     void getUniqueId() {
-        System.out.println(StringUtil.getUniqueId());
+        System.out.println(StringUtil.getUniqueId10());
     }
 }

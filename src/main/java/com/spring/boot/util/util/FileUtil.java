@@ -1,17 +1,22 @@
 package com.spring.boot.util.util;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.spring.boot.util.constant.CommonCode;
 import com.spring.boot.util.constant.SystemException;
 import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.factory.LogFactory;
 import com.spring.boot.util.factory.log.Log;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.WillClose;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -82,7 +87,7 @@ public class FileUtil {
      * @return File name
      */
     public static String formation(String path, String name, String suffix, String textarea) {
-        String fileName = StringUtil.getUniqueId() + name + "." + suffix;
+        String fileName = StringUtil.getUniqueId10() + name + "." + suffix;
         try {
             File inputFile = new File(path, fileName);
             if (before(path, inputFile)) {
@@ -254,6 +259,31 @@ public class FileUtil {
     }
 
     /**
+     * 文件读取
+     *
+     * @param filePath 文件的 resources 下的路径
+     * @return 文件的内容
+     */
+    public static String readResourceToString(String filePath, String encoding) {
+        // 获取容器资源解析器
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        // 获取所有匹配的文件
+        Resource resource = resolver.getResource(filePath);
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream(), encoding));
+            String s;
+            while ((s = br.readLine()) != null) {
+                stringBuilder.append(s);
+            }
+            br.close();
+        } catch (Exception e) {
+            log.error("[readResourceToString]: Failed to read file to string. {}, {}", e.getMessage(), e.getStackTrace());
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
      * Read a file and return its content as a string.
      *
      * @param filePath File absolute path
@@ -262,30 +292,19 @@ public class FileUtil {
      */
     public static String readToString(String filePath, String encoding) {
         StringBuilder stringBuilder = new StringBuilder();
-        @WillClose InputStream inputStream = null;
-        @WillClose InputStreamReader inputStreamReader = null;
-        try {
-            inputStream = new FileInputStream(filePath);
-            inputStreamReader = new InputStreamReader(inputStream, encoding);
-            BufferedReader br = new BufferedReader(inputStreamReader);
-            String s;
-            while (StringUtil.isNotEmpty(s = br.readLine())) {
-                stringBuilder.append(s).append("\n");
-            }
-            br.close();
-        } catch (Exception e) {
-            log.error("[readToString]: Failed to read file to string. {}, {}", e.getMessage(), e.getStackTrace());
-        } finally {
+        try (InputStream inputStream = new FileInputStream(filePath); InputStreamReader inputStreamReader = new InputStreamReader(inputStream, encoding)) {
             try {
-                if (inputStream != null) {
-                    inputStream.close();
+                BufferedReader br = new BufferedReader(inputStreamReader);
+                String s;
+                while (StringUtil.isNotEmpty(s = br.readLine())) {
+                    stringBuilder.append(s).append("\n");
                 }
-                if (inputStreamReader != null) {
-                    inputStreamReader.close();
-                }
-            } catch (IOException e) {
-                log.error("[readToString]: Failed to close stream. {}, {}", e.getMessage(), e.getStackTrace());
+                br.close();
+            } catch (Exception e) {
+                log.error("[readToString]: Failed to read file to string. {}, {}", e.getMessage(), e.getStackTrace());
             }
+        } catch (IOException e) {
+            log.error("[readToString]: Failed to close stream. {}, {}", e.getMessage(), e.getStackTrace());
         }
         return stringBuilder.toString();
     }
@@ -298,6 +317,25 @@ public class FileUtil {
      */
     public static String readToString(String filePath) {
         return readToString(filePath, CommonCode.UTF_8);
+    }
+
+    public static List<String> readOneLine(String filePath, String splitStr) {
+        List<String> firstLineList = Lists.newArrayList();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String firstLine = br.readLine();
+            if (firstLine != null) {
+                String[] columns = firstLine.split(splitStr);
+                firstLineList.addAll(Arrays.asList(columns));
+            }
+        } catch (IOException e) {
+            log.error("[readToString]: Failed to read file to string. {}, {}", e.getMessage(), e.getStackTrace());
+        }
+        return firstLineList;
+    }
+
+    public static List<String> readOneLine(String filePath) {
+        return readOneLine(filePath, "\t");
     }
 
     /**
@@ -425,7 +463,7 @@ public class FileUtil {
      * @return New file name
      */
     public static String upload(String path, String name, String suffix, MultipartFile file) {
-        String newFileName = StringUtil.getUniqueId() + name + "." + suffix;
+        String newFileName = StringUtil.getUniqueId10() + name + "." + suffix;
         try {
             File uploadFile = new File(path, newFileName);
             file.transferTo(uploadFile);
@@ -456,4 +494,36 @@ public class FileUtil {
         }
         return false;
     }
+
+    public static List<Map<String, String>> readTabSeparatedFile(String filePath) {
+        List<Map<String, String>> dataList = Lists.newArrayList();
+        String[] headers = null;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean isFirstLine = true;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split("\t");
+
+                if (isFirstLine) {
+                    headers = values;
+                    isFirstLine = false;
+                    continue;
+                }
+
+                Map<String, String> rowMap = Maps.newHashMap();
+                for (int i = 0; i < headers.length && i < values.length; i++) {
+                    rowMap.put(headers[i], values[i]);
+                }
+
+                dataList.add(rowMap);
+            }
+        } catch (IOException e) {
+            log.error("[upload]: Failed to upload file. {}, {}", e.getMessage(), e.getStackTrace());
+        }
+
+        return dataList;
+    }
+
 }

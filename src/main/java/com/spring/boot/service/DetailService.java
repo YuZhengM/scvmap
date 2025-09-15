@@ -11,6 +11,7 @@ import com.spring.boot.util.util.result.Page;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface DetailService {
 
@@ -46,7 +47,13 @@ public interface DetailService {
 
     List<Magma> listMagmaGeneByTraitId(String traitId, String genome);
 
+    List<CiceroSampleTraitGene> listCiceroTraitGeneBySampleIdAndTraitId(String sampleId, String traitId);
+
+    Map<String, Object> getCiceroAndMagmaOverlapGene(String sampleId, String traitId, String genome);
+
     List<Homer> listHomerTfByTraitId(String traitId, String genome);
 
     List<SampleCellType> listSampleCellType(String sampleId);
+
+    List<ChromVarDifferenceTf> listChromvarDifferenceTfBySampleId(String sampleId, String cellType);
 }

@@ -25,6 +25,12 @@ public class AnalysisGeneVO extends AnalysisElementVO implements Serializable {
     @Schema(description = "Minimum value.", example = "1")
     private Integer min;
 
+    @Schema(description = "Method.", example = "cicero")
+    private String strategy;
+
+    @Schema(description = "Co-score.", example = "0.1")
+    private Double coScore;
+
     @Schema(description = "P-value for trait.", example = "0.05")
     private Double pvalueTrait;
 

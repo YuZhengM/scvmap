@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Data
 @Schema(name = "HomeResultVO", description = "Results returned by simple query")
 public class HomeResultVO implements Serializable {
-    
+
     /**
      * Category of query conditions
      */

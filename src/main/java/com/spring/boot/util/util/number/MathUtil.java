@@ -25,7 +25,7 @@ public class MathUtil extends ArrayUtil {
      * @param n The input number for construction
      * @return Snowflake value
      */
-    public static String getSnowflakeAlgorithmString(long n) {
+    public static String getSnowflakeIdString(long n) {
         long snowflakeAlgorithm = new SnowflakeAlgorithm(n, n, n).nextId();
         return String.valueOf(snowflakeAlgorithm);
     }
@@ -45,13 +45,17 @@ public class MathUtil extends ArrayUtil {
      *
      * @return A random integer
      */
-    public static Integer getRandomMax31() {
+    public static int getRandomMax31() {
         int nextInt = getRandomInt(31);
         // Run again if it equals 0 to reduce the probability of generating 0.
         if (nextInt == CommonCode.ZERO) {
             return getRandomInt(31);
         }
         return nextInt;
+    }
+
+    public static String getSnowflakeIdString() {
+        return getSnowflakeIdString(getRandomMax31());
     }
 
     /**

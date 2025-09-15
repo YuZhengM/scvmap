@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.GimmeSampleTraitTfMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.GimmeSampleTraitTf">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+        <result column="f_tf" jdbcType="VARCHAR" property="tf"/>
+        <result column="f_score" jdbcType="DOUBLE" property="score"/>
+        <result column="f_pp" jdbcType="DOUBLE" property="pp"/>
+        <result column="f_score_mean" jdbcType="DOUBLE" property="scoreMean"/>
+        <result column="f_motif_set" jdbcType="VARCHAR" property="motifSet"/>
+        <result column="f_position_set" jdbcType="VARCHAR" property="positionSet"/>
+        <result column="f_strand_set" jdbcType="VARCHAR" property="strandSet"/>
+        <result column="f_count" jdbcType="INTEGER" property="count"/>
+        <result column="f_weight" jdbcType="DOUBLE" property="weight"/>
+    </resultMap>
+</mapper>

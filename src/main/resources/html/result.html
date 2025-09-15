@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0000000000-Online analysis results of scVMAP platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+
+        .container {
+            background-color: #fff;
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4a6fa5, #6989b9, #8aa5d0);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            background: linear-gradient(90deg, #4a6fa5, #6989b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a6fa5, #6989b9);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .job-id {
+            background-color: #f0f5ff;
+            padding: 12px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4a6fa5;
+            font-weight: bold;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .status-text {
+            color: #2ecc71;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .link-container {
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        a {
+            color: #4a6fa5;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            padding: 12px 25px;
+            border: 1px solid #4a6fa5;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        a:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        a:hover {
+            background-color: #4a6fa5;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(74, 111, 165, 0.3);
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            padding-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .job-id {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            a {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Online analysis results of scVMAP platform</h1>
+
+    <div class="job-id">
+        <span class="status-indicator"></span>
+        <span class="status-text">Completed</span>
+        Job ID number: 0000000000
+    </div>
+
+    <p>The process data, final results, and visualization of result analysis for the g-chromVAR and SCAVENGE methods can be obtained from the link below.</p>
+
+    <div class="link-container">
+        <a href="https://bio.liclab.net/scvmap/job_detail?jobId=0000000000" target="_blank">Access Results</a>
+    </div>
+
+    <div class="signature">
+        <p>Best regards</p>
+        <p>scVMAP Team</p>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 scVMAP Platform. All rights reserved.</p>
+        <p>For questions or support, contact: yuzmbio@163.com</p>
+    </div>
+</div>
+</body>
+</html>

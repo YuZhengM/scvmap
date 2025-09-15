@@ -25,6 +25,10 @@ public class Sample extends BaseSample implements Serializable {
     @Schema(description = "The unique identifier of the single-cell sample, used for database operations.")
     private String sampleId;
 
+    @TableField("f_sample_name")
+    @Schema(description = "The unique identifier of the single-cell sample, used for database operations.")
+    private String sampleName;
+
     @TableField("f_gse_id")
     @Schema(description = "GSE ID")
     private String gseId;

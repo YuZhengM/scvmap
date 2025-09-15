@@ -7,28 +7,22 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
  * t_difference_tf
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName("t_difference_tf")
 @ToString
 @Data
 @Schema(name = "DifferenceTf", description = "Represents the difference tf information.")
-public class DifferenceTf implements Serializable {
+public class DifferenceTf extends BaseCellTypeTf implements Serializable {
 
     @Schema(description = "Unique identifier of scATAC-seq sample")
     @TableField("f_sample_id")
     private String sampleId;
-
-    @Schema(description = "Cell type")
-    @TableField("f_cell_type")
-    private String cellType;
-
-    @Schema(description = "Transcription factor name")
-    @TableField("f_tf")
-    private String tf;
 
     @Schema(description = "Unique identifier of transcription factor")
     @TableField("f_tf_id")

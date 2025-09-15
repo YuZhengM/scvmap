@@ -14,11 +14,11 @@ public class CommonCode {
     /**
      * Project name in lowercase
      */
-    public static final String PROJECT_EN_L_NAME = "scvdb";
+    public static final String PROJECT_EN_L_NAME = "scvmap";
     /**
      * Project name
      */
-    public static final String PROJECT_EN_NAME = "SCVDB";
+    public static final String PROJECT_EN_NAME = "scVMAP";
 
     /**
      * True status code

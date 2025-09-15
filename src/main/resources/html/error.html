@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error-Online analysis of scVMAP platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .error-container {
+            background-color: #fff;
+            max-width: 600px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .error-header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .error-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .error-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .job-id {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fdecea;
+            border-radius: 8px;
+            letter-spacing: 2px;
+        }
+
+        .reminder {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .signature {
+            text-align: right;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            color: #666;
+            font-style: italic;
+        }
+
+        .signature p {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            .error-title {
+                font-size: 20px;
+            }
+
+            .job-id {
+                font-size: 22px;
+                padding: 10px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-header">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Error-Online analysis of scVMAP platform</div>
+        <div class="error-subtitle">We encountered an issue with your analysis</div>
+    </div>
+
+    <div class="error-content">
+        <div class="job-id">0000000000</div>
+        <p class="reminder">Please remember your job ID number for future reference</p>
+
+        <div class="actions">
+            <a href="1111111111" class="btn btn-primary">Try Again</a>
+        </div>
+    </div>
+
+    <div class="signature">
+        <p>Best regards</p>
+        <p>scVMAP Team</p>
+    </div>
+</div>
+</body>
+</html>
