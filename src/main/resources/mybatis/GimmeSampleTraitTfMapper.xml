@@ -12,6 +12,31 @@
         <result column="f_position_set" jdbcType="VARCHAR" property="positionSet"/>
         <result column="f_strand_set" jdbcType="VARCHAR" property="strandSet"/>
         <result column="f_count" jdbcType="INTEGER" property="count"/>
-        <result column="f_weight" jdbcType="DOUBLE" property="weight"/>
     </resultMap>
+    <select id="selectBySampleIdAndTraitId" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_rs_id, f_tf, f_score, f_pp, f_score_mean, f_motif_set, f_position_set, f_strand_set, f_count
+        FROM t_gimme_trait_tf_${sampleId}_${signalId}
+        WHERE f_trait_id = #{traitId}
+        <include refid="com.spring.boot.order_sql_and"/>
+    </select>
+    <select id="selectByScoreAndMeanScore" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_rs_id, f_tf, f_score, f_pp, f_score_mean, f_motif_set, f_position_set, f_strand_set, f_count
+        FROM t_gimme_trait_tf_${sampleId}_${signalId}
+        WHERE f_trait_id = #{traitId}
+        <if test="coScore != null and coScore != 0">
+            AND f_score <![CDATA[ >= ]]> #{coScore}
+        </if>
+        <if test="meanScore != null and meanScore != 0">
+            AND f_score_mean <![CDATA[ >= ]]> #{meanScore}
+        </if>
+        <if test="count != null and count != 0">
+            AND f_count <![CDATA[ >= ]]> #{count}
+        </if>
+        <if test="tfList != null and tfList.size > 0">
+            AND f_tf IN
+            <foreach collection="tfList" item="tf" open="(" separator="," close=")">
+                #{tf}
+            </foreach>
+        </if>
+    </select>
 </mapper>

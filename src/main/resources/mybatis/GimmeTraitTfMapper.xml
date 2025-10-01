@@ -7,4 +7,18 @@
         <result column="f_score" jdbcType="DOUBLE" property="score"/>
         <result column="f_score_mean" jdbcType="DOUBLE" property="scoreMean"/>
     </resultMap>
+    <select id="selectByCoScoreAndMeanScore" resultType="java.lang.String">
+        <foreach collection="signalIdTraitTfListMap" index="key" item="values" separator=" UNION ">
+            SELECT f_trait_id FROM t_gimme_trait_tf_${key} WHERE f_tf IN
+            <foreach collection="values" open="(" separator="," close=")" item="value">
+                #{value}
+            </foreach>
+            <if test="coScore != null and coScore != 0">
+                AND f_score <![CDATA[ >= ]]> #{coScore}
+            </if>
+            <if test="meanScore != null and meanScore != 0">
+                AND f_score_mean <![CDATA[ >= ]]> #{meanScore}
+            </if>
+        </foreach>
+    </select>
 </mapper>

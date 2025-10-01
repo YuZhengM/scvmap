@@ -7,14 +7,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * t_difference_gene
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName("t_difference_gene")
 @Data
 @Schema(name = "DifferenceGene", description = "Represents the difference gene information.")
-public class DifferenceGene implements Serializable {
+public class DifferenceGene extends BaseDifferenceGene implements Serializable {
 
     @Schema(description = "Unique identifier of scATAC-seq sample")
     @TableField("f_sample_id")
@@ -23,6 +25,10 @@ public class DifferenceGene implements Serializable {
     @Schema(description = "Cell type")
     @TableField("f_cell_type")
     private String cellType;
+
+    @Schema(description = "Age/sex/drug")
+    @TableField("f_type_value")
+    private String typeValue;
 
     @Schema(description = "Gene name")
     @TableField("f_gene")

@@ -11,7 +11,7 @@ public interface TraitGeneEnrichmentMapper {
     List<TraitGeneEnrichment> selectByTraitId(@Param("signalId") String signalId,
                                               @Param("traitId") String traitId,
                                               @Param("geneSet") String geneSet,
-                                              @Param("adjustedPValue") Double adjustedPValue,
+                                              @Param("pValue") Double pValue,
                                               @Param("genome") String genome);
 
 }

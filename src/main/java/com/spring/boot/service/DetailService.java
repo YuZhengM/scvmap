@@ -4,6 +4,7 @@ import com.spring.boot.pojo.*;
 import com.spring.boot.pojo.vo.DifferenceElementHeatmapVO;
 import com.spring.boot.pojo.vo.SampleTraitInfo;
 import com.spring.boot.util.model.PageResult;
+import com.spring.boot.util.model.vo.FieldNumber;
 import com.spring.boot.util.model.vo.canvasXpress.CanvasXpressHeatMapData;
 import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.model.vo.plotly.PlotlyClusterData;
@@ -19,25 +20,25 @@ public interface DetailService {
 
     Source getTraitSourceData(String sourceId);
 
-    Trait getTraitData(String traitId);
+    Trait getTraitData(String traitId, String method);
 
     List<SampleCellType> listSampleCellTypeData(String sampleId);
 
-    EchartsPieData<String, String> getCellTypeCount(String sampleId);
+    EchartsPieData<String, String> getCellTypeCount(String sampleId, String metadata);
 
-    EchartsPieData<String, String> getTraitChrCountData(String traitId, String genome);
+    EchartsPieData<String, String> getTraitChrCountData(String traitId, String genome, String method);
 
-    SampleTraitInfo<SampleEnrichSampleId> listTraitBySampleId(String sampleId, String method);
+    SampleTraitInfo<? extends SampleEnrichSampleId> listTraitBySampleId(String sampleId, String method, String fineMappingMethod);
 
-    SampleTraitInfo<TraitEnrich> listSampleInfoByTraitId(String traitId, String method);
+    SampleTraitInfo<? extends TraitEnrich> listSampleInfoByTraitId(String traitId, String method, String fineMappingMethod);
 
-    PlotlyClusterData<Double, Double> listClusterCoordinate(String sampleId, Double cellRate);
+    PlotlyClusterData<Double, Double> listClusterCoordinate(String sampleId, Double cellRate, String metadata);
 
-    PlotlyClusterData<Double, Double> listTraitClusterCoordinate(String sampleId, String traitId, String method, Double cellRate) throws IOException;
+    PlotlyClusterData<Double, Double> listTraitClusterCoordinate(String sampleId, String traitId, String method, Double cellRate, String metadata, String fineMappingMethod) throws IOException;
 
-    PageResult<VariantInfo> listTraitInfoData(String traitId, String genome, Page page);
+    PageResult<VariantInfo> listTraitInfoData(String traitId, String genome, String method, Page page);
 
-    PageResult<? extends DifferenceGene> listDifferenceGeneBySampleId(String sampleId, String cellType, Page page);
+    PageResult<? extends DifferenceGene> listDifferenceGeneBySampleId(String sampleId, String metadata, String cellType, Page page);
 
     CanvasXpressHeatMapData<Double> getDifferenceGeneHeatmapBySampleId(DifferenceElementHeatmapVO differenceElementHeatmapVO);
 
@@ -53,7 +54,21 @@ public interface DetailService {
 
     List<Homer> listHomerTfByTraitId(String traitId, String genome);
 
-    List<SampleCellType> listSampleCellType(String sampleId);
+    List<FieldNumber> listSampleCellTypeTimeSexDrug(String sampleId, String metadata);
 
     List<ChromVarDifferenceTf> listChromvarDifferenceTfBySampleId(String sampleId, String cellType);
+
+    PageResult<GimmeSampleTraitTf> listGimmeTfByTraitId(String sampleId, String traitId, Page page);
+
+    PageResult<Mpra> listMpraByTraitId(String traitId, String genome, Page page);
+
+    PageResult<Eqtl> listEqtlByTraitId(String traitId, String genome, String chr, Page page);
+
+    PageResult<Interaction> listInteractionByTraitId(String traitId, String genome, Page page);
+
+    List<TrsDistributionScore> listKlScoreDataByTraitId(String traitId);
+
+    List<TrsDistributionScore> listKlScoreDataBySampleId(String sampleId);
+
+    Double getKlScoreData(String sampleId, String traitId);
 }

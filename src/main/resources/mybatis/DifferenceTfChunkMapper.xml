@@ -15,9 +15,11 @@
             select #{sampleId} as f_sample_id, f_cell_type, f_tf, f_tf_id, f_p_value, f_adjusted_p_value, f_log2_fold_change from
             t_difference_tf_${sampleId}
             WHERE 1 = 1
-            <if test="log2FoldChange != null and log2FoldChange != 0">
-                AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
-                OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+            <if test="log2FoldChange != null and log2FoldChange > 0">
+                AND f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange}
+            </if>
+            <if test="log2FoldChange != null and log2FoldChange &lt; 0">
+                AND f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange}
             </if>
             <if test="adjustedPValue != null and adjustedPValue != 0">
                 AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}

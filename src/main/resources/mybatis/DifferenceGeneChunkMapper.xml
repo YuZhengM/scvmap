@@ -54,9 +54,14 @@
         <if test="cellType != 'All' and cellType != ''">
             AND f_cell_type = #{cellType}
         </if>
-        <if test="log2FoldChange != null and log2FoldChange != 0">
-            AND (f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange} * -1.0
-            OR f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange})
+        <if test="score != null">
+            AND f_score <![CDATA[ >= ]]> #{score}
+        </if>
+        <if test="log2FoldChange != null and log2FoldChange > 0">
+            AND f_log2_fold_change <![CDATA[ >= ]]> #{log2FoldChange}
+        </if>
+        <if test="log2FoldChange != null and log2FoldChange &lt; 0">
+            AND f_log2_fold_change <![CDATA[ <= ]]> #{log2FoldChange}
         </if>
         <if test="adjustedPValue != null and adjustedPValue != 0">
             AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}

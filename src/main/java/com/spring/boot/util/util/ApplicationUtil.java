@@ -5,7 +5,6 @@ import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.spring.boot.pojo.SampleCellType;
 import com.spring.boot.util.constant.SystemException;
 import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.factory.LogFactory;
@@ -112,37 +111,17 @@ public class ApplicationUtil {
         return ipAddress;
     }
 
-    public static EchartsPieData<String, String> getCellTypeCountEchartsData(List<SampleCellType> sampleCellTypeList) {
-        if (ListUtil.isEmpty(sampleCellTypeList)) {
+    public static EchartsPieData<String, String> getFieldCountEchartsData(List<FieldNumber> fieldNumberList) {
+        if (ListUtil.isEmpty(fieldNumberList)) {
             log.warn("[getCellTypeCountEchartsData] clusterCellTypeCountList: Data is empty.");
             return EchartsPieData.<String, String>builder().build();
         }
-        int size = sampleCellTypeList.size();
+        int size = fieldNumberList.size();
         // Create containers
         List<String> legendList = Lists.newArrayListWithCapacity(size);
         List<SeriesPieData> seriesPieDataList = Lists.newArrayListWithCapacity(size);
         Map<String, String> description = Maps.newHashMapWithExpectedSize(size);
         // Add labels and data
-        for (SampleCellType sampleCellType : sampleCellTypeList) {
-            String cellType = sampleCellType.getCellType();
-            Integer number = sampleCellType.getCellCount();
-            legendList.add(cellType);
-            seriesPieDataList.add(SeriesPieData.builder().name(cellType).value(number).build());
-        }
-        return EchartsPieData.<String, String>builder().legend(legendList).data(seriesPieDataList).description(description).build();
-    }
-
-    public static EchartsPieData<String, String> getChrCountEchartsData(List<FieldNumber> fieldNumberList) {
-        if (ListUtil.isEmpty(fieldNumberList)) {
-            log.warn("[getChrCountEchartsData] fieldNumberList: Data is empty.");
-            return EchartsPieData.<String, String>builder().build();
-        }
-        int size = fieldNumberList.size();
-        // 建立容器
-        List<String> legendList = Lists.newArrayListWithCapacity(size);
-        List<SeriesPieData> seriesPieDataList = Lists.newArrayListWithCapacity(size);
-        Map<String, String> description = Maps.newHashMapWithExpectedSize(size);
-        // 添加标签和数据
         for (FieldNumber fieldNumber : fieldNumberList) {
             String field = fieldNumber.getField();
             Integer number = fieldNumber.getNumber();
@@ -232,6 +211,13 @@ public class ApplicationUtil {
         }
     }
 
+    public static void checkMetadata(String metadata) {
+        if (StringUtil.isEmpty(metadata) || (StringUtil.isNotEqual(metadata, "cell_type") && StringUtil.isNotEqual(metadata, "time")
+                && StringUtil.isNotEqual(metadata, "sex") && StringUtil.isNotEqual(metadata, "drug"))) {
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+    }
+
     /**
      * Check if the source ID is valid.
      *
@@ -252,6 +238,12 @@ public class ApplicationUtil {
      */
     public static void checkTraitId(String traitId) {
         if (StringUtil.isEmpty(traitId) || !traitId.startsWith("trait_id")) {
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+    }
+
+    public static void checkFineMappingMethod(String method) {
+        if (StringUtil.isEmpty(method) || (method.startsWith("finemap") && method.startsWith("susie"))) {
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
     }

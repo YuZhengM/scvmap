@@ -22,7 +22,7 @@
         <result column="f_beta_posterior" jdbcType="VARCHAR" property="betaPosterior"/>
         <result column="f_sd_posterior" jdbcType="VARCHAR" property="sdPosterior"/>
     </resultMap>
-    <select id="selectByTraitId" resultMap="BaseResultMap">
+    <select id="selectByTraitIdAndPage" resultMap="BaseResultMap">
         select f_trait_id,
                f_source_id,
                f_chr,
@@ -45,5 +45,10 @@
         from t_variant_${genome}_${signalId}
         WHERE f_trait_id = #{traitId}
         <include refid="com.spring.boot.order_sql_and"/>
+    </select>
+    <select id="selectChrPositionByTraitId" resultMap="BaseResultMap">
+        select f_chr, f_position,  CONCAT(f_chr, f_position) as f_variant
+        from t_variant_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId}
     </select>
 </mapper>

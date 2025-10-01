@@ -11,6 +11,16 @@
             </if>
         </if>
     </sql>
+    <sql id="order_sql_t">
+        <if test="page != null and page != ''">
+            <if test="page.order != 0">
+                ORDER BY t.${page.field}
+                <if test="page.order == -1">
+                    DESC
+                </if>
+            </if>
+        </if>
+    </sql>
     <sql id="type_symbol_sql">
         <if test="page.type == 1">
             <choose>
@@ -57,6 +67,52 @@
             </choose>
         </if>
     </sql>
+    <sql id="type_symbol_sql_t">
+        <if test="page.type == 1">
+            <choose>
+                <when test="page.symbol == 1">
+                    t.${page.searchField} = #{page.content}
+                </when>
+                <when test="page.symbol == 2">
+                    t.${page.searchField} != #{page.content}
+                </when>
+                <when test="page.symbol == 7">
+                    t.${page.searchField} LIKE CONCAT('%', #{page.content}, '%')
+                </when>
+                <when test="page.symbol == 8">
+                    t.${page.searchField} NOT LIKE CONCAT('%', #{page.content}, '%')
+                </when>
+                <when test="page.symbol == 9">
+                    t.${page.searchField} LIKE CONCAT(#{page.content}, '%')
+                </when>
+                <when test="page.symbol == 10">
+                    t.${page.searchField} LIKE CONCAT('%', #{page.content})
+                </when>
+            </choose>
+        </if>
+        <if test="page.type == 2">
+            <choose>
+                <when test="page.symbol == 1">
+                    t.${page.searchField} = #{page.content}
+                </when>
+                <when test="page.symbol == 2">
+                    t.${page.searchField} != #{page.content}
+                </when>
+                <when test="page.symbol == 3">
+                    t.${page.searchField} * 1.0 > #{page.content}
+                </when>
+                <when test="page.symbol == 4">
+                    t.${page.searchField} * 1.0 >= #{page.content}
+                </when>
+                <when test="page.symbol == 5">
+                    t.${page.searchField} * 1.0 <![CDATA[ < ]]> #{page.content}
+                </when>
+                <when test="page.symbol == 6">
+                    t.${page.searchField} * 1.0 <![CDATA[ <= ]]> #{page.content}
+                </when>
+            </choose>
+        </if>
+    </sql>
     <sql id="order_sql_where">
         <if test="page != null and page != ''">
             <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
@@ -66,6 +122,15 @@
             <include refid="com.spring.boot.order_sql"/>
         </if>
     </sql>
+    <sql id="order_sql_where_t">
+        <if test="page != null and page != ''">
+            <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
+                WHERE
+               <include refid="com.spring.boot.type_symbol_sql_t" />
+            </if>
+            <include refid="com.spring.boot.order_sql_t"/>
+        </if>
+    </sql>
     <sql id="order_sql_and">
         <if test="page != null and page != ''">
             <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
@@ -73,6 +138,15 @@
                 <include refid="com.spring.boot.type_symbol_sql" />
             </if>
             <include refid="com.spring.boot.order_sql"/>
+        </if>
+    </sql>
+    <sql id="order_sql_and_t">
+        <if test="page != null and page != ''">
+            <if test="page.searchField != null and page.searchField != '' and page.content != null and page.content != ''">
+                AND
+                <include refid="com.spring.boot.type_symbol_sql_t" />
+            </if>
+            <include refid="com.spring.boot.order_sql_t"/>
         </if>
     </sql>
 </mapper>

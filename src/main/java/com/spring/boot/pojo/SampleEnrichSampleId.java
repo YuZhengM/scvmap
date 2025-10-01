@@ -5,15 +5,17 @@ import java.io.Serializable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
  * t_sample_enrich_gchromvar_sample_id_1
  */
+@EqualsAndHashCode(callSuper = true)
 @ToString
 @Data
 @Schema(name = "SampleEnrichSampleId", description = "Table for mapping single-cell sample to traits")
-public class SampleEnrichSampleId implements Serializable {
+public class SampleEnrichSampleId extends TraitEnrich implements Serializable {
 
     @Schema(description = "Trait ID")
     private String traitId;

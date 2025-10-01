@@ -21,6 +21,9 @@ public class SampleDataBrowseResultVO<T> implements Serializable {
     @Schema(description = "List of cell types")
     private List<FieldNumber> cellTypeList;
 
+    @Schema(description = "List of metadata")
+    private List<FieldNumber> metadataList;
+
     @Schema(description = "List of returned result data")
     private List<T> dataBrowseDataList;
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.VariantInfoSusieMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.VariantInfoSusie">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_source_id" jdbcType="VARCHAR" property="sourceId"/>
+        <result column="f_chr" jdbcType="VARCHAR" property="chr"/>
+        <result column="f_position" jdbcType="VARCHAR" property="position"/>
+        <result column="f_index" jdbcType="INTEGER" property="fIndex"/>
+        <result column="f_variant" jdbcType="VARCHAR" property="variant"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+        <result column="f_allele1" jdbcType="VARCHAR" property="allele1"/>
+        <result column="f_allele2" jdbcType="VARCHAR" property="allele2"/>
+        <result column="f_af" jdbcType="VARCHAR" property="af"/>
+        <result column="f_maf" jdbcType="VARCHAR" property="maf"/>
+        <result column="f_beta" jdbcType="VARCHAR" property="beta"/>
+        <result column="f_se" jdbcType="VARCHAR" property="se"/>
+        <result column="f_p_value" jdbcType="VARCHAR" property="pValue"/>
+        <result column="f_chisq" jdbcType="VARCHAR" property="chisq"/>
+        <result column="f_z_score" jdbcType="VARCHAR" property="zScore"/>
+        <result column="f_pp" jdbcType="DOUBLE" property="pp"/>
+        <result column="f_beta_posterior" jdbcType="VARCHAR" property="betaPosterior"/>
+        <result column="f_sd_posterior" jdbcType="VARCHAR" property="sdPosterior"/>
+    </resultMap>
+    <select id="selectByTraitId" resultMap="BaseResultMap">
+        select f_trait_id,
+        f_source_id,
+        f_chr,
+        f_position,
+        f_index,
+        f_variant,
+        f_rs_id,
+        f_allele1,
+        f_allele2,
+        f_af,
+        f_maf,
+        f_beta,
+        f_se,
+        f_p_value,
+        f_chisq,
+        f_z_score,
+        f_pp,
+        f_beta_posterior,
+        f_sd_posterior
+        from t_variant_${genome}_susie
+        WHERE f_trait_id = #{traitId}
+        <include refid="com.spring.boot.order_sql_and"/>
+    </select>
+</mapper>

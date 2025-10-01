@@ -19,19 +19,19 @@ public class TraitChrCount implements Serializable {
 
     @Schema(description = "Trait ID")
     @TableId("f_trait_id")
-    private String fTraitId;
+    private String traitId;
 
     @Schema(description = "Chromosome")
     @TableField("f_chr")
-    private String fChr;
+    private String chr;
 
     @Schema(description = "Count")
     @TableField("f_count")
-    private Integer fCount;
+    private Integer count;
 
     @Schema(description = "Genome")
     @TableField("f_genome")
-    private String fGenome;
+    private String genome;
 
     @Serial
     private static final long serialVersionUID = 1L;

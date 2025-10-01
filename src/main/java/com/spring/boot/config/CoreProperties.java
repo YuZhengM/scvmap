@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Zhengmin Yu
  */
 @Configuration
-@EnableConfigurationProperties(ExecLinux.class)
+@EnableConfigurationProperties({ExecLinux.class, ExecLinux2.class})
 public class CoreProperties {
 
     /**

@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.boot.mapper.EqtlMapper">
-  <resultMap id="BaseResultMap" type="com.spring.boot.pojo.Eqtl">
-    <result column="f_chr" jdbcType="VARCHAR" property="chr" />
-    <result column="f_position" jdbcType="INTEGER" property="position" />
-    <result column="f_ref" jdbcType="VARCHAR" property="ref" />
-    <result column="f_alt" jdbcType="VARCHAR" property="alt" />
-    <result column="f_gene_name" jdbcType="VARCHAR" property="geneName" />
-    <result column="f_tss_distance" jdbcType="VARCHAR" property="tssDistance" />
-    <result column="f_af" jdbcType="VARCHAR" property="af" />
-    <result column="f_p_value_nominal" jdbcType="VARCHAR" property="pValueNominal" />
-    <result column="f_tissue_type" jdbcType="VARCHAR" property="tissueType" />
-  </resultMap>
-  <select id="selectByRegionAndGenome" resultMap="BaseResultMap">
-    SELECT f_chr, f_position, f_ref, f_alt, f_gene_name, f_tss_distance, f_af, f_p_value_nominal, f_tissue_type
-    from t_eqtl_${genome}_${symbol}
-    WHERE f_gene_name = #{geneName}
-  </select>
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.Eqtl">
+        <result column="f_chr" jdbcType="VARCHAR" property="chr"/>
+        <result column="f_position" jdbcType="INTEGER" property="position"/>
+        <result column="f_ref" jdbcType="VARCHAR" property="ref"/>
+        <result column="f_alt" jdbcType="VARCHAR" property="alt"/>
+        <result column="f_gene_name" jdbcType="VARCHAR" property="geneName"/>
+        <result column="f_tss_distance" jdbcType="VARCHAR" property="tssDistance"/>
+        <result column="f_af" jdbcType="VARCHAR" property="af"/>
+        <result column="f_p_value_nominal" jdbcType="VARCHAR" property="pValueNominal"/>
+        <result column="f_tissue_type" jdbcType="VARCHAR" property="tissueType"/>
+    </resultMap>
+    <select id="selectByRegionAndGenome" resultMap="BaseResultMap">
+        SELECT f_chr,
+               f_position,
+               f_ref,
+               f_alt,
+               f_gene_name,
+               f_tss_distance,
+               f_af,
+               f_p_value_nominal,
+               f_tissue_type
+        from t_eqtl_${genome}_${symbol}
+        WHERE f_gene_name = #{geneName}
+    </select>
+    <select id="selectByTraitIdAndChrPosition" resultMap="BaseResultMap">
+        <foreach collection="chrList" open="" separator=" UNION " close="" item="value">
+            SELECT
+                tp.f_chr,
+                t.f_position,
+                t.f_ref,
+                t.f_alt,
+                t.f_gene_name,
+                t.f_tss_distance,
+                t.f_af,
+                t.f_p_value_nominal,
+                t.f_tissue_type
+            FROM t_variant_${genome}_${signalId} tp
+            JOIN (
+                SELECT #{value} as f_chr,
+                    f_position,
+                    f_ref,
+                    f_alt,
+                    f_gene_name,
+                    f_tss_distance,
+                    f_af,
+                    f_p_value_nominal,
+                    f_tissue_type
+                FROM t_eqtl_${genome}_${value}
+            ) t ON tp.f_trait_id = #{traitId} AND tp.f_chr = t.f_chr AND tp.f_position = t.f_position
+        </foreach>
+        <include refid="com.spring.boot.order_sql_and_t"/>
+    </select>
 </mapper>

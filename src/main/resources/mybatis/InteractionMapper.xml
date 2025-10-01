@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.mapper.InteractionMapper">
+    <resultMap id="BaseResultMap" type="com.spring.boot.pojo.Interaction">
+        <result column="f_trait_id" jdbcType="VARCHAR" property="traitId"/>
+        <result column="f_pp" jdbcType="DOUBLE" property="pp"/>
+        <result column="f_rs_id" jdbcType="VARCHAR" property="rsId"/>
+        <result column="f_gene" jdbcType="VARCHAR" property="gene"/>
+        <result column="f_interaction1" jdbcType="VARCHAR" property="interaction1"/>
+        <result column="f_interaction2" jdbcType="VARCHAR" property="interaction2"/>
+        <result column="f_source_interaction_id" jdbcType="VARCHAR" property="sourceInteractionId"/>
+        <result column="f_method" jdbcType="VARCHAR" property="method"/>
+        <result column="f_tissue_cell_type" jdbcType="VARCHAR" property="tissueCellType"/>
+        <result column="f_cell_line" jdbcType="VARCHAR" property="cellLine"/>
+    </resultMap>
+    <select id="selectByTraitId" resultMap="BaseResultMap">
+        SELECT f_trait_id, f_rs_id, f_pp, f_gene, f_interaction1, f_interaction2, f_source_interaction_id, f_method,
+        f_tissue_cell_type, f_cell_line
+        FROM t_trait_gene_interaction_${genome}_${signalId}
+        WHERE f_trait_id = #{traitId}
+        <include refid="com.spring.boot.order_sql_and"/>
+    </select>
+</mapper>

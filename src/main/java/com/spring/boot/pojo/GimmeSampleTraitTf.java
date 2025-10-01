@@ -29,6 +29,4 @@ public class GimmeSampleTraitTf extends BaseSnpTf implements Serializable {
 
     private Integer count;
 
-    private Double weight;
-
 }

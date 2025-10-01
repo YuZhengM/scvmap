@@ -18,7 +18,7 @@ public interface DataBrowseService {
 
     List<SampleCellType> listSampleCellTypeAllData();
 
-    TraitDataBrowseResultVO traitDataBrowseData(TraitDataBrowseVO traitDataBrowseVO);
+    TraitDataBrowseResultVO<? extends Trait> traitDataBrowseData(TraitDataBrowseVO traitDataBrowseVO);
 
     SampleDataBrowseResultVO<Sample> sampleDataBrowseData(SampleDataBrowseVO sampleDataBrowseVO);
 

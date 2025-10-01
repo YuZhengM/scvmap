@@ -50,6 +50,30 @@ public class SampleCell implements Serializable {
     @TableField("f_cell_type_index")
     private Integer cellTypeIndex;
 
+    @Schema(description = "Time")
+    @TableField("f_time")
+    private String time;
+
+    @Schema(description = "Sex")
+    @TableField("f_sex")
+    private String sex;
+
+    @Schema(description = "Drug")
+    @TableField("f_drug")
+    private String drug;
+
+    @Schema(description = "Time index")
+    @TableField("f_time_index")
+    private Integer timeIndex;
+
+    @Schema(description = "Sex index")
+    @TableField("f_sex_index")
+    private Integer sexIndex;
+
+    @Schema(description = "Drug index")
+    @TableField("f_drug_index")
+    private Integer drugIndex;
+
     @TableField(exist = false)
     @Serial
     private static final long serialVersionUID = 1L;

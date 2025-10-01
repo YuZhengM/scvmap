@@ -2,6 +2,8 @@
 
 > scVMAP: https://bio.liclab.net/scvmap/
 
+> scVMAP reproducibility:: https://github.com/YuZhengM/scvmap_reproducibility
+
 > scVMAP tutorial: https://scvmap.readthedocs.io/en/latest/
 
 > scVMAP front-end: https://github.com/YuZhengM/scvmap_web
@@ -16,17 +18,16 @@ A comprehensive platform for **integrating** `single-cell chromatin accessibilit
 
 scVMAP is a user-centric database that offers intuitive workflows, customizable parameters, and comprehensive data accessibility, featuring:
 
-1. Integrates causal variants and chromatin accessibility regions at single-cell resolution.
-2. Accommodates 183 scATAC-seq samples and 15,805 fine-mapping datasets.
-3. Records over 1,923,500 effective trait-sample pairs, over 13,060,000 effective trait-cell type pairs, and over 15,950,000,000 effective trait-cell pairs.
-4. Provides enrichment for traits and cells or cell types.
-5. Identifies relevant genes and transcription factors (TFs), as well as pathway enrichment functions of genes for the samples (including single-cell samples and traits).
-6. Constructs the gene and TF hub regulatory network from traits to samples.
-7. Provides epigenomic regulatory annotations related to genes, as well as a gene-relevant SNP regulatory network for specific traits.
-8. Establishes an SNP-associated regulatory network.
-9. Offers comprehensive download resources.
-10. Publishes full-stack development code.
-11. Provides API interfaces for data access.
+1. Integrates causal variants with chromatin accessibility regions at single-cell resolution.
+2. Includes data from 183 scATAC-seq samples and 15,884 fine-mapping datasets.
+3. Encompasses over 3,876,800 effective trait-sample pairs, 26.3 million trait-cell type pairs, and 32.1 billion trait-cell pairs.
+4. Performs enrichment analysis for traits across specific cells or cell types.
+5. Identifies relevant genes and transcription factors (TFs), and performs pathway enrichment analysis for these genes in the context of specific samples and traits.
+6. Constructs an integrated regulatory network (variant-TF-gene) linking traits to samples.
+7. Offers comprehensive resources for data download.
+8. Makes the code for reproducing the database workflow publicly available.
+9. Publishes the full-stack development code for the web application.
+10. Provides API interfaces for programmatic data access.
 
 ## Implementation
 

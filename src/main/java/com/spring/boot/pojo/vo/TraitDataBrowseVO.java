@@ -22,6 +22,9 @@ public class TraitDataBrowseVO implements Serializable {
     @Schema(description = "Cohort of the trait data", example = "CAUSALdb")
     private String cohort;
 
+    @Schema(description = "Fine-mapping method", example = "FINEMAP")
+    private String method;
+
     @Schema(description = "Pagination information")
     private Page page;
 

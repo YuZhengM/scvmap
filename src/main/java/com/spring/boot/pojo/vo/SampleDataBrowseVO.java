@@ -15,7 +15,10 @@ public class SampleDataBrowseVO implements Serializable {
     @Schema(description = "Tissue type", example = "Heart")
     private String tissueType;
     
-    @Schema(description = "Cell type", example = "Endothelial cells")
+    @Schema(description = "Cell type", example = "MG")
     private String cellType;
+
+    @Schema(description = "Metadata", example = "cell_type")
+    private String metadata;
 
 }

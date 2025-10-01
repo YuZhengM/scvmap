@@ -3,20 +3,22 @@ package com.spring.boot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.google.common.collect.Lists;
 import com.spring.boot.mapper.SampleCellTypeMapper;
 import com.spring.boot.mapper.SampleMapper;
 import com.spring.boot.mapper.TraitMapper;
-import com.spring.boot.pojo.Sample;
-import com.spring.boot.pojo.SampleCellType;
-import com.spring.boot.pojo.Trait;
-import com.spring.boot.pojo.BaseSample;
+import com.spring.boot.mapper.TraitSusieMapper;
+import com.spring.boot.pojo.*;
 import com.spring.boot.pojo.vo.SampleDataBrowseResultVO;
 import com.spring.boot.pojo.vo.SampleDataBrowseVO;
 import com.spring.boot.pojo.vo.TraitDataBrowseResultVO;
 import com.spring.boot.pojo.vo.TraitDataBrowseVO;
 import com.spring.boot.service.DataBrowseService;
+import com.spring.boot.util.constant.SystemException;
+import com.spring.boot.util.exception.RunException;
 import com.spring.boot.util.model.PageResult;
 import com.spring.boot.util.model.vo.FieldNumber;
+import com.spring.boot.util.util.NullUtil;
 import com.spring.boot.util.util.StringUtil;
 import com.spring.boot.util.util.result.Page;
 import com.spring.boot.util.util.result.PageResultUtil;
@@ -43,6 +45,7 @@ public class DataBrowseServiceImpl implements DataBrowseService {
     private TraitMapper traitMapper;
     private SampleMapper sampleMapper;
     private SampleCellTypeMapper sampleCellTypeMapper;
+    private TraitSusieMapper traitSusieMapper;
 
     /**
      * Default constructor.
@@ -58,10 +61,11 @@ public class DataBrowseServiceImpl implements DataBrowseService {
      * @param sampleCellTypeMapper the mapper for sample cell type data
      */
     @Autowired
-    public DataBrowseServiceImpl(TraitMapper traitMapper, SampleMapper sampleMapper, SampleCellTypeMapper sampleCellTypeMapper) {
+    public DataBrowseServiceImpl(TraitMapper traitMapper, SampleMapper sampleMapper, SampleCellTypeMapper sampleCellTypeMapper, TraitSusieMapper traitSusieMapper) {
         this.traitMapper = traitMapper;
         this.sampleMapper = sampleMapper;
         this.sampleCellTypeMapper = sampleCellTypeMapper;
+        this.traitSusieMapper = traitSusieMapper;
     }
 
     /**
@@ -133,24 +137,19 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         return sampleCellTypeMapper.selectList(null);
     }
 
-    /**
-     * Retrieves and organizes trait data for browsing based on the provided filter criteria.
-     * This method is cached to improve performance on subsequent calls with the same parameters.
-     *
-     * @param traitDataBrowseVO The VO containing the filter criteria for browsing trait data.
-     * @return A TraitDataBrowseResultVO object containing the organized trait data.
-     */
-    @Cacheable
-    @Override
-    public TraitDataBrowseResultVO traitDataBrowseData(TraitDataBrowseVO traitDataBrowseVO) {
-        // Initialize the query wrapper forTrait entity
-        QueryWrapper<Trait> queryWrapper = new QueryWrapper<>();
+    @SuppressWarnings("unchecked")
+    private <T extends Trait, K extends BaseMapper<T>> TraitDataBrowseResultVO<T> buildTraitQuery(T t, TraitDataBrowseVO traitDataBrowseVO, K k) {
+        // Create a query wrapper for gene annotations
+        QueryWrapper<T> queryWrapper = new QueryWrapper<>();
+        // Set the entity class for the query wrapper
+        queryWrapper.setEntityClass((Class<T>) t.getClass());
 
         // Extract parameters from the input VO
         String type = traitDataBrowseVO.getType();
         String category = traitDataBrowseVO.getCategory();
         String subcategory = traitDataBrowseVO.getSubcategory();
         String cohort = traitDataBrowseVO.getCohort();
+        String method = traitDataBrowseVO.getMethod();
         Page page = traitDataBrowseVO.getPage();
 
         // Set the base filter condition
@@ -158,38 +157,41 @@ public class DataBrowseServiceImpl implements DataBrowseService {
 
         // Add category condition if not empty
         if (StringUtil.isNotEmpty(category)) {
-            queryWrapper.lambda().eq(Trait::getCategory, category);
+            queryWrapper.lambda().eq(T::getCategory, category);
         }
 
         // Add type condition if not empty
         if (StringUtil.isNotEmpty(type)) {
-            queryWrapper.lambda().eq(Trait::getType, type);
+            queryWrapper.lambda().eq(T::getType, type);
         }
 
         // Add subcategory condition if not empty
         if (StringUtil.isNotEmpty(subcategory)) {
-            queryWrapper.lambda().eq(Trait::getSubcategory, subcategory);
+            queryWrapper.lambda().eq(T::getSubcategory, subcategory);
         }
 
-        // Add cohort condition if not empty
-        if (StringUtil.isNotEmpty(cohort)) {
-            queryWrapper.lambda().eq(Trait::getCohort, cohort);
+        if (StringUtil.isEqual(method, "finemap")) {
+            // Add cohort condition if not empty
+            if (StringUtil.isNotEmpty(cohort)) {
+                queryWrapper.lambda().eq(T::getCohort, cohort);
+            }
         }
+
 
         // Clone the query wrapper for subsequent queries
-        QueryWrapper<Trait> queryWrapperTmpPage = queryWrapper.clone();
+        QueryWrapper<T> queryWrapperTmpPage = queryWrapper.clone();
 
         setQueryWrapperByApply(page, queryWrapperTmpPage);
         // Order by trait index and retrieve the list of traits
         queryWrapperTmpPage.lambda().orderByAsc(Trait::getTraitIndex);
-        PageResult<Trait> traitList = PageResultUtil.format(page, () -> traitMapper.selectList(queryWrapperTmpPage));
+        PageResult<T> tList = PageResultUtil.format(page, () -> k.selectList(queryWrapperTmpPage));
 
         // Clone the original query wrapper for the next query
-        QueryWrapper<Trait> queryWrapperTmp = queryWrapper.clone();
+        QueryWrapper<T> queryWrapperTmp = queryWrapper.clone();
 
         // Select and group by type to get the count of each type
-        queryWrapperTmp.lambda().select(Trait::getType, Trait::getCount).groupBy(Trait::getType);
-        List<FieldNumber> typeList = traitMapper.selectMaps(queryWrapperTmp)
+        queryWrapperTmp.lambda().select(T::getType, T::getCount).groupBy(T::getType);
+        List<FieldNumber> typeList = k.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
                         .field(String.valueOf(stringObjectMap.get("type")))
                         .number(Math.toIntExact((Long) stringObjectMap.get("count"))).build())
@@ -199,8 +201,8 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         queryWrapperTmp = queryWrapper.clone();
 
         // Select and group by category to get the count of each category
-        queryWrapperTmp.lambda().select(Trait::getCategory, Trait::getCount).groupBy(Trait::getCategory);
-        List<FieldNumber> categoryList = traitMapper.selectMaps(queryWrapperTmp)
+        queryWrapperTmp.lambda().select(T::getCategory, T::getCount).groupBy(T::getCategory);
+        List<FieldNumber> categoryList = k.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
                         .field(String.valueOf(stringObjectMap.get("category")))
                         .number(Math.toIntExact((Long) stringObjectMap.get("count"))).build())
@@ -209,36 +211,55 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         // Clone the original query wrapper for the next query
         queryWrapperTmp = queryWrapper.clone();
         // Set the select clause to retrieve subcategory and count, and group the results by subcategory
-        queryWrapperTmp.lambda().select(Trait::getSubcategory, Trait::getCount).groupBy(Trait::getSubcategory);
+        queryWrapperTmp.lambda().select(T::getSubcategory, T::getCount).groupBy(T::getSubcategory);
         // Execute the query and map the results to a list of FieldNumber objects for subcategories
-        List<FieldNumber> subCategoryList = traitMapper.selectMaps(queryWrapperTmp)
+        List<FieldNumber> subCategoryList = k.selectMaps(queryWrapperTmp)
                 .stream().map(stringObjectMap -> FieldNumber.builder()
                         .field(String.valueOf(stringObjectMap.get("subcategory"))) // Get the subcategory field from the result map
                         .number(Math.toIntExact((Long) stringObjectMap.get("count"))) // Get the count field from the result map and convert to int
                         .build())
                 .toList();
 
-        // Clone the original query wrapper for the cohort query
-        queryWrapperTmp = queryWrapper.clone();
-        // Set the select clause to retrieve cohort and count, and group the results by cohort
-        queryWrapperTmp.lambda().select(Trait::getCohort, Trait::getCount).groupBy(Trait::getCohort);
-        // Execute the query and map the results to a list of FieldNumber objects for cohorts
-        List<FieldNumber> cohortList = traitMapper.selectMaps(queryWrapperTmp)
-                .stream().map(stringObjectMap -> FieldNumber.builder()
-                        .field(String.valueOf(stringObjectMap.get("cohort"))) // Get the cohort field from the result map
-                        .number(Math.toIntExact((Long) stringObjectMap.get("count"))) // Get the count field from the result map and convert to int
-                        .build())
-                .toList();
+        List<FieldNumber> cohortList = NullUtil.listEmpty();
+
+        if (StringUtil.isEqual(method, "finemap")) {
+            // Clone the original query wrapper for the cohort query
+            queryWrapperTmp = queryWrapper.clone();
+            // Set the select clause to retrieve cohort and count, and group the results by cohort
+            queryWrapperTmp.lambda().select(T::getCohort, T::getCount).groupBy(T::getCohort);
+            // Execute the query and map the results to a list of FieldNumber objects for cohorts
+            cohortList = k.selectMaps(queryWrapperTmp)
+                    .stream().map(stringObjectMap -> FieldNumber.builder()
+                            .field(String.valueOf(stringObjectMap.get("cohort"))) // Get the cohort field from the result map
+                            .number(Math.toIntExact((Long) stringObjectMap.get("count"))) // Get the count field from the result map and convert to int
+                            .build())
+                    .toList();
+        }
 
         // Build and return the TraitDataBrowseResultVO with the retrieved and processed data
-        return TraitDataBrowseResultVO.builder()
+        return TraitDataBrowseResultVO.<T>builder()
                 .typeList(typeList) // Set the type list
                 .categoryList(categoryList) // Set the category list
                 .subcategoryList(subCategoryList) // Set the subcategory list
                 .cohortList(cohortList) // Set the cohort list
-                .dataBrowseDataList(traitList) // Set the data browse data list
+                .dataBrowseDataList(tList) // Set the data browse data list
                 .build();
 
+    }
+
+    /**
+     * Retrieves and organizes trait data for browsing based on the provided filter criteria.
+     * This method is cached to improve performance on subsequent calls with the same parameters.
+     *
+     * @param traitDataBrowseVO The VO containing the filter criteria for browsing trait data.
+     * @return A TraitDataBrowseResultVO object containing the organized trait data.
+     */
+    @Cacheable
+    @Override
+    public TraitDataBrowseResultVO<? extends Trait> traitDataBrowseData(TraitDataBrowseVO traitDataBrowseVO) {
+        String method = traitDataBrowseVO.getMethod();
+        return StringUtil.isEqual(method, "finemap") ? buildTraitQuery(new Trait(), traitDataBrowseVO, traitMapper)
+                : buildTraitQuery(new TraitSusie(), traitDataBrowseVO, traitSusieMapper);
     }
 
     /**
@@ -259,6 +280,7 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         // Extract tissueType and healthType from the input object
         String tissueType = sampleDataBrowseVO.getTissueType();
         String healthType = sampleDataBrowseVO.getHealthType();
+        String metadata = sampleDataBrowseVO.getMetadata();
 
         // Add tissueType condition to the query if it is not empty
         if (StringUtil.isNotEmpty(tissueType)) {
@@ -268,6 +290,24 @@ public class DataBrowseServiceImpl implements DataBrowseService {
         // Add healthType condition to the query if it is not empty
         if (StringUtil.isNotEmpty(healthType)) {
             queryWrapper.eq(Sample::getHealthType, healthType);
+        }
+
+        if (StringUtil.isNotEmpty(metadata)) {
+            switch (metadata) {
+                case "Age/day/time":
+                    queryWrapper.eq(Sample::getTimeExist, 1);
+                    break;
+                case "Sex":
+                    queryWrapper.eq(Sample::getSexExist, 1);
+                    break;
+                case "Drug resistance":
+                    queryWrapper.eq(Sample::getDrugExist, 1);
+                    break;
+                case "Cell type":
+                    break;
+                default:
+                    throw new RunException(SystemException.ILLEGAL_PARAMETER);
+            }
         }
 
         // Clone the original query wrapper for subsequent queries
@@ -295,10 +335,20 @@ public class DataBrowseServiceImpl implements DataBrowseService {
                         .number(Math.toIntExact((Long) stringObjectMap.get("count"))).build())
                 .toList();
 
+        List<FieldNumber> metadataList = Lists.newArrayListWithExpectedSize(3);
+        metadataList.add(FieldNumber.builder().field("Cell type").number(sampleList.size()).build());
+        long timeCount = sampleList.stream().filter((sample) -> sample.getTimeExist() == 1).count();
+        long sexCount = sampleList.stream().filter((sample) -> sample.getSexExist() == 1).count();
+        long drugCount = sampleList.stream().filter((sample) -> sample.getDrugExist() == 1).count();
+        metadataList.add(FieldNumber.builder().field("Age/day/time").number((int) timeCount).build());
+        metadataList.add(FieldNumber.builder().field("Sex").number((int) sexCount).build());
+        metadataList.add(FieldNumber.builder().field("Drug resistance").number((int) drugCount).build());
+
         // Build and return the result object containing the lists and data
         return SampleDataBrowseResultVO.<Sample>builder()
                 .tissueTypeList(tissueTypeList)
                 .healthTypeList(healthTypeList)
+                .metadataList(metadataList)
                 .dataBrowseDataList(sampleList).build();
     }
 

@@ -32,12 +32,7 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             position: relative;
-            overflow: hidden;
             transition: transform 0.3s ease;
-        }
-
-        .container:hover {
-            transform: translateY(-5px);
         }
 
         .container::before {
@@ -139,10 +134,11 @@
         }
 
         .signature {
-            text-align: right;
             margin-top: 30px;
-            color: #7f8c8d;
+            text-align: right;
             font-style: italic;
+            color: #7f8c8d;
+            line-height: 10px;
         }
 
         .status-indicator {
@@ -174,6 +170,7 @@
             color: #6c757d;
             border-top: 1px solid #e9ecef;
             padding-top: 15px;
+            line-height: 10px;
         }
 
         @media (max-width: 600px) {
@@ -222,7 +219,7 @@
     </div>
 
     <div class="footer">
-        <p>© 2025 scVMAP Platform. All rights reserved.</p>
+        <p>© 2025 scVMAP Platform.</p>
         <p>For questions or support, contact: yuzmbio@163.com</p>
     </div>
 </div>

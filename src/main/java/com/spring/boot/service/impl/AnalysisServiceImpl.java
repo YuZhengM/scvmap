@@ -65,6 +65,10 @@ public class AnalysisServiceImpl implements AnalysisService {
     private CiceroTraitGeneMapper ciceroTraitGeneMapper;
     private CiceroSampleGeneMapper ciceroSampleGeneMapper;
     private ChromVarDifferenceTfMapper chromVarDifferenceTfMapper;
+    private GimmeSampleTraitTfMapper gimmeSampleTraitTfMapper;
+    private TfGeneSampleMapper tfGeneSampleMapper;
+    private GimmeTraitTfMapper gimmeTraitTfMapper;
+    private TimeSexDrugDifferenceGeneMapper timeSexDrugDifferenceGeneMapper;
 
     /**
      * Default constructor for AnalysisServiceImpl.
@@ -102,7 +106,13 @@ public class AnalysisServiceImpl implements AnalysisService {
                                DifferenceGeneChunkMapper differenceGeneChunkMapper,
                                SampleTfChunkMapper sampleTfChunkMapper,
                                DifferenceTfChunkMapper differenceTfChunkMapper,
-                               TraitTfChunkMapper traitTfChunkMapper, CiceroSampleTraitGeneMapper ciceroSampleTraitGeneMapper, CiceroTraitGeneMapper ciceroTraitGeneMapper, CiceroSampleGeneMapper ciceroSampleGeneMapper, ChromVarDifferenceTfMapper chromVarDifferenceTfMapper) {
+                               TraitTfChunkMapper traitTfChunkMapper,
+                               CiceroSampleTraitGeneMapper ciceroSampleTraitGeneMapper,
+                               CiceroTraitGeneMapper ciceroTraitGeneMapper,
+                               CiceroSampleGeneMapper ciceroSampleGeneMapper,
+                               ChromVarDifferenceTfMapper chromVarDifferenceTfMapper,
+                               GimmeSampleTraitTfMapper gimmeSampleTraitTfMapper,
+                               TfGeneSampleMapper tfGeneSampleMapper, GimmeTraitTfMapper gimmeTraitTfMapper, TimeSexDrugDifferenceGeneMapper timeSexDrugDifferenceGeneMapper) {
         this.traitMapper = traitMapper;
         this.sampleMapper = sampleMapper;
         this.magmaMapper = magmaMapper;
@@ -123,6 +133,10 @@ public class AnalysisServiceImpl implements AnalysisService {
         this.ciceroTraitGeneMapper = ciceroTraitGeneMapper;
         this.ciceroSampleGeneMapper = ciceroSampleGeneMapper;
         this.chromVarDifferenceTfMapper = chromVarDifferenceTfMapper;
+        this.gimmeSampleTraitTfMapper = gimmeSampleTraitTfMapper;
+        this.tfGeneSampleMapper = tfGeneSampleMapper;
+        this.gimmeTraitTfMapper = gimmeTraitTfMapper;
+        this.timeSexDrugDifferenceGeneMapper = timeSexDrugDifferenceGeneMapper;
     }
 
     /**
@@ -163,6 +177,7 @@ public class AnalysisServiceImpl implements AnalysisService {
      * @param doubles         the array containing the x and y coordinates
      */
     private void addNode(String id,
+                         String name,
                          String category,
                          double size,
                          List<EchartsNode> echartsNodeList,
@@ -175,7 +190,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         // Set the id of the node
         echartsNode.setId(id);
         // Set the name of the node
-        echartsNode.setName(id);
+        echartsNode.setName(name);
         // Set the x coordinate of the node
         echartsNode.setX(doubles[0]);
         // Set the y coordinate of the node
@@ -196,6 +211,17 @@ public class AnalysisServiceImpl implements AnalysisService {
         echartsNode.setSymbolSize(size);
         // Add the node to the list
         echartsNodeList.add(echartsNode);
+    }
+
+    private void addNode(String id,
+                         String category,
+                         double size,
+                         List<EchartsNode> echartsNodeList,
+                         double[] doubles,
+                         boolean isShow,
+                         double fontSize,
+                         String position) {
+        addNode(id, id, category, size, echartsNodeList, doubles, isShow, fontSize, position);
     }
 
     /**
@@ -232,7 +258,8 @@ public class AnalysisServiceImpl implements AnalysisService {
      * @param cellTypeList    the list of existing cell types
      * @param cellType        the cell type to be added if not present
      */
-    private void setCellTypeInGraph(String sampleId, List<EchartsLink> echartsLinkList, List<EchartsNode> echartsNodeList, double x1, double step, List<String> cellTypeList, String cellType) {
+    private void setCellTypeInGraph(String sampleId, List<EchartsLink> echartsLinkList, List<EchartsNode> echartsNodeList,
+                                    double x1, double step, List<String> cellTypeList, String cellType, String category) {
         // Check if the cellType2 is not in the cellTypeList
         if (StringUtil.isNotContain(cellType, cellTypeList)) {
             // Add the new cell type to the list
@@ -240,10 +267,15 @@ public class AnalysisServiceImpl implements AnalysisService {
             // Generate random coordinates for the new node
             double[] doubles = generateRandomCoordinates(x1 * step, -3 * step, 8 * step, 3 * step);
             // Add a new node for the cell type
-            addNode(cellType, "Cell type", 20, echartsNodeList, doubles, true, 8, "inside");
+            addNode(cellType, category, 20, echartsNodeList, doubles, true, 8, "inside");
             // Add a link from the sample to the new cell type node
             addLink(cellType, sampleId, 1D, echartsLinkList, true);
         }
+    }
+
+    private void setCellTypeInGraph(String sampleId, List<EchartsLink> echartsLinkList, List<EchartsNode> echartsNodeList,
+                                    double x1, double step, List<String> cellTypeList, String cellType) {
+        setCellTypeInGraph(sampleId, echartsLinkList, echartsNodeList, x1, step, cellTypeList, cellType, "Cell type");
     }
 
     /**
@@ -290,6 +322,11 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Cacheable
     @Override
     public List<TraitSample> listTraitBySampleIdAndTraitIdList(String sampleId, List<String> traitIdList) {
+
+        if (ListUtil.isEmpty(traitIdList)) {
+            return NullUtil.listEmpty();
+        }
+
         // Fetch and return the list of TraitSample objects based on the sample ID, method, and trait ID list
         return traitSampleMapper.selectByTraitIdListAndMethod(sampleId, DEFAULT_METHOD.toLowerCase(), traitIdList);
     }
@@ -462,12 +499,14 @@ public class AnalysisServiceImpl implements AnalysisService {
                     Map<Integer, List<String>> signalIdElementListMap = (Map<Integer, List<String>>) map.get("signalIdElementListMap");
                     List<String> magmaSampleIdList = sampleGeneChunkMapper.selectSampleIdByGeneList(signalIdElementListMap, analysisGeneVO.getLog2FoldChange(), analysisGeneVO.getAdjustedPValue(), analysisGeneVO.getPvalue());
                     List<String> ciceroSampleIdList = ciceroSampleGeneMapper.selectSampleIdByGeneList(signalIdElementListMap, analysisGeneVO.getCoScore());
-                    return magmaSampleIdList.stream().filter(ciceroSampleIdList::contains).toList();
+                    magmaSampleIdList.addAll(ciceroSampleIdList);
+                    return magmaSampleIdList.stream().distinct().toList();
                 },
                 (map, genome) -> {
                     List<String> magmaTraitIdList = traitGeneChunkMapper.selectTraitIdByGeneList(map, genome, analysisGeneVO.getPvalueTrait(), analysisGeneVO.getMin());
                     List<String> ciceroTraitIdList = ciceroTraitGeneMapper.selectTraitIdByGeneList(map, analysisGeneVO.getCoScore());
-                    return magmaTraitIdList.stream().filter(ciceroTraitIdList::contains).toList();
+                    magmaTraitIdList.addAll(ciceroTraitIdList);
+                    return magmaTraitIdList.stream().distinct().toList();
                 },
                 AnalysisGeneResultVO.class);
     }
@@ -485,7 +524,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     public AnalysisTfResultVO listDataByTfs(AnalysisTfVO analysisTfVO) {
         return getAnalysisElementResultVO(analysisTfVO,
                 (map) -> {
-                    String strategy = analysisTfVO.getStrategy();
+                    String strategy = analysisTfVO.getScStrategy();
 
                     List<String> sampleIdList;
 
@@ -495,7 +534,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                         Map<Integer, List<String>> signalIdElementListMap = (Map<Integer, List<String>>) map.get("signalIdElementListMap");
                         sampleIdList = sampleTfChunkMapper.selectSampleIdByTfList(signalIdElementListMap, analysisTfVO.getLog2FoldChange(), analysisTfVO.getAdjustedPValue(), analysisTfVO.getPvalue());
 
-                    } else {
+                    } else if (StringUtil.isEqual(strategy, "chromvar")) {
 
                         @SuppressWarnings("unchecked")
                         List<String> elementList = (List<String>) map.get("elementList");
@@ -513,12 +552,100 @@ public class AnalysisServiceImpl implements AnalysisService {
                         List<ChromVarDifferenceTf> chromVarDifferenceTfList = chromVarDifferenceTfMapper.selectList(queryWrapper);
                         sampleIdList = chromVarDifferenceTfList.stream().map(ChromVarDifferenceTf::getSampleId).distinct().toList();
 
+                    } else {
+                        log.error("[getGeneGraphData]: Parameter error {}", analysisTfVO);
+                        throw new RunException(SystemException.ILLEGAL_PARAMETER);
                     }
 
                     return sampleIdList;
                 },
-                (map, genome) -> traitTfChunkMapper.selectTraitIdByTfList(map, genome, analysisTfVO.getPvalueTrait(), analysisTfVO.getQvalueTrait()),
-                AnalysisTfResultVO.class);
+                (map, genome) -> {
+                    String strategy = analysisTfVO.getTraitStrategy();
+                    List<String> traitIdList;
+
+                    if (StringUtil.isEqual(strategy, "gimme")) {
+                        traitIdList = gimmeTraitTfMapper.selectByCoScoreAndMeanScore(map, analysisTfVO.getCoScore(), analysisTfVO.getMeanScore());
+                    } else if (StringUtil.isEqual(strategy, "homer")) {
+                        traitIdList = traitTfChunkMapper.selectTraitIdByTfList(map, genome, analysisTfVO.getPvalueTrait(), analysisTfVO.getQvalueTrait());
+                    } else {
+                        log.error("[getGeneGraphData]: Parameter error {}", analysisTfVO);
+                        throw new RunException(SystemException.ILLEGAL_PARAMETER);
+                    }
+                    return traitIdList;
+                }, AnalysisTfResultVO.class);
+    }
+
+    private Map<String, Object> getTraitGeneData(String sampleId,
+                                                 String traitId,
+                                                 String genome,
+                                                 AnalysisGeneVO analysisGeneVO) {
+
+        String signalId20 = getTrait20SignalId(traitId);
+        String signalId = getTraitSignalId(traitId);
+        String traitGeneStrategy = analysisGeneVO.getStrategy();
+
+        // Gene Information
+        List<Magma> magmaList;
+        List<? extends BaseSnpGene> baseSnpGeneList;
+
+        List<String> traitGeneList;
+
+        // trait-gene-rsID
+        if (StringUtil.isEqual(traitGeneStrategy, "cicero")) {
+            baseSnpGeneList = ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitIdAndScore(sampleId, signalId20, traitId, analysisGeneVO.getCoScore());
+            traitGeneList = ListUtil.isEmpty(baseSnpGeneList)
+                    ? NullUtil.listEmpty()
+                    : baseSnpGeneList.stream()
+                    .map(BaseSnpGene::getGene)
+                    .distinct()
+                    .toList();
+        } else if (StringUtil.isEqual(traitGeneStrategy, "magma")) {
+            magmaList = magmaMapper.selectByTraitIdAndGeneList(signalId, traitId, genome, null,
+                    analysisGeneVO.getPvalueTrait(), analysisGeneVO.getMin(), 0);
+            traitGeneList = ListUtil.isEmpty(magmaList)
+                    ? NullUtil.listEmpty()
+                    : magmaList.stream()
+                    .map(Magma::getGene)
+                    .distinct()
+                    .toList();
+            baseSnpGeneList = ListUtil.isEmpty(traitGeneList) ? NullUtil.listEmpty()
+                    : magmaAnnoMapper.selectByTraitIdAndGeneList(signalId, traitId, genome, traitGeneList);
+        } else if (StringUtil.isEqual(traitGeneStrategy, "overlap")) {
+            baseSnpGeneList = ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitIdAndScore(sampleId, signalId20, traitId, analysisGeneVO.getCoScore());
+            magmaList = magmaMapper.selectByTraitIdAndGeneList(signalId, traitId, genome, null,
+                    analysisGeneVO.getPvalueTrait(), analysisGeneVO.getMin(), 0);
+            if (ListUtil.isEmpty(baseSnpGeneList) || ListUtil.isEmpty(magmaList)) {
+                traitGeneList = NullUtil.listEmpty();
+            } else {
+                traitGeneList = baseSnpGeneList.stream()
+                        .map(BaseSnpGene::getGene)
+                        .distinct()
+                        .toList();
+                List<String> magmaGenelist = magmaList.stream()
+                        .map(Magma::getGene)
+                        .distinct()
+                        .toList();
+                traitGeneList = traitGeneList.stream().filter(magmaGenelist::contains).toList();
+
+                List<BaseSnpGene> baseSnpGeneArrayList = Lists.newArrayListWithCapacity(32);
+                List<MagmaAnno> magmaAnnoList = ListUtil.isEmpty(traitGeneList) ? NullUtil.listEmpty()
+                        : magmaAnnoMapper.selectByTraitIdAndGeneList(signalId, traitId, genome, traitGeneList);
+                baseSnpGeneArrayList.addAll(magmaAnnoList);
+                baseSnpGeneArrayList.addAll(baseSnpGeneList);
+                baseSnpGeneList = baseSnpGeneArrayList;
+
+            }
+        } else {
+            log.error("[getTraitGeneData]: Parameter error {}", analysisGeneVO);
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+
+        baseSnpGeneList = baseSnpGeneList.stream().distinct().toList();
+
+        Map<String, Object> map = Maps.newHashMapWithExpectedSize(3);
+        map.put("baseSnpGeneList", baseSnpGeneList);
+        map.put("traitGeneList", traitGeneList);
+        return map;
     }
 
     /**
@@ -534,14 +661,12 @@ public class AnalysisServiceImpl implements AnalysisService {
         // Retrieve top count parameter for visualization limit control:ml-citation{ref="1,2" data="citationList"}
         Integer topCount = regulationGraphVO.getTopCount();
 
-        // Log current regulation graph data object state for debugging
-        log.info("[getGeneGraphData]: {}", regulationGraphVO.toString());
-
         // Extract unique sample identifier from VO object
         String sampleId = regulationGraphVO.getSampleId();
 
         // Extract trait/disease identifier from VO object
         String traitId = regulationGraphVO.getTraitId();
+        String metadata = regulationGraphVO.getMetadata();
 
         // Obtain gene list
         AnalysisGeneVO analysisGeneVO = regulationGraphVO.getAnalysisGene();
@@ -556,7 +681,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
 
         // Get cell type classification for biological context
-        String cellType = regulationGraphVO.getCellType();
+        String metadataValue = regulationGraphVO.getCellType();
 
         String strategy = analysisGeneVO.getStrategy();
 
@@ -568,14 +693,34 @@ public class AnalysisServiceImpl implements AnalysisService {
         List<EchartsCategories> categoriesList = Lists.newArrayListWithCapacity(7);
         categoriesList.add(EchartsCategories.builder().name("Trait").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#506bb2").build()).build());
         categoriesList.add(EchartsCategories.builder().name("SNP").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#8cc372").build()).build());
+
         if (!regulationGraphVO.getIsCore()) {
-            categoriesList.add(EchartsCategories.builder().name("Gene (MAGMA)").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#f0bf57").build()).build());
+            if (StringUtil.isEqual(strategy, "cicero")) {
+                categoriesList.add(EchartsCategories.builder().name("Gene (Cicero)").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#f0bf57").build()).build());
+            } else if (StringUtil.isEqual(strategy, "magma")) {
+                categoriesList.add(EchartsCategories.builder().name("Gene (MAGMA)").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#f0bf57").build()).build());
+            } else if (StringUtil.isEqual(strategy, "overlap")) {
+                categoriesList.add(EchartsCategories.builder().name("Gene (Overlap)").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#f0bf57").build()).build());
+            } else {
+                log.error("[getGeneGraphData]: Parameter error {}", regulationGraphVO);
+                throw new RunException(SystemException.ILLEGAL_PARAMETER);
+            }
         }
+
         categoriesList.add(EchartsCategories.builder().name("Key gene").symbolSize(35D).itemStyle(EchartsItemStyle.builder().color("#e16563").build()).build());
+
         if (!regulationGraphVO.getIsCore()) {
             categoriesList.add(EchartsCategories.builder().name("Gene (Difference)").itemStyle(EchartsItemStyle.builder().color("#71b7d3").build()).build());
         }
-        categoriesList.add(EchartsCategories.builder().name("Cell type").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#3b9c6e").build()).build());
+
+        String metadataLabel = switch (metadata) {
+            case "time" -> "Age/day/time";
+            case "sex" -> "Sex";
+            case "drug" -> "Drug";
+            default -> "Cell type";
+        };
+
+        categoriesList.add(EchartsCategories.builder().name(metadataLabel).symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#3b9c6e").build()).build());
         categoriesList.add(EchartsCategories.builder().name("scATAC-seq").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#ef8152").build()).build());
 
         // Define coordinate calculation parameter for node positioning
@@ -594,69 +739,24 @@ public class AnalysisServiceImpl implements AnalysisService {
         // Execute SQL SELECT statement returning single matching record
         Sample sample = sampleMapper.selectOne(sampleQueryWrapper);
 
-        List<DifferenceGeneChunk> differenceGeneList = differenceGeneChunkMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(
-                sampleId, cellType, geneList, analysisGeneVO.getLog2FoldChange(),
-                analysisGeneVO.getAdjustedPValue(), analysisGeneVO.getPvalue(), topCount);
+        List<? extends DifferenceGene> differenceGeneList;
 
-        // Retrieve the signal ID associated with the trait
-        String signalId = getTraitSignalId(traitId);
-        String signalId20 = getTrait20SignalId(traitId);
-
-        List<Magma> magmaList;
-        List<? extends BaseSnpGene> ciceroSampleTraitGeneList = List.of();
-
-        List<String> traitGeneList;
-
-        if (StringUtil.isEqual(strategy, "cicero")) {
-            ciceroSampleTraitGeneList = ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitIdAndScore(sampleId, signalId20, traitId, analysisGeneVO.getCoScore());
-            traitGeneList = ListUtil.isEmpty(ciceroSampleTraitGeneList)
-                    ? NullUtil.listEmpty()
-                    : ciceroSampleTraitGeneList.stream()
-                    .map(BaseSnpGene::getGene)
-                    .distinct()
-                    .toList();
-
-        } else if (StringUtil.isEqual(strategy, "magma")) {
-            // Query the database for Magma entities related to the trait, considering the provided gene list and top count limit
-            // If the trait gene list is empty, return an empty list
-            magmaList = magmaMapper.selectByTraitIdAndGeneList(signalId, traitId, sample.getGenome(), geneList,
-                    analysisGeneVO.getPvalueTrait(), analysisGeneVO.getMin(), topCount);
-
-            // The trait gene list based on the distinct genes found in the Magma entities
-            // If the magma list is empty, return an empty list
-            traitGeneList = ListUtil.isEmpty(magmaList)
-                    ? NullUtil.listEmpty()
-                    : magmaList.stream()
-                    .map(Magma::getGene)
-                    .distinct()
-                    .toList();
-
-        } else if (StringUtil.isEqual(strategy, "overlap")) {
-            ciceroSampleTraitGeneList = ciceroSampleTraitGeneMapper.selectBySampleIdAndTraitIdAndScore(sampleId, signalId20, traitId, analysisGeneVO.getCoScore());
-
-            magmaList = magmaMapper.selectByTraitIdAndGeneList(signalId, traitId, sample.getGenome(), geneList,
-                    analysisGeneVO.getPvalueTrait(), analysisGeneVO.getMin(), topCount);
-
-
-            if (ListUtil.isEmpty(ciceroSampleTraitGeneList) || ListUtil.isEmpty(magmaList)) {
-                traitGeneList = NullUtil.listEmpty();
-            } else {
-                traitGeneList = ciceroSampleTraitGeneList.stream()
-                        .map(BaseSnpGene::getGene)
-                        .distinct()
-                        .toList();
-
-                List<String> magmaGenelist = magmaList.stream()
-                        .map(Magma::getGene)
-                        .distinct()
-                        .toList();
-
-                traitGeneList = traitGeneList.stream().filter(magmaGenelist::contains).toList();
-            }
-
+        if (StringUtil.isEqual(metadata, "cell_type")) {
+            differenceGeneList = differenceGeneChunkMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(
+                    sampleId, metadataValue, geneList, analysisGeneVO.getScore(), analysisGeneVO.getLog2FoldChange(),
+                    analysisGeneVO.getAdjustedPValue(), analysisGeneVO.getPvalue(), topCount);
         } else {
-            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+            differenceGeneList = timeSexDrugDifferenceGeneMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(
+                    sampleId, metadata, metadataValue, geneList, analysisGeneVO.getLog2FoldChange(),
+                    analysisGeneVO.getAdjustedPValue(), analysisGeneVO.getPvalue(), topCount);
         }
+
+        Map<String, Object> traitGeneData = getTraitGeneData(sampleId, traitId, sample.getGenome(), analysisGeneVO);
+
+        @SuppressWarnings("unchecked")
+        List<? extends BaseSnpGene> baseSnpGeneList = (List<? extends BaseSnpGene>) traitGeneData.get("baseSnpGeneList");
+        @SuppressWarnings("unchecked")
+        List<String> traitGeneList = (List<String>) traitGeneData.get("traitGeneList");
 
         // Ensure that the difference gene list is not null (this assertion is for debugging purposes and might be omitted in production code)
         assert differenceGeneList != null;
@@ -706,7 +806,7 @@ public class AnalysisServiceImpl implements AnalysisService {
             // Iterate over each difference gene in the list
             for (DifferenceGene differenceGene : differenceGeneList) {
                 // Update the graph with cell type information for the current difference gene
-                setCellTypeInGraph(sampleId, echartsLinkList, echartsNodeList, 5, step, cellTypeList, differenceGene.getCellType());
+                setCellTypeInGraph(sampleId, echartsLinkList, echartsNodeList, 5, step, cellTypeList, differenceGene.getCellType(), metadataLabel);
 
                 // Check if the gene of the current difference gene is present in both the sample and trait gene lists
                 if (StringUtil.isContain(differenceGene.getGene(), sampleGeneList) && StringUtil.isContain(differenceGene.getGene(), traitGeneList)) {
@@ -723,23 +823,6 @@ public class AnalysisServiceImpl implements AnalysisService {
 
         // Initialize a list to store rsIDs, with an expected size of 32 to optimize performance
         List<String> rsIdList = Lists.newArrayListWithExpectedSize(32);
-        List<? extends BaseSnpGene> baseSnpGeneList;
-
-        if (StringUtil.isEqual(strategy, "cicero")) {
-            baseSnpGeneList = ciceroSampleTraitGeneList;
-        } else if (StringUtil.isEqual(strategy, "magma")) {
-            // Query the database for Magma annotation entities related to the trait and updated gene list
-            // If the trait gene list is empty, return an empty list
-            baseSnpGeneList = magmaAnnoMapper.selectByTraitIdAndGeneList(signalId, traitId, sample.getGenome(), traitGeneList);
-        } else {
-            List<BaseSnpGene> baseSnpGeneArrayList = Lists.newArrayListWithExpectedSize(32);
-            List<MagmaAnno> magmaAnnoList = magmaAnnoMapper.selectByTraitIdAndGeneList(signalId, traitId, sample.getGenome(), traitGeneList);
-            baseSnpGeneArrayList.addAll(magmaAnnoList);
-            baseSnpGeneArrayList.addAll(ciceroSampleTraitGeneList);
-            baseSnpGeneList = baseSnpGeneArrayList;
-        }
-
-        baseSnpGeneList = baseSnpGeneList.stream().distinct().toList();
 
         for (BaseSnpGene baseSnpGene : baseSnpGeneList) {
             // Check if the rsID of the current Magma annotation is not already in the rsID list to avoid duplicates
@@ -748,8 +831,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                     if (StringUtil.isContain(baseSnpGene.getGene(), sampleGeneList) && StringUtil.isContain(baseSnpGene.getGene(), traitGeneList)) {
                         //noinspection DuplicatedCode
                         rsIdList.add(baseSnpGene.getRsId());
-                        double[] doubles = regulationGraphVO.getIsCore() ? generateRandomCoordinates(-9 * step, -4 * step, -3.5 * step, 4 * step)
-                                : generateRandomCoordinates(-9 * step, -3 * step, -6 * step, 3 * step);
+                        double[] doubles = generateRandomCoordinates(-9 * step, -4 * step, -3.5 * step, 4 * step);
                         addNode(baseSnpGene.getRsId(), "SNP", 20, echartsNodeList, doubles, false, 8, "inside");
                         addLink(traitId, baseSnpGene.getRsId(), 1D, echartsLinkList, true);
                     }
@@ -813,10 +895,24 @@ public class AnalysisServiceImpl implements AnalysisService {
         List<EchartsLink> echartsLinkList = Lists.newArrayListWithExpectedSize(32);
         List<EchartsCategories> categoriesList = Lists.newArrayListWithCapacity(7);
 
+        String traitStrategy = analysisTfVO.getTraitStrategy();
+
         // Add categories to the categories list
         categoriesList.add(EchartsCategories.builder().name("Trait").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#506bb2").build()).build());
+
+        if (StringUtil.isEqual(traitStrategy, "gimme")) {
+            categoriesList.add(EchartsCategories.builder().name("SNP").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#8cc372").build()).build());
+        }
+
         if (!regulationGraphVO.getIsCore()) {
-            categoriesList.add(EchartsCategories.builder().name("TF (HOMER)").itemStyle(EchartsItemStyle.builder().color("#f1c25b").build()).build());
+            if (StringUtil.isEqual(traitStrategy, "gimme")) {
+                categoriesList.add(EchartsCategories.builder().name("TF (GimmeMotifs)").itemStyle(EchartsItemStyle.builder().color("#f1c25b").build()).build());
+            } else if (StringUtil.isEqual(traitStrategy, "homer")) {
+                categoriesList.add(EchartsCategories.builder().name("TF (HOMER)").itemStyle(EchartsItemStyle.builder().color("#f1c25b").build()).build());
+            } else {
+                log.error("[getTfGraphData]: Parameter error {}", regulationGraphVO);
+                throw new RunException(SystemException.ILLEGAL_PARAMETER);
+            }
         }
         categoriesList.add(EchartsCategories.builder().name("Key TF").symbolSize(35D).itemStyle(EchartsItemStyle.builder().color("#e16563").build()).build());
         if (!regulationGraphVO.getIsCore()) {
@@ -829,7 +925,11 @@ public class AnalysisServiceImpl implements AnalysisService {
         double step = 100;
 
         // Add the trait node
-        addNode(traitId, "Trait", 40, echartsNodeList, regulationGraphVO.getIsCore() ? new double[]{-4 * step, 0D} : new double[]{-5 * step, 0D}, true, 17, "top");
+        if (StringUtil.isEqual(traitStrategy, "gimme")) {
+            addNode(traitId, "Trait", 40, echartsNodeList, new double[]{-10 * step, 0D}, true, 17, "top");
+        } else if (StringUtil.isEqual(traitStrategy, "homer")) {
+            addNode(traitId, "Trait", 40, echartsNodeList, regulationGraphVO.getIsCore() ? new double[]{-4 * step, 0D} : new double[]{-5 * step, 0D}, true, 17, "top");
+        }
 
         // Add the sample node
         addNode(sampleId, "scATAC-seq", 40, echartsNodeList, new double[]{9 * step, 0D}, true, 17, "top");
@@ -839,19 +939,16 @@ public class AnalysisServiceImpl implements AnalysisService {
         sampleQueryWrapper.eq(Sample::getSampleId, sampleId); // SQL: SELECT * FROM Sample WHERE sampleId = ?
         Sample sample = sampleMapper.selectOne(sampleQueryWrapper);
 
-        String strategy = analysisTfVO.getStrategy();
+        String scStrategy = analysisTfVO.getScStrategy();
 
         List<? extends BaseCellTypeTf> cellTypeTfsList;
 
-        if (StringUtil.isEqual(strategy, "snapatac2")) {
+        if (StringUtil.isEqual(scStrategy, "snapatac2")) {
             cellTypeTfsList = differenceTfChunkMapper.selectBySampleIdAndCellTypeAndTfList(sampleId, cellType, tfList,
                     analysisTfVO.getLog2FoldChange(), analysisTfVO.getAdjustedPValue(), analysisTfVO.getPvalue());
-        } else if (StringUtil.isEqual(strategy, "chromvar")) {
+        } else if (StringUtil.isEqual(scStrategy, "chromvar")) {
             LambdaQueryWrapper<ChromVarDifferenceTf> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(ChromVarDifferenceTf::getSampleId, sampleId);
-            if (StringUtil.isNotEqual(cellType, ALL_DATA_SYMBOL)) {
-                queryWrapper.eq(BaseCellTypeTf::getCellType, cellType);
-            }
             if (StringUtil.isNotEqual(cellType, ALL_DATA_SYMBOL)) {
                 queryWrapper.eq(BaseCellTypeTf::getCellType, cellType);
             }
@@ -866,21 +963,9 @@ public class AnalysisServiceImpl implements AnalysisService {
             }
             cellTypeTfsList = chromVarDifferenceTfMapper.selectList(queryWrapper);
         } else {
-            log.error("[getTfGraphData]: {}", strategy);
+            log.error("[getTfGraphData]: Parameter error {}", regulationGraphVO);
             throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
-
-        // Retrieve the signal ID for the trait
-        String signalId = getTraitSignalId(traitId);
-
-        // Query the HOMER data based on the trait ID, signal ID, and genome
-        List<Homer> homerList = homerMapper.selectByTraitIdAndTfList(signalId, traitId, sample.getGenome(), tfList,
-                analysisTfVO.getPvalueTrait(), analysisTfVO.getQvalueTrait());
-
-        // Extract the distinct TFs from the HOMER data
-        List<String> traitTfList = ListUtil.isEmpty(homerList)
-                ? NullUtil.listEmpty()
-                : homerList.stream().map(Homer::getTf).distinct().toList();
 
         // Ensure the difference TF list is not null
         assert cellTypeTfsList != null;
@@ -890,42 +975,123 @@ public class AnalysisServiceImpl implements AnalysisService {
                 ? NullUtil.listEmpty()
                 : cellTypeTfsList.stream().map(BaseCellTypeTf::getTf).distinct().toList();
 
-        // Iterate over the sample TF list
-        for (String sampleTf : sampleTfList) {
+        // Retrieve the signal ID for the trait
+        String signalId = getTraitSignalId(traitId);
 
-            // Check if the sample TF is also in the trait TF list
-            if (StringUtil.isContain(sampleTf, traitTfList)) {
-                // Generate random coordinates for the node
-                double[] doubles = regulationGraphVO.getIsCore() ? generateRandomCoordinates(-2.5 * step, -4 * step, 2.5 * step, 4 * step)
-                        : generateRandomCoordinates(-1 * step, -4 * step, step, 4 * step);
-                // Add the node with category "Key TF"
-                addNode(sampleTf, "Key TF", 35, echartsNodeList, doubles, true, 10, "inside");
-            } else {
+        List<String> traitTfList = Lists.newArrayListWithExpectedSize(16);
+
+        if (StringUtil.isEqual(traitStrategy, "gimme")) {
+            List<GimmeSampleTraitTf> gimmeSampleTraitTfList = gimmeSampleTraitTfMapper.selectByScoreAndMeanScore(sampleId, signalId,
+                    traitId, analysisTfVO.getCoScore(), analysisTfVO.getMeanScore(), analysisTfVO.getCount(), null);
+
+            List<String> rsIdList = Lists.newArrayListWithExpectedSize(16);
+
+            for (GimmeSampleTraitTf gimmeSampleTraitTf : gimmeSampleTraitTfList) {
+                String tf = gimmeSampleTraitTf.getTf();
+                String rsId = gimmeSampleTraitTf.getRsId();
+
+                // Check if the sample TF is also in the trait TF list
+                if (StringUtil.isContain(tf, sampleTfList)) {
+                    addLink(rsId, tf, 2D, echartsLinkList, true);
+                } else {
+                    if (!regulationGraphVO.getIsCore()) {
+                        addLink(rsId, tf, 1D, echartsLinkList, false);
+                    }
+                }
+
+                if (StringUtil.isNotContain(tf, traitTfList)) {
+                    traitTfList.add(tf);
+
+                    if (StringUtil.isContain(tf, sampleTfList)) {
+
+                        double[] doubles = regulationGraphVO.getIsCore() ? generateRandomCoordinates(-2 * step, -5 * step, 3.5 * step, 5 * step)
+                                : generateRandomCoordinates(-2 * step, -5 * step, 2 * step, 5 * step);
+                        addNode(tf, "Key TF", 35, echartsNodeList, doubles, true, 10, "inside");
+
+                        if (regulationGraphVO.getIsCore()) {
+                            if (StringUtil.isNotContain(rsId, rsIdList)) {
+                                rsIdList.add(rsId);
+                                doubles = generateRandomCoordinates(-9 * step, -4 * step, -3.5 * step, 4 * step);
+                                addNode(rsId, "SNP", 20, echartsNodeList, doubles, false, 10, "inside");
+                                addLink(traitId, rsId, 1D, echartsLinkList, false);
+                            }
+                        }
+
+                    } else {
+
+                        if (!regulationGraphVO.getIsCore()) {
+                            // Generate random coordinates for the node
+                            double[] doubles = generateRandomCoordinates(-5.5 * step, -3 * step, -2.5 * step, 3 * step);
+                            // Add the node with category "TF (Difference)"
+                            addNode(tf, "TF (GimmeMotifs)", 20, echartsNodeList, doubles, false, 10, "inside");
+                        }
+                    }
+
+                }
+
                 if (!regulationGraphVO.getIsCore()) {
+                    if (StringUtil.isNotContain(rsId, rsIdList)) {
+                        rsIdList.add(rsId);
+                        double[] doubles = generateRandomCoordinates(-9 * step, -3 * step, -6 * step, 3 * step);
+                        addNode(rsId, "SNP", 20, echartsNodeList, doubles, false, 10, "inside");
+                        addLink(traitId, rsId, 1D, echartsLinkList, false);
+                    }
+                }
+
+            }
+
+        } else if (StringUtil.isEqual(traitStrategy, "homer")) {
+
+            // Query the HOMER data based on the trait ID, signal ID, and genome
+            List<Homer> homerList = homerMapper.selectByTraitIdAndTfList(signalId, traitId, sample.getGenome(), tfList,
+                    analysisTfVO.getPvalueTrait(), analysisTfVO.getQvalueTrait());
+
+            // Extract the distinct TFs from the HOMER data
+            traitTfList = ListUtil.isEmpty(homerList)
+                    ? NullUtil.listEmpty()
+                    : homerList.stream().map(Homer::getTf).distinct().toList();
+
+            // Iterate over the sample TF list
+            for (String sampleTf : sampleTfList) {
+
+                // Check if the sample TF is also in the trait TF list
+                if (StringUtil.isContain(sampleTf, traitTfList)) {
                     // Generate random coordinates for the node
-                    double[] doubles = generateRandomCoordinates(1.5 * step, -3 * step, 4.5 * step, 3 * step);
-                    // Add the node with category "TF (Difference)"
-                    addNode(sampleTf, "TF (Difference)", 20, echartsNodeList, doubles, false, 10, "inside");
+                    double[] doubles = regulationGraphVO.getIsCore() ? generateRandomCoordinates(-2.5 * step, -4 * step, 2.5 * step, 4 * step)
+                            : generateRandomCoordinates(-1 * step, -4 * step, step, 4 * step);
+                    // Add the node with category "Key TF"
+                    addNode(sampleTf, "Key TF", 35, echartsNodeList, doubles, true, 10, "inside");
+                } else {
+                    if (!regulationGraphVO.getIsCore()) {
+                        // Generate random coordinates for the node
+                        double[] doubles = generateRandomCoordinates(1.5 * step, -3 * step, 4.5 * step, 3 * step);
+                        // Add the node with category "TF (Difference)"
+                        addNode(sampleTf, "TF (Difference)", 20, echartsNodeList, doubles, false, 10, "inside");
+                    }
                 }
             }
-        }
 
-        // Iterate over the trait TF list
-        for (String traitTf : traitTfList) {
-            // Check if the trait TF is not in the sample TF list
-            if (StringUtil.isNotContain(traitTf, sampleTfList)) {
-                double[] doubles = generateRandomCoordinates(-3 * step, -3 * step, -1.5 * step, 3 * step);
-                addNode(traitTf, "TF (HOMER)", 20, echartsNodeList, doubles, false, 10, "inside");
-            }
-            // Check if the trait TF is in both the sample and trait TF lists
-            if (StringUtil.isContain(traitTf, sampleTfList)) {
-                // Add a link with weight 2
-                addLink(traitId, traitTf, 2D, echartsLinkList, true);
-            } else {
-                if (!regulationGraphVO.getIsCore()) {
-                    addLink(traitId, traitTf, 1D, echartsLinkList, false);
+            // Iterate over the trait TF list
+            for (String traitTf : traitTfList) {
+                // Check if the trait TF is not in the sample TF list
+                if (StringUtil.isNotContain(traitTf, sampleTfList)) {
+                    double[] doubles = generateRandomCoordinates(-3 * step, -3 * step, -1.5 * step, 3 * step);
+                    addNode(traitTf, "TF (HOMER)", 20, echartsNodeList, doubles, false, 10, "inside");
+                }
+                // Check if the trait TF is in both the sample and trait TF lists
+                if (StringUtil.isContain(traitTf, sampleTfList)) {
+                    // Add a link with weight 2
+                    addLink(traitId, traitTf, 2D, echartsLinkList, true);
+                } else {
+                    if (!regulationGraphVO.getIsCore()) {
+                        addLink(traitId, traitTf, 1D, echartsLinkList, false);
+                    }
                 }
             }
+
+        } else {
+            log.error("[getTfGraphData]: Parameter error {}", regulationGraphVO);
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
         }
 
         // Initialize a list for cell types
@@ -948,6 +1114,212 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
 
         // Build and return the EchartsGraphData object
+        return EchartsGraphData.builder().nodes(echartsNodeList).links(echartsLinkList).categories(categoriesList).build();
+    }
+
+    @Override
+    public EchartsGraphData getTfGeneGraphData(RegulationGraphVO regulationGraphVO) {
+        // Extract parameters from the regulationGraphVO
+        String sampleId = regulationGraphVO.getSampleId(); // Sample ID
+        String traitId = regulationGraphVO.getTraitId(); // Trait ID
+        String cellType = regulationGraphVO.getCellType(); // Cell type
+
+        // TF graph
+        AnalysisTfVO analysisTfVO = regulationGraphVO.getAnalysisTf();
+
+        if (!regulationGraphVO.getIsCore() || StringUtil.isNotEqual(analysisTfVO.getTraitStrategy(), "gimme")) {
+            log.error("[getTfGeneGraphData]: Parameter error {}", regulationGraphVO);
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+
+        // Gene graph
+        AnalysisGeneVO analysisGeneVO = regulationGraphVO.getAnalysisGene();
+
+        String scTfStrategy = analysisTfVO.getScStrategy();
+        String traitGeneStrategy = analysisGeneVO.getStrategy();
+
+        // Initialize lists for nodes, links, and categories
+        List<EchartsNode> echartsNodeList = Lists.newArrayListWithExpectedSize(32);
+        List<EchartsLink> echartsLinkList = Lists.newArrayListWithExpectedSize(32);
+        List<EchartsCategories> categoriesList = Lists.newArrayListWithCapacity(6);
+
+        // Add categories to the categories list
+        categoriesList.add(EchartsCategories.builder().name("Trait").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#506bb2").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("SNP").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#8cc372").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("Key TF").symbolSize(35D).itemStyle(EchartsItemStyle.builder().color("#72b8d4").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("Key gene").symbolSize(35D).itemStyle(EchartsItemStyle.builder().color("#e16563").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("Cell type").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#3b9c6f").build()).build());
+        categoriesList.add(EchartsCategories.builder().name("scATAC-seq").symbolSize(20D).itemStyle(EchartsItemStyle.builder().color("#ef8152").build()).build());
+
+        // Define the step for positioning nodes
+        double step = 100;
+
+        // Position trait node on left side of visualization canvas
+        addNode(traitId, "Trait", 40, echartsNodeList, new double[]{-10 * step, 0D}, true, 17, "top");
+
+        // Position sample node on right side of visualization canvas
+        addNode(sampleId, "scATAC-seq", 40, echartsNodeList, new double[]{10 * step, 0D}, true, 17, "top");
+
+        // Construct database query for sample metadata retrieval:ml-citation{ref="3,5" data="citationList"}
+        LambdaQueryWrapper<Sample> sampleQueryWrapper = new LambdaQueryWrapper<>();
+        // Set WHERE clause condition: sample_id column equals provided identifier
+        sampleQueryWrapper.eq(Sample::getSampleId, sampleId);
+        // Execute SQL SELECT statement returning single matching record
+        Sample sample = sampleMapper.selectOne(sampleQueryWrapper);
+
+        Map<String, Object> traitGeneData = getTraitGeneData(sampleId, traitId, sample.getGenome(), analysisGeneVO);
+
+        @SuppressWarnings("unchecked")
+        List<? extends BaseSnpGene> baseSnpGeneList = (List<? extends BaseSnpGene>) traitGeneData.get("baseSnpGeneList");
+        @SuppressWarnings("unchecked")
+        List<String> traitGeneList = (List<String>) traitGeneData.get("traitGeneList");
+
+        // overlap gene-cell type
+        List<DifferenceGeneChunk> differenceGeneList = ListUtil.isEmpty(traitGeneList) ? NullUtil.listEmpty()
+                : differenceGeneChunkMapper.selectBySampleIdAndCellTypeAndGeneListWithTop(
+                sampleId, cellType, traitGeneList, analysisGeneVO.getScore(), analysisGeneVO.getLog2FoldChange(),
+                analysisGeneVO.getAdjustedPValue(), analysisGeneVO.getPvalue(), 0);
+
+        // overlap gene
+        List<String> overlapGeneList = differenceGeneList.stream().map(DifferenceGene::getGene).distinct().toList();
+
+        // TF-cell type
+        List<? extends BaseCellTypeTf> cellTypeTfList;
+
+        if (StringUtil.isEqual(scTfStrategy, "snapatac2")) {
+            cellTypeTfList = differenceTfChunkMapper.selectBySampleIdAndCellTypeAndTfList(sampleId, cellType, null,
+                    analysisTfVO.getLog2FoldChange(), analysisTfVO.getAdjustedPValue(), analysisTfVO.getPvalue());
+        } else if (StringUtil.isEqual(scTfStrategy, "chromvar")) {
+            LambdaQueryWrapper<ChromVarDifferenceTf> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ChromVarDifferenceTf::getSampleId, sampleId);
+            if (StringUtil.isNotEqual(cellType, ALL_DATA_SYMBOL)) {
+                queryWrapper.eq(BaseCellTypeTf::getCellType, cellType);
+            }
+            if (analysisTfVO.getMean() > 0) {
+                queryWrapper.ge(ChromVarDifferenceTf::getMean1, analysisTfVO.getMean());
+            }
+            if (analysisTfVO.getPvalue() > 0) {
+                queryWrapper.le(ChromVarDifferenceTf::getPValue, analysisTfVO.getPvalue());
+            }
+            if (analysisTfVO.getAdjustedPValue() > 0) {
+                queryWrapper.le(ChromVarDifferenceTf::getPValueAdjust, analysisTfVO.getAdjustedPValue());
+            }
+            cellTypeTfList = chromVarDifferenceTfMapper.selectList(queryWrapper);
+        } else {
+            log.error("[getTfGeneGraphData]: Parameter error {}", regulationGraphVO);
+            throw new RunException(SystemException.ILLEGAL_PARAMETER);
+        }
+
+        // Ensure the difference TF list is not null
+        assert cellTypeTfList != null;
+
+        // Extract the distinct TFs from the difference TF list
+        List<String> sampleTfList = ListUtil.isEmpty(cellTypeTfList)
+                ? NullUtil.listEmpty()
+                : cellTypeTfList.stream().map(BaseCellTypeTf::getTf).distinct().toList();
+
+        String signalId = getTraitSignalId(traitId);
+
+        // trait-rsID-overlap TF
+        List<GimmeSampleTraitTf> gimmeSampleTraitTfList = ListUtil.isEmpty(sampleTfList) ? NullUtil.listEmpty()
+                : gimmeSampleTraitTfMapper.selectByScoreAndMeanScore(sampleId, signalId,
+                traitId, analysisTfVO.getCoScore(), analysisTfVO.getMeanScore(), analysisTfVO.getCount(), sampleTfList);
+
+        List<String> overlapTfList = gimmeSampleTraitTfList.stream().map(GimmeSampleTraitTf::getTf).toList();
+
+        // overlap TF-cell type
+        cellTypeTfList = cellTypeTfList.stream().filter((cellTypeTf) -> StringUtil.isContain(cellTypeTf.getTf(), overlapTfList)).toList();
+
+        // overlap TF-overlap gene
+        List<TfGeneSample> tfGeneSampleList = NullUtil.listEmpty();
+
+        if (ListUtil.isNotEmpty(overlapTfList) && ListUtil.isNotEmpty(overlapGeneList)) {
+            tfGeneSampleList = tfGeneSampleMapper.selectByTfListGeneListByScore(sampleId, overlapTfList,
+                    overlapGeneList, analysisTfVO.getMeanScore(), analysisTfVO.getCoScore());
+        }
+
+        // trait-snp `baseSnpGeneList` `gimmeSampleTraitTfList`
+        // snp-gene `baseSnpGeneList`
+        // snp-tf `gimmeSampleTraitTfList`
+        // tf-gene `tfGeneSampleList`
+        // tf-cell type `cellTypeTfList`
+        // gene-cell type `differenceGeneList`
+
+        // Initialize a list to store rsIDs, with an expected size of 32 to optimize performance
+        List<String> rsIdList = Lists.newArrayListWithExpectedSize(32);
+        List<String> geneList = Lists.newArrayListWithExpectedSize(32);
+
+        for (BaseSnpGene baseSnpGene : baseSnpGeneList) {
+            if (StringUtil.isContain(baseSnpGene.getGene(), overlapGeneList)) {
+                // Check if the rsID of the current Magma annotation is not already in the rsID list to avoid duplicates
+                if (StringUtil.isNotContain(baseSnpGene.getRsId(), rsIdList)) {
+                    //noinspection DuplicatedCode
+                    rsIdList.add(baseSnpGene.getRsId());
+                    double[] doubles = generateRandomCoordinates(-9 * step, -4 * step, -3.5 * step, 4 * step);
+                    addNode(baseSnpGene.getRsId(), "SNP", 20, echartsNodeList, doubles, false, 8, "inside");
+                    addLink(traitId, baseSnpGene.getRsId(), 1D, echartsLinkList, true);
+                }
+                if (StringUtil.isNotContain(baseSnpGene.getGene(), geneList)) {
+                    geneList.add(baseSnpGene.getGene());
+                    double[] doubles = generateRandomCoordinates(-2 * step, 0 * step, 3.5 * step, 5 * step);
+                    addNode("Gene: " + baseSnpGene.getGene(), baseSnpGene.getGene(), "Key gene", 35, echartsNodeList, doubles, true, 8, "inside");
+                }
+                // Add a link with a weight of 2D between the rsID and the gene, indicating a stronger connection
+                addLink(baseSnpGene.getRsId(), "Gene: " + baseSnpGene.getGene(), 2D, echartsLinkList, true);
+            }
+        }
+
+        List<String> tfList = Lists.newArrayListWithExpectedSize(32);
+
+        for (GimmeSampleTraitTf gimmeSampleTraitTf : gimmeSampleTraitTfList) {
+            if (StringUtil.isContain(gimmeSampleTraitTf.getTf(), overlapTfList)) {
+                // Check if the rsID of the current Magma annotation is not already in the rsID list to avoid duplicates
+                if (StringUtil.isNotContain(gimmeSampleTraitTf.getRsId(), rsIdList)) {
+                    //noinspection DuplicatedCode
+                    rsIdList.add(gimmeSampleTraitTf.getRsId());
+                    double[] doubles = generateRandomCoordinates(-9 * step, -4 * step, -3.5 * step, 4 * step);
+                    addNode(gimmeSampleTraitTf.getRsId(), "SNP", 20, echartsNodeList, doubles, false, 8, "inside");
+                    addLink(traitId, gimmeSampleTraitTf.getRsId(), 1D, echartsLinkList, false);
+                }
+                if (StringUtil.isNotContain(gimmeSampleTraitTf.getTf(), tfList)) {
+                    tfList.add(gimmeSampleTraitTf.getTf());
+                    double[] doubles = generateRandomCoordinates(-2 * step, -5 * step, 3.5 * step, 0 * step);
+                    addNode("TF: " + gimmeSampleTraitTf.getTf(), gimmeSampleTraitTf.getTf(), "Key TF", 35, echartsNodeList, doubles, true, 8, "inside");
+                }
+                // Add a link with a weight of 2D between the rsID and the gene, indicating a stronger connection
+                addLink(gimmeSampleTraitTf.getRsId(), "TF: " + gimmeSampleTraitTf.getTf(), 2D, echartsLinkList, true);
+            }
+        }
+
+        for (TfGeneSample tfGeneSample : tfGeneSampleList) {
+            if (StringUtil.isContain(tfGeneSample.getTf(), overlapTfList) && StringUtil.isContain(tfGeneSample.getGene(), overlapGeneList)) {
+                addLink("TF: " + tfGeneSample.getTf(), "Gene: " + tfGeneSample.getGene(), 2D, echartsLinkList, true);
+            }
+        }
+
+        // Initialize a list for cell types
+        List<String> cellTypeList = Lists.newArrayListWithCapacity(16);
+
+        // Iterate over the difference TF list
+        for (BaseCellTypeTf cellTypeTf : cellTypeTfList) {
+            // Set the cell type in the graph
+            setCellTypeInGraph(sampleId, echartsLinkList, echartsNodeList, 4, step, cellTypeList, cellTypeTf.getCellType());
+
+            // Check if the TF is in both the sample and trait TF lists
+            if (StringUtil.isContain(cellTypeTf.getTf(), overlapTfList)) {
+                // Add a link with weight 2
+                addLink("TF: " + cellTypeTf.getTf(), cellTypeTf.getCellType(), 2D, echartsLinkList, true);
+            }
+        }
+
+        for (DifferenceGeneChunk differenceGeneChunk : differenceGeneList) {
+            setCellTypeInGraph(sampleId, echartsLinkList, echartsNodeList, 4, step, cellTypeList, differenceGeneChunk.getCellType());
+
+            if (StringUtil.isContain(differenceGeneChunk.getGene(), overlapGeneList)) {
+                addLink("Gene: " + differenceGeneChunk.getGene(), differenceGeneChunk.getCellType(), 2D, echartsLinkList, true);
+            }
+        }
+
         return EchartsGraphData.builder().nodes(echartsNodeList).links(echartsLinkList).categories(categoriesList).build();
     }
 

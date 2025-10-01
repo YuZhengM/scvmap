@@ -2,6 +2,7 @@ package com.spring.boot.controller;
 
 import com.spring.boot.pojo.Sample;
 import com.spring.boot.pojo.SampleCellType;
+import com.spring.boot.pojo.Trait;
 import com.spring.boot.pojo.vo.SampleDataBrowseResultVO;
 import com.spring.boot.pojo.vo.SampleDataBrowseVO;
 import com.spring.boot.pojo.vo.TraitDataBrowseResultVO;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import static com.spring.boot.util.util.ApplicationUtil.checkFineMappingMethod;
 
 /**
  * Controller for data browsing operations.
@@ -58,8 +61,10 @@ public class DataBrowseController {
             )
     )
     @PostMapping("/trait")
-    public Result<TraitDataBrowseResultVO> traitDataBrowseData(@RequestBody TraitDataBrowseVO traitDataBrowseVO) {
-        TraitDataBrowseResultVO traitDataBrowseData = dataBrowseService.traitDataBrowseData(traitDataBrowseVO);
+    public Result<TraitDataBrowseResultVO<? extends Trait>> traitDataBrowseData(@RequestBody TraitDataBrowseVO traitDataBrowseVO) {
+        String method = traitDataBrowseVO.getMethod();
+        checkFineMappingMethod(method);
+        TraitDataBrowseResultVO<? extends Trait> traitDataBrowseData = dataBrowseService.traitDataBrowseData(traitDataBrowseVO);
         return ResultUtil.success("Trait select success", traitDataBrowseData);
     }
 

@@ -243,6 +243,7 @@ public class AnalysisController {
     public Result<EchartsGraphData> getGeneGraphData(@RequestBody RegulationGraphVO regulationGraphVO) {
         checkTraitId(regulationGraphVO.getTraitId());
         checkSampleId(regulationGraphVO.getSampleId());
+        checkMetadata(regulationGraphVO.getMetadata());
         EchartsGraphData echartsGraphData = analysisService.getGeneGraphData(regulationGraphVO);
         return ResultUtil.success("[getGeneGraphData]: Query result for gene regulation graph data", echartsGraphData);
     }
@@ -267,6 +268,14 @@ public class AnalysisController {
         checkSampleId(regulationGraphVO.getSampleId());
         EchartsGraphData echartsGraphData = analysisService.getTfGraphData(regulationGraphVO);
         return ResultUtil.success("[getTfGraphData]: Query result for TF regulation graph data", echartsGraphData);
+    }
+
+    @PostMapping("/tf_gene/regulation/graph")
+    public Result<EchartsGraphData> getTfGeneGraphData(@RequestBody RegulationGraphVO regulationGraphVO) {
+        checkTraitId(regulationGraphVO.getTraitId());
+        checkSampleId(regulationGraphVO.getSampleId());
+        EchartsGraphData echartsGraphData = analysisService.getTfGeneGraphData(regulationGraphVO);
+        return ResultUtil.success("[getTfGeneGraphData]: Query result for comprehensive regulation graph data", echartsGraphData);
     }
 
     /**

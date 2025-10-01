@@ -93,6 +93,18 @@ public class Sample extends BaseSample implements Serializable {
     @Schema(description = "The single-cell sample contains multiple sample information.")
     private Integer sampleExist;
 
+    @TableField("f_time")
+    @Schema(description = "The single-cell sample contains age/day information.")
+    private Integer timeExist;
+
+    @TableField("f_sex")
+    @Schema(description = "The single-cell sample contains sex information.")
+    private Integer sexExist;
+
+    @TableField("f_drug")
+    @Schema(description = "The single-cell sample contains drug resistance information.")
+    private Integer drugExist;
+
     @TableField("f_index")
     @Schema(description = "The unique index identifier of the single-cell sample has no meaning and is only used for sorting.")
     private Integer FIndex;

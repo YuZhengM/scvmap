@@ -16,6 +16,9 @@ public class DifferenceElementHeatmapVO implements Serializable {
     @Schema(description = "Sample ID", example = SAMPLE_EXAMPLE)
     private String sampleId;
 
+    @Schema(description = "Metadata", example = "cell_type")
+    private String metadata;
+
     @Schema(description = "Top count", example = "20")
     private Integer topCount;
 
@@ -24,5 +27,8 @@ public class DifferenceElementHeatmapVO implements Serializable {
 
     @Schema(description = "Names of genes or TFs", example = "GLI1,RCC2")
     private String names;
+
+    @Schema(description = "Value type", example = "Score")
+    private String valueType;
 
 }

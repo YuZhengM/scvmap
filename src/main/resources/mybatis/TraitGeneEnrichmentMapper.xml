@@ -27,7 +27,9 @@
         from t_gene_enrichment_${genome}_${signalId}
         WHERE f_trait_id = #{traitId}
           AND f_gene_set = #{geneSet}
-          AND f_adjusted_p_value * 1.0 <![CDATA[ <= ]]> #{adjustedPValue}
+          <if test="pValue != null and pValue != 0">
+            AND f_p_value * 1.0 <![CDATA[ <= ]]> #{pValue}
+          </if>
         ORDER BY f_combined_score
     </select>
 </mapper>

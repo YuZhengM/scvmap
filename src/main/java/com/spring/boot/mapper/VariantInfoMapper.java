@@ -11,8 +11,12 @@ import java.util.List;
 @Repository
 public interface VariantInfoMapper extends BaseMapper<VariantInfo> {
 
-    List<VariantInfo> selectByTraitId(@Param("traitId") String traitId,
-                                      @Param("signalId") String signalId,
-                                      @Param("genome") String genome,
-                                      @Param("page") Page page);
+    List<VariantInfo> selectByTraitIdAndPage(@Param("traitId") String traitId,
+                                             @Param("signalId") String signalId,
+                                             @Param("genome") String genome,
+                                             @Param("page") Page page);
+
+    List<VariantInfo> selectChrPositionByTraitId(@Param("traitId") String traitId,
+                                                 @Param("signalId") String signalId,
+                                                 @Param("genome") String genome);
 }

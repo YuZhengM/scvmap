@@ -24,6 +24,9 @@ public class RegulationGraphVO implements Serializable {
     @Schema(description = "Cell type.", example = CELL_TYPE_EXAMPLE)
     private String cellType;
 
+    @Schema(description = "Metadata.", example = "cell_type")
+    private String metadata;
+
     @Schema(description = "Thresholds (Gene).")
     private AnalysisGeneVO analysisGene;
 

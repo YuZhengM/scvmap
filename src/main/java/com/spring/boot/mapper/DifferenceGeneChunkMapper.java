@@ -20,6 +20,7 @@ public interface DifferenceGeneChunkMapper {
     List<DifferenceGeneChunk> selectBySampleIdAndCellTypeAndGeneListWithTop(@Param("sampleId") String sampleId,
                                                                             @Param("cellType") String cellType,
                                                                             @Param("geneList") List<String> geneList,
+                                                                            @Param("score") Double score,
                                                                             @Param("log2FoldChange") Double log2FoldChange,
                                                                             @Param("adjustedPValue") Double adjustedPValue,
                                                                             @Param("pValue") Double pValue,

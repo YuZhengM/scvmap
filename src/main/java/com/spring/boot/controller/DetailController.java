@@ -6,6 +6,7 @@ import com.spring.boot.pojo.vo.SampleTraitInfo;
 import com.spring.boot.service.DetailService;
 import com.spring.boot.util.model.PageResult;
 import com.spring.boot.util.model.Result;
+import com.spring.boot.util.model.vo.FieldNumber;
 import com.spring.boot.util.model.vo.canvasXpress.CanvasXpressHeatMapData;
 import com.spring.boot.util.model.vo.echarts.EchartsPieData;
 import com.spring.boot.util.model.vo.plotly.PlotlyClusterData;
@@ -87,10 +88,11 @@ public class DetailController {
                     @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE)
             }
     )
-    @GetMapping("/trait/{trait_id}")
-    public Result<Trait> getTraitData(@PathVariable("trait_id") String traitId) {
+    @GetMapping("/trait/{trait_id}/{method}")
+    public Result<Trait> getTraitData(@PathVariable("trait_id") String traitId, @PathVariable("method") String method) {
         checkTraitId(traitId);
-        Trait trait = detailService.getTraitData(traitId);
+        checkFineMappingMethod(method);
+        Trait trait = detailService.getTraitData(traitId, method);
         return ResultUtil.success("[getTraitData]: Trait select success", trait);
     }
 
@@ -113,13 +115,15 @@ public class DetailController {
                     description = "Pagination information for the search.", required = true
             )
     )
-    @PostMapping("/trait_info/{trait_id}/{genome}")
+    @PostMapping("/trait_info/{trait_id}/{genome}/{method}")
     public Result<PageResult<VariantInfo>> listTraitInfoData(@PathVariable("trait_id") String traitId,
                                                              @PathVariable("genome") String genome,
+                                                             @PathVariable("method") String method,
                                                              @RequestBody Page page) {
         checkTraitId(traitId);
         checkGenome(genome);
-        PageResult<VariantInfo> variantInfo = detailService.listTraitInfoData(traitId, genome, page);
+        checkFineMappingMethod(method);
+        PageResult<VariantInfo> variantInfo = detailService.listTraitInfoData(traitId, genome, method, page);
         return ResultUtil.success("[listTraitInfoData]: Trait select success", variantInfo);
     }
 
@@ -156,10 +160,12 @@ public class DetailController {
                     @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
             }
     )
-    @GetMapping("/cell_type/count/{sample_id}")
-    public Result<EchartsPieData<String, String>> getCellTypeCount(@PathVariable("sample_id") String sampleId) {
+    @GetMapping("/cell_type/count/{sample_id}/{metadata}")
+    public Result<EchartsPieData<String, String>> getCellTypeCount(@PathVariable("sample_id") String sampleId,
+                                                                   @PathVariable("metadata") String metadata) {
         checkSampleId(sampleId);
-        EchartsPieData<String, String> echartsPieData = detailService.getCellTypeCount(sampleId);
+        checkMetadata(metadata);
+        EchartsPieData<String, String> echartsPieData = detailService.getCellTypeCount(sampleId, metadata);
         return ResultUtil.success("[getCellTypeCount]: Query result", echartsPieData);
     }
 
@@ -176,11 +182,12 @@ public class DetailController {
                     @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
             }
     )
-    @GetMapping("/cell_type/{sample_id}")
-    public Result<List<SampleCellType>> listSampleCellType(@PathVariable("sample_id") String sampleId) {
+    @GetMapping("/cell_type/{sample_id}/{metadata}")
+    public Result<List<FieldNumber>> listSampleCellTypeTimeSexDrug(@PathVariable("sample_id") String sampleId, @PathVariable("metadata") String metadata) {
         checkSampleId(sampleId);
-        List<SampleCellType> sampleCellTypeList = detailService.listSampleCellType(sampleId);
-        return ResultUtil.success("[listSampleCellType]: Query result", sampleCellTypeList);
+        checkMetadata(metadata);
+        List<FieldNumber> fieldNumberList = detailService.listSampleCellTypeTimeSexDrug(sampleId, metadata);
+        return ResultUtil.success("[listSampleCellType]: Query result", fieldNumberList);
     }
 
     /**
@@ -198,11 +205,14 @@ public class DetailController {
                     @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
             }
     )
-    @GetMapping("/trait/chr/count/{trait_id}/{genome}")
-    public Result<EchartsPieData<String, String>> getTraitChrCountData(@PathVariable("trait_id") String traitId, @PathVariable("genome") String genome) {
+    @GetMapping("/trait/chr/count/{trait_id}/{genome}/{method}")
+    public Result<EchartsPieData<String, String>> getTraitChrCountData(@PathVariable("trait_id") String traitId,
+                                                                       @PathVariable("genome") String genome,
+                                                                       @PathVariable("method") String method) {
         checkTraitId(traitId);
         checkGenome(genome);
-        EchartsPieData<String, String> echartsPieData = detailService.getTraitChrCountData(traitId, genome);
+        checkFineMappingMethod(method);
+        EchartsPieData<String, String> echartsPieData = detailService.getTraitChrCountData(traitId, genome, method);
         return ResultUtil.success("[getTraitChrCountData]: Trait select success", echartsPieData);
     }
 
@@ -221,11 +231,13 @@ public class DetailController {
                     @Parameter(name = "method", in = ParameterIn.PATH, description = "The method used for querying.", required = true, example = METHOD_EXAMPLE)
             }
     )
-    @GetMapping("/trait/overlap/{sample_id}/{method}")
-    public Result<SampleTraitInfo<SampleEnrichSampleId>> listTraitBySampleId(@PathVariable("sample_id") String sampleId, @PathVariable("method") String method) {
+    @GetMapping("/trait/overlap/{sample_id}/{method}/{fine_mapping_method}")
+    public Result<SampleTraitInfo<? extends SampleEnrichSampleId>> listTraitBySampleId(@PathVariable("sample_id") String sampleId,
+                                                                                       @PathVariable("method") String method,
+                                                                                       @PathVariable("fine_mapping_method") String fineMappingMethod) {
         checkSampleId(sampleId);
         checkMethod(method);
-        SampleTraitInfo<SampleEnrichSampleId> sampleTraitInfo = detailService.listTraitBySampleId(sampleId, method);
+        SampleTraitInfo<? extends SampleEnrichSampleId> sampleTraitInfo = detailService.listTraitBySampleId(sampleId, method, fineMappingMethod);
         return ResultUtil.success("[listTraitBySampleId]: Query result", sampleTraitInfo);
     }
 
@@ -244,11 +256,14 @@ public class DetailController {
                     @Parameter(name = "method", in = ParameterIn.PATH, description = "The method used for querying.", required = true, example = METHOD_EXAMPLE)
             }
     )
-    @GetMapping("/sample/overlap/{trait_id}/{method}")
-    public Result<SampleTraitInfo<TraitEnrich>> listSampleInfoByTraitId(@PathVariable("trait_id") String traitId, @PathVariable("method") String method) {
+    @GetMapping("/sample/overlap/{trait_id}/{method}/{fine_mapping_method}")
+    public Result<SampleTraitInfo<? extends TraitEnrich>> listSampleInfoByTraitId(@PathVariable("trait_id") String traitId,
+                                                                                  @PathVariable("method") String method,
+                                                                                  @PathVariable("fine_mapping_method") String fineMappingMethod) {
         checkTraitId(traitId);
         checkMethod(method);
-        SampleTraitInfo<TraitEnrich> sampleTraitInfo = detailService.listSampleInfoByTraitId(traitId, method);
+        checkFineMappingMethod(fineMappingMethod);
+        SampleTraitInfo<? extends TraitEnrich> sampleTraitInfo = detailService.listSampleInfoByTraitId(traitId, method, fineMappingMethod);
         return ResultUtil.success("[listSampleInfoByTraitId]: Query result", sampleTraitInfo);
     }
 
@@ -267,10 +282,13 @@ public class DetailController {
                     @Parameter(name = "cell_rate", in = ParameterIn.PATH, description = "The cell rate for clustering.", required = true, example = CELL_RATE_EXAMPLE)
             }
     )
-    @GetMapping("/cluster_coordinate/{sample_id}/{cell_rate}")
-    public Result<PlotlyClusterData<Double, Double>> listClusterCoordinate(@PathVariable("sample_id") String sampleId, @PathVariable("cell_rate") Double cellRate) {
+    @GetMapping("/cluster_coordinate/{sample_id}/{cell_rate}/{metadata}")
+    public Result<PlotlyClusterData<Double, Double>> listClusterCoordinate(@PathVariable("sample_id") String sampleId,
+                                                                           @PathVariable("cell_rate") Double cellRate,
+                                                                           @PathVariable("metadata") String metadata) {
         checkSampleId(sampleId);
-        PlotlyClusterData<Double, Double> plotlyClusterData = detailService.listClusterCoordinate(sampleId, cellRate);
+        checkMetadata(metadata);
+        PlotlyClusterData<Double, Double> plotlyClusterData = detailService.listClusterCoordinate(sampleId, cellRate, metadata);
         return ResultUtil.success("[listClusterCoordinate]: Query result", plotlyClusterData);
     }
 
@@ -294,15 +312,19 @@ public class DetailController {
                     @Parameter(name = "cell_rate", in = ParameterIn.PATH, description = "The cell rate for clustering.", required = true, example = CELL_RATE_EXAMPLE)
             }
     )
-    @GetMapping("/cluster_coordinate/{sample_id}/{method}/{trait_id}/{cell_rate}")
+    @GetMapping("/cluster_coordinate/{sample_id}/{method}/{trait_id}/{cell_rate}/{metadata}/{fineMappingMethod}")
     public Result<PlotlyClusterData<Double, Double>> listTraitClusterCoordinate(@PathVariable("sample_id") String sampleId,
                                                                                 @PathVariable("method") String method,
                                                                                 @PathVariable("trait_id") String traitId,
-                                                                                @PathVariable("cell_rate") Double cellRate) throws IOException {
+                                                                                @PathVariable("cell_rate") Double cellRate,
+                                                                                @PathVariable("metadata") String metadata,
+                                                                                @PathVariable("fineMappingMethod") String fineMappingMethod) throws IOException {
         checkSampleId(sampleId);
         checkMethod(method);
         checkTraitId(traitId);
-        PlotlyClusterData<Double, Double> plotlyClusterData = detailService.listTraitClusterCoordinate(sampleId, traitId, method, cellRate);
+        checkMetadata(metadata);
+        checkFineMappingMethod(fineMappingMethod);
+        PlotlyClusterData<Double, Double> plotlyClusterData = detailService.listTraitClusterCoordinate(sampleId, traitId, method, cellRate, metadata, fineMappingMethod);
         return ResultUtil.success("[listTraitClusterCoordinate]: Query result", plotlyClusterData);
     }
 
@@ -324,12 +346,14 @@ public class DetailController {
                     description = "Pagination information for the search.", required = true
             )
     )
-    @PostMapping("/difference_gene/{sample_id}/{cell_type}")
+    @PostMapping("/difference_gene/{sample_id}/{metadata}/{cell_type}")
     public Result<PageResult<? extends DifferenceGene>> listDifferenceGeneBySampleId(@PathVariable("sample_id") String sampleId,
+                                                                                     @PathVariable("metadata") String metadata,
                                                                                      @PathVariable("cell_type") String cellType,
                                                                                      @RequestBody Page page) {
         checkSampleId(sampleId);
-        PageResult<? extends DifferenceGene> differenceGeneList = detailService.listDifferenceGeneBySampleId(sampleId, cellType, page);
+        checkMetadata(metadata);
+        PageResult<? extends DifferenceGene> differenceGeneList = detailService.listDifferenceGeneBySampleId(sampleId, metadata, cellType, page);
         return ResultUtil.success("[listDifferenceGeneBySampleId]: Query result", differenceGeneList);
     }
 
@@ -453,6 +477,70 @@ public class DetailController {
         checkGenome(genome);
         List<Homer> homerList = detailService.listHomerTfByTraitId(traitId, genome);
         return ResultUtil.success("Homer transcription factors retrieved successfully", homerList);
+    }
+
+    @PostMapping("/gimme_tf/{sample_id}/{trait_id}")
+    public Result<PageResult<GimmeSampleTraitTf>> listGimmeTfByTraitId(@PathVariable("sample_id") String sampleId,
+                                                                       @PathVariable("trait_id") String traitId,
+                                                                       @RequestBody Page page) {
+        checkSampleId(sampleId);
+        checkTraitId(traitId);
+        PageResult<GimmeSampleTraitTf> gimmeSampleTraitTfList = detailService.listGimmeTfByTraitId(sampleId, traitId, page);
+        return ResultUtil.success("GimmeMotifs transcription factors retrieved successfully", gimmeSampleTraitTfList);
+    }
+
+    @PostMapping("/eqtl/{trait_id}/{genome}/{chr}")
+    public Result<PageResult<Eqtl>> listEqtlByTraitId(@PathVariable("trait_id") String traitId,
+                                                      @PathVariable("genome") String genome,
+                                                      @PathVariable("chr") String chr,
+                                                      @RequestBody Page page) {
+        checkTraitId(traitId);
+        checkGenome(genome);
+        PageResult<Eqtl> eqtlList = detailService.listEqtlByTraitId(traitId, genome, chr, page);
+        return ResultUtil.success("eQTL information", eqtlList);
+    }
+
+    @PostMapping("/mpra/{trait_id}/{genome}")
+    public Result<PageResult<Mpra>> listMpraByTraitId(@PathVariable("trait_id") String traitId,
+                                                      @PathVariable("genome") String genome,
+                                                      @RequestBody Page page) {
+        checkTraitId(traitId);
+        checkGenome(genome);
+        PageResult<Mpra> mpraList = detailService.listMpraByTraitId(traitId, genome, page);
+        return ResultUtil.success("MPRA information", mpraList);
+    }
+
+    @PostMapping("/interaction/{trait_id}/{genome}")
+    public Result<PageResult<Interaction>> listInteractionByTraitId(@PathVariable("trait_id") String traitId,
+                                                                    @PathVariable("genome") String genome,
+                                                                    @RequestBody Page page) {
+        checkTraitId(traitId);
+        checkGenome(genome);
+        PageResult<Interaction> interactionList = detailService.listInteractionByTraitId(traitId, genome, page);
+        return ResultUtil.success("Interaction information", interactionList);
+    }
+
+    @GetMapping("/kl_score/trait/{trait_id}")
+    public Result<List<TrsDistributionScore>> listKlScoreDataByTraitId(@PathVariable("trait_id") String traitId) {
+        checkTraitId(traitId);
+        List<TrsDistributionScore> trsDistributionScoreList = detailService.listKlScoreDataByTraitId(traitId);
+        return ResultUtil.success("listKlScoreDataByTraitId", trsDistributionScoreList);
+    }
+
+    @GetMapping("/kl_score/sample/{sample_id}")
+    public Result<List<TrsDistributionScore>> listKlScoreDataBySampleId(@PathVariable("sample_id") String sampleId) {
+        checkSampleId(sampleId);
+        List<TrsDistributionScore> trsDistributionScoreList = detailService.listKlScoreDataBySampleId(sampleId);
+        return ResultUtil.success("listKlScoreDataBySampleId", trsDistributionScoreList);
+    }
+
+    @GetMapping("/kl_score/{sample_id}/{trait_id}")
+    public Result<Double> getKlScoreData(@PathVariable("sample_id") String sampleId,
+                                         @PathVariable("trait_id") String traitId) {
+        checkSampleId(sampleId);
+        checkTraitId(traitId);
+        Double klScore = detailService.getKlScoreData(sampleId, traitId);
+        return ResultUtil.success("getKlScoreData", klScore);
     }
 
 }

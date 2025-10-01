@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @Data
 @Schema(name = "TraitDataBrowseResultVO", description = "Trait data browse result value object")
-public class TraitDataBrowseResultVO implements Serializable {
+public class TraitDataBrowseResultVO<T> implements Serializable {
 
     @Schema(description = "List of type field numbers")
     private List<FieldNumber> typeList;
@@ -28,6 +28,6 @@ public class TraitDataBrowseResultVO implements Serializable {
     private List<FieldNumber> cohortList;
 
     @Schema(description = "Paged list of trait data browse results")
-    private PageResult<Trait> dataBrowseDataList;
+    private PageResult<T> dataBrowseDataList;
 
 }

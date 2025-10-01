@@ -82,6 +82,8 @@ public interface AnalysisService {
      */
     EchartsGraphData getTfGraphData(RegulationGraphVO regulationGraphVO);
 
+    EchartsGraphData getTfGeneGraphData(RegulationGraphVO regulationGraphVO);
+
     /**
      * Retrieves a list of MagmaAnno objects containing variant information data by trait ID and gene.
      *

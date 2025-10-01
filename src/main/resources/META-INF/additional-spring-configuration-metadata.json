@@ -1,36 +1,93 @@
 {
+  "groups": [
+    {
+      "name": "com.linux",
+      "type": "com.spring.boot.config.bean.ExecLinux",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
+    },
+    {
+      "name": "com.linux2",
+      "type": "com.spring.boot.config.bean.ExecLinux2",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.path",
+      "type": "com.spring.boot.config.bean.Path",
+      "sourceType": "com.spring.boot.config.bean.Path"
+    }
+  ],
   "properties": [
     {
       "name": "com.linux.host",
       "type": "java.lang.String",
-      "description": "Description for com.linux.host."
+      "description": "IP address",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
     },
     {
-      "name": "com.linux.port",
-      "type": "java.lang.Integer",
-      "defaultValue": 22,
-      "description": "Description for com.linux.port."
-    },
-    {
-      "name": "com.linux.username",
+      "name": "com.linux.key-file",
       "type": "java.lang.String",
-      "defaultValue": "root",
-      "description": "Description for com.linux.username."
+      "description": "Public Key",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
     },
     {
       "name": "com.linux.password",
       "type": "java.lang.String",
-      "description": "Description for com.linux.password."
+      "description": "Password",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
     },
     {
-      "name": "com.path.workPath",
-      "type": "java.lang.String",
-      "description": "Description for com.path.workPath."
+      "name": "com.linux.port",
+      "type": "java.lang.Integer",
+      "description": "Port number",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
     },
     {
-      "name": "logging.level.com.spring.boot",
+      "name": "com.linux.username",
       "type": "java.lang.String",
-      "description": "Description for logging.level.com.spring.boot."
+      "description": "Username",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux"
+    },
+    {
+      "name": "com.linux2.host",
+      "type": "java.lang.String",
+      "description": "IP address",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.linux2.key-file",
+      "type": "java.lang.String",
+      "description": "Public Key",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.linux2.password",
+      "type": "java.lang.String",
+      "description": "Password",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.linux2.port",
+      "type": "java.lang.Integer",
+      "description": "Port number",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.linux2.username",
+      "type": "java.lang.String",
+      "description": "Username",
+      "sourceType": "com.spring.boot.config.bean.ExecLinux2"
+    },
+    {
+      "name": "com.path.exec-file-path",
+      "type": "java.lang.String",
+      "sourceType": "com.spring.boot.config.bean.Path"
+    },
+    {
+      "name": "com.path.work-path",
+      "type": "java.lang.String",
+      "description": "The working path of the project. This field is mapped to the 'com.path.workPath' property in the application configuration.",
+      "sourceType": "com.spring.boot.config.bean.Path"
     }
-  ]
+  ],
+  "hints": []
 }

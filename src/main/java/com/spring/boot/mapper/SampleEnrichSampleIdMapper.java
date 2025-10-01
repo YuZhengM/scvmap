@@ -1,7 +1,6 @@
 package com.spring.boot.mapper;
 
 import com.spring.boot.pojo.SampleEnrichSampleId;
-import com.spring.boot.pojo.TraitEnrich;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

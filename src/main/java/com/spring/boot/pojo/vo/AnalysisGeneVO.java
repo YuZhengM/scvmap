@@ -28,6 +28,9 @@ public class AnalysisGeneVO extends AnalysisElementVO implements Serializable {
     @Schema(description = "Method.", example = "cicero")
     private String strategy;
 
+    @Schema(description = "score.", example = "5")
+    private Double score;
+
     @Schema(description = "Co-score.", example = "0.1")
     private Double coScore;
 

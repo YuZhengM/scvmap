@@ -24,6 +24,10 @@ public class Trait implements Serializable {
     @Schema(description = "The unique identifier of the trait used for searching in the database.")
     private String traitId;
 
+    @TableField("f_trait_name")
+    @Schema(description = "The unique name of the trait used for searching in the database.")
+    private String traitName;
+
     @TableField("f_trait_index")
     @Schema(description = "The unique identifier of the trait, used for sorting in the database, corresponds one-to-one with 'f_trait_id'.")
     private String traitIndex;
