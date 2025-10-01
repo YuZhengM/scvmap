@@ -12,13 +12,13 @@ docker pull redis-server:6.2.11-alpine
 
 ```shell
 docker run -d -it \
-           -p 8053:6379 \
-           --name scatacdb_redis redis:6.2.11-alpine redis-server --appendonly yes --requirepass "scatacdb123456"
+           -p ${redis_port}:6379 \
+           --name scatacdb_redis redis:6.2.11-alpine redis-server --appendonly yes --requirepass "${redis_password}"
 ```
 
 ```shell
 redis-cli
-auth scatacdb123456
+auth ${redis_password}
 keys *
-redis-cli -a scatacdb123456 -n 4 flushdb
+redis-cli -a ${redis_password} -n ${redis_database} flushdb
 ```
