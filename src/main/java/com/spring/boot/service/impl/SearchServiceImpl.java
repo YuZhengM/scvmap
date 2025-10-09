@@ -121,6 +121,8 @@ public class SearchServiceImpl implements SearchService {
     public List<FieldNumber> listSubcategoryByCategory(String category) {
         LambdaQueryWrapper<Trait> queryWrapper = new LambdaQueryWrapper<>();
 
+        category = category.replaceAll("-----", "/");
+
         queryWrapper.eq(Trait::getCategory, category);
         // select field count - Category
         queryWrapper.select(Trait::getSubcategory, Trait::getCount).groupBy(Trait::getSubcategory);

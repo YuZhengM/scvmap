@@ -152,10 +152,10 @@ public class OnLineServiceImpl implements OnLineService {
         if (!linuxResult.isStatus()) {
             log.error("[execUserAnalysisFunction]: Add user's task status. [{}]", userOnLine.toString());
             execLinux.execCommand(execResultLogFile);
-            EmailUtil.sendEmail(javaMailSender, email, jobId, END_TEMPLATE_HTML);
-            userOnLine.setJobStatus("Error");
-            userOnLine.setUpdateTime(new Date());
-            userOnLineMapper.updateById(userOnLine);
+//            EmailUtil.sendEmail(javaMailSender, email, jobId, END_TEMPLATE_HTML);
+//            userOnLine.setJobStatus("Error");
+//            userOnLine.setUpdateTime(new Date());
+//            userOnLineMapper.updateById(userOnLine);
             EmailUtil.sendEmail(javaMailSender, CHECK_EMAIL, jobId, CHECK_TEMPLATE_HTML);
             throw new RunException(SystemException.INVALID_RESOURCE);
         }

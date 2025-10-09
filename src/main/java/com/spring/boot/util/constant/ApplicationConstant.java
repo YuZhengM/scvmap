@@ -69,4 +69,6 @@ public class ApplicationConstant {
 
     public static final String CHECK_EMAIL = "yuzmbio@163.com";
 
+    public static final String JOB_ID_EXAMPLE = "64e2b14c6b";
+
 }

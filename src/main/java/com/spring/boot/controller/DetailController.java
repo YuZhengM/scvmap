@@ -479,6 +479,25 @@ public class DetailController {
         return ResultUtil.success("Homer transcription factors retrieved successfully", homerList);
     }
 
+    /**
+     * Controller method to retrieve a list of GimmeMotifs transcription factors based on sample ID and trait ID.
+     *
+     * @param sampleId The ID of the sample.
+     * @param traitId  The ID of the trait.
+     * @param page     The pagination information.
+     * @return A Result object containing a list of GimmeMotifs transcription factors.
+     */
+    @Operation(
+            summary = "Retrieve a list of GimmeMotifs transcription factors by sample ID and trait ID",
+            description = "Retrieves a list of GimmeMotifs transcription factors based on the provided sample ID and trait ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/gimme_tf/{sample_id}/{trait_id}")
     public Result<PageResult<GimmeSampleTraitTf>> listGimmeTfByTraitId(@PathVariable("sample_id") String sampleId,
                                                                        @PathVariable("trait_id") String traitId,
@@ -489,6 +508,27 @@ public class DetailController {
         return ResultUtil.success("GimmeMotifs transcription factors retrieved successfully", gimmeSampleTraitTfList);
     }
 
+    /**
+     * Controller method to retrieve a list of eQTLs based on trait ID, genome, and chromosome.
+     *
+     * @param traitId The ID of the trait.
+     * @param genome  The genome identifier.
+     * @param chr     The chromosome identifier.
+     * @param page    The pagination information.
+     * @return A Result object containing a list of eQTLs.
+     */
+    @Operation(
+            summary = "Retrieve a list of eQTLs by trait ID, genome, and chromosome",
+            description = "Retrieves a list of eQTLs based on the provided trait ID, genome, and chromosome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE),
+                    @Parameter(name = "chr", in = ParameterIn.PATH, description = "The chromosome identifier.", required = true, example = "chr1")
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/eqtl/{trait_id}/{genome}/{chr}")
     public Result<PageResult<Eqtl>> listEqtlByTraitId(@PathVariable("trait_id") String traitId,
                                                       @PathVariable("genome") String genome,
@@ -500,6 +540,25 @@ public class DetailController {
         return ResultUtil.success("eQTL information", eqtlList);
     }
 
+    /**
+     * Controller method to retrieve a list of MPRA data based on trait ID and genome.
+     *
+     * @param traitId The ID of the trait.
+     * @param genome  The genome identifier.
+     * @param page    The pagination information.
+     * @return A Result object containing a list of MPRA data.
+     */
+    @Operation(
+            summary = "Retrieve a list of MPRA data by trait ID and genome",
+            description = "Retrieves a list of MPRA data based on the provided trait ID and genome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/mpra/{trait_id}/{genome}")
     public Result<PageResult<Mpra>> listMpraByTraitId(@PathVariable("trait_id") String traitId,
                                                       @PathVariable("genome") String genome,
@@ -510,6 +569,25 @@ public class DetailController {
         return ResultUtil.success("MPRA information", mpraList);
     }
 
+    /**
+     * Controller method to retrieve a list of interaction data based on trait ID and genome.
+     *
+     * @param traitId The ID of the trait.
+     * @param genome  The genome identifier.
+     * @param page    The pagination information.
+     * @return A Result object containing a list of interaction data.
+     */
+    @Operation(
+            summary = "Retrieve a list of interaction data by trait ID and genome",
+            description = "Retrieves a list of interaction data based on the provided trait ID and genome.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE),
+                    @Parameter(name = "genome", in = ParameterIn.PATH, description = "The genome identifier.", required = true, example = GENOME_EXAMPLE)
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Pagination information for the search.", required = true
+            )
+    )
     @PostMapping("/interaction/{trait_id}/{genome}")
     public Result<PageResult<Interaction>> listInteractionByTraitId(@PathVariable("trait_id") String traitId,
                                                                     @PathVariable("genome") String genome,
@@ -520,6 +598,19 @@ public class DetailController {
         return ResultUtil.success("Interaction information", interactionList);
     }
 
+    /**
+     * Controller method to retrieve a list of KL score data based on trait ID.
+     *
+     * @param traitId The ID of the trait.
+     * @return A Result object containing a list of KL score data.
+     */
+    @Operation(
+            summary = "Retrieve a list of KL score data by trait ID",
+            description = "Retrieves a list of KL score data based on the provided trait ID.",
+            parameters = {
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE)
+            }
+    )
     @GetMapping("/kl_score/trait/{trait_id}")
     public Result<List<TrsDistributionScore>> listKlScoreDataByTraitId(@PathVariable("trait_id") String traitId) {
         checkTraitId(traitId);
@@ -527,6 +618,19 @@ public class DetailController {
         return ResultUtil.success("listKlScoreDataByTraitId", trsDistributionScoreList);
     }
 
+    /**
+     * Controller method to retrieve a list of KL score data based on sample ID.
+     *
+     * @param sampleId The ID of the sample.
+     * @return A Result object containing a list of KL score data.
+     */
+    @Operation(
+            summary = "Retrieve a list of KL score data by sample ID",
+            description = "Retrieves a list of KL score data based on the provided sample ID.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE)
+            }
+    )
     @GetMapping("/kl_score/sample/{sample_id}")
     public Result<List<TrsDistributionScore>> listKlScoreDataBySampleId(@PathVariable("sample_id") String sampleId) {
         checkSampleId(sampleId);
@@ -534,6 +638,21 @@ public class DetailController {
         return ResultUtil.success("listKlScoreDataBySampleId", trsDistributionScoreList);
     }
 
+    /**
+     * Controller method to retrieve the KL score data for a specific sample and trait.
+     *
+     * @param sampleId The ID of the sample.
+     * @param traitId  The ID of the trait.
+     * @return A Result object containing the KL score data.
+     */
+    @Operation(
+            summary = "Retrieve KL score data by sample ID and trait ID",
+            description = "Retrieves the KL score data for a specific sample and trait based on the provided IDs.",
+            parameters = {
+                    @Parameter(name = "sample_id", in = ParameterIn.PATH, description = "The ID of the sample to search for.", required = true, example = SAMPLE_EXAMPLE),
+                    @Parameter(name = "trait_id", in = ParameterIn.PATH, description = "The ID of the trait to search for.", required = true, example = TRAIT_EXAMPLE)
+            }
+    )
     @GetMapping("/kl_score/{sample_id}/{trait_id}")
     public Result<Double> getKlScoreData(@PathVariable("sample_id") String sampleId,
                                          @PathVariable("trait_id") String traitId) {
