@@ -193,7 +193,10 @@ public class OnLineServiceImpl implements OnLineService {
 
     @Override
     public UserOnLine getUserJobInfo(String jobId) {
-        return userOnLineMapper.selectById(jobId);
+        UserOnLine userOnLine = userOnLineMapper.selectById(jobId);
+        userOnLine.setUserEmail("******");
+        userOnLine.setUserIp("******");
+        return userOnLine;
     }
 
     @Override
