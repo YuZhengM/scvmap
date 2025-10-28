@@ -2,7 +2,7 @@
 
 > scVMAP: https://bio.liclab.net/scvmap/
 
-> scVMAP reproducibility:: https://github.com/YuZhengM/scvmap_reproducibility
+> scVMAP reproducibility: https://github.com/YuZhengM/scvmap_reproducibility
 
 > scVMAP tutorial: https://scvmap.readthedocs.io/en/latest/
 
