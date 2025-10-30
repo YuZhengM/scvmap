@@ -19,17 +19,17 @@
 -- mysql --local-infile=1 -u root -p${mysql_password} </root/trait_sample/create_trait_enrich.sql
 -- mysql --local-infile=1 -u root -p${mysql_password} </root/trait_gene/create_trait_gene.sql
 -- mysql --local-infile=1 -u root -p${mysql_password} </root/trait_tf/create_trait_tf.sql
--- mysql --local-infile=1 -u root -p123456 </root/cicero/create_cicero.sql
--- mysql --local-infile=1 -u root -p123456 </root/cicero/create_cicero_sample_gene.sql
--- mysql --local-infile=1 -u root -p123456 </root/cicero/create_cicero_trait_gene.sql
--- mysql --local-infile=1 -u root -p123456 </root/gimme/create_gimme.sql
--- mysql --local-infile=1 -u root -p123456 </root/gimme/create_gimme_sample_tf.sql
--- mysql --local-infile=1 -u root -p123456 </root/gimme/create_gimme_trait_tf.sql
--- mysql --local-infile=1 -u root -p123456 </root/gimme/create_sample_tf_gene.sql
--- mysql --local-infile=1 -u root -p123456 </root/scatac_susie/create_difference_gene_susie.sql
--- mysql --local-infile=1 -u root -p123456 </root/gene/annotation/GTEx/gtex_eqtl_sql_chr_position.sql
--- mysql --local-infile=1 -u root -p123456 </root/gene/annotation/GTEx/gtex_eqtl_sql_chr.sql
--- mysql --local-infile=1 -u root -p123456 </root/interaction/create_interaction.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/cicero/create_cicero.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/cicero/create_cicero_sample_gene.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/cicero/create_cicero_trait_gene.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gimme/create_gimme.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gimme/create_gimme_sample_tf.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gimme/create_gimme_trait_tf.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gimme/create_sample_tf_gene.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/scatac_susie/create_difference_gene_susie.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gene/annotation/GTEx/gtex_eqtl_sql_chr_position.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/gene/annotation/GTEx/gtex_eqtl_sql_chr.sql
+-- mysql --local-infile=1 -u root -p${mysql_password} </root/interaction/create_interaction.sql
 set global local_infile = 'ON';
 truncate `scvdb`.`t_trait_chr_count`;
 LOAD DATA LOCAL INFILE "/root/variant/t_trait_chr_count.txt" INTO TABLE `scvdb`.`t_trait_chr_count` fields terminated by '\t' optionally enclosed by '"' lines terminated by '\n';
