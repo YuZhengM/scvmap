@@ -31,7 +31,7 @@ scVMAP is a user-centric database that offers intuitive workflows, customizable 
 
 ## Implementation
 
-> Bioinformatics website: scVMAP
+> Java: 17.0.1
 
 > Framework: SpringBoot (3.0.5)
 
